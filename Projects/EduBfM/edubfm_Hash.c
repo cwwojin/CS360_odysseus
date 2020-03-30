@@ -123,7 +123,7 @@ Four edubfm_Insert(
 	if(n == NOTFOUND_IN_HTABLE){
 		hashtable[hashValue] = index;
 	}
-	//2. Collision -> Linear Probing.
+	//2. Collision -> Chaining.
 	else{
 		(bufInfo[type].bufTable).[index].nextHashEntry = n;
 		hashtable[hashValue] = index;
@@ -164,9 +164,21 @@ Four edubfm_Delete(
 
     CHECKKEY(key);    /*@ check validity of key */
 
+	/* NEWCODE */
+	Two* hashtable = BI_HASHTABLE(type); //get the hash table.
+	hashValue = BFM_HASH(key, type); //calculate hash value.
+	prev = BI_HASHTABLEENTRY(type,hashValue);
+	if(prev == NOTFOUND_IN_HTABLE){
+		ERR( eNOTFOUND_BFM );
+	}
+	else{
+		i = (bufInfo[type].bufTable).[prev].nextHashEntry;
+		hashtable[hashValue] = i;
+	}
+	return( eNOERROR );
+	/* ENDOFNEWCODE */
 
-
-    ERR( eNOTFOUND_BFM );
+    //ERR( eNOTFOUND_BFM );
 
 }  /* edubfm_Delete */
 
