@@ -122,6 +122,7 @@ Four EduBfM_GetTrain(
 		index = bfm_AllocTrain(type); //allocate a new buffer element.
 		printf("%d\n",index);
 		bfm_ReadTrain(trainId, pool + BI_BUFSIZE(type)*index, type); //read in train.
+		printf("Read successful\n");
 		//update buftable.
 		BfMHashKey* newkey;
 		newkey->pageNo = trainId->pageNo;
