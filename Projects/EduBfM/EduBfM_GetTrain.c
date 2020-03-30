@@ -116,9 +116,11 @@ Four EduBfM_GetTrain(
 	//1.lookup key from hash table.
 	pool = BI_BUFFERPOOL(type); //get the pool.
 	index = bfm_LookUp(trainId, type);
+	printf("%d\n",index);
 	if(index == NOTFOUND_IN_HTABLE){
 		//2.not in pool
 		index = bfm_AllocTrain(type); //allocate a new buffer element.
+		printf("%d\n",index);
 		bfm_ReadTrain(trainId, pool[index], type); //read in train.
 		//update buftable.
 		BfMHashKey* newkey;
