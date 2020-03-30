@@ -96,9 +96,12 @@ Four EduBfM_GetTrain(
     char                **retBuf,               /* OUT pointer to the returned buffer */
     Four                type )                  /* IN buffer type */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Four                e;                      /* for error */
     Four                index;                  /* index of the buffer pool */
+	char* pool;
+	BufferTable* btable;
+	btable = bufInfo[type].bufTable;
 
 
     /*@ Check the validity of given parameters */
@@ -107,6 +110,33 @@ Four EduBfM_GetTrain(
 
     /* Is the buffer type valid? */
     if(IS_BAD_BUFFERTYPE(type)) ERR(eBADBUFFERTYPE_BFM);	
+	
+	
+	/* NEWCODE */
+	//1.lookup key from hash table.
+	pool = BI_BUFFERPOOL(type); //get the pool.
+	index = bfm_LookUp(trainId, type);
+	if(index == NOTFOUND_IN_HTABLE){
+		//2.not in pool
+		index = bfm_AllocTrain(type); //allocate a new buffer element.
+		bfm_ReadTrain(trainId, pool[index], type); //read in train.
+		//update buftable.
+		btable[index].key = trainId;
+		btable[index].fixed = 1;
+		btable[index].bits = REFER;
+		//insert index to hashtable
+		bfm_Insert(trainId, index, type);
+		retBuf = &(pool[index]);
+	}
+	else{
+		//3. In pool.
+		bfm_ReadTrain(trainId, pool[index], type); //read in train.
+		//update buftable.
+		btable[index].fixed++;
+		btable[index].bits = btable[index].bits & REFER;
+		retBuf = &(pool[index]);
+	}
+	/* ENDOFNEWCODE */
 
 
 
