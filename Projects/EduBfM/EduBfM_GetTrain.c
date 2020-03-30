@@ -121,7 +121,10 @@ Four EduBfM_GetTrain(
 		index = bfm_AllocTrain(type); //allocate a new buffer element.
 		bfm_ReadTrain(trainId, pool[index], type); //read in train.
 		//update buftable.
-		btable[index].key = *trainId;
+		BfMHashKey* newkey;
+		newkey->pageNo = trainId->pageNo;
+		newkey->volNo = trainId->volNo;
+		btable[index].key = *newkey;
 		btable[index].fixed = 1;
 		btable[index].bits = REFER;
 		//insert index to hashtable
