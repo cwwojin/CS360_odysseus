@@ -125,7 +125,7 @@ Four edubfm_Insert(
 	}
 	//2. Collision -> Chaining.
 	else{
-		(bufInfo[type].bufTable).[index].nextHashEntry = n;
+		(bufInfo[type].bufTable)[index].nextHashEntry = n;
 		hashtable[hashValue] = index;
 	}
 	/* ENDOFNEWCODE */
@@ -172,7 +172,7 @@ Four edubfm_Delete(
 		ERR( eNOTFOUND_BFM );
 	}
 	else{
-		i = (bufInfo[type].bufTable).[prev].nextHashEntry;
+		i = (bufInfo[type].bufTable)[prev].nextHashEntry;
 		hashtable[hashValue] = i;
 	}
 	return( eNOERROR );
