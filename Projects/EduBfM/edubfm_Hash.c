@@ -106,17 +106,29 @@ Four edubfm_Insert(
     Two 		index,			/* IN an index used in the buffer pool */
     Four 		type)			/* IN buffer type */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Four 		i;			
     Two  		hashValue;
-
 
     CHECKKEY(key);    /*@ check validity of key */
 
     if( (index < 0) || (index > BI_NBUFS(type)) )
         ERR( eBADBUFINDEX_BFM );
-
-   
+	
+	/* NEWCODE */
+	Two* hashtable = BI_HASHTABLE(type); //get the hash table.
+	hashValue = BFM_HASH(key, type); //calculate hash value.
+	Two n = BI_HASHTABLEENTRY(type,hashValue);
+	//1. No Collision.
+	if(n == NOTFOUND_IN_HTABLE){
+		hashtable[hashValue] = index;
+	}
+	//2. Collision -> Linear Probing.
+	else{
+		(bufInfo[type].bufTable).[index].nextHashEntry = n;
+		hashtable[hashValue] = index;
+	}
+	/* ENDOFNEWCODE */
 
     return( eNOERROR );
 
@@ -145,7 +157,7 @@ Four edubfm_Delete(
     BfMHashKey          *key,                   /* IN a hash key in buffer manager */
     Four                type )                  /* IN buffer type */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Two                 i, prev;                
     Two                 hashValue;
 
@@ -181,7 +193,7 @@ Four edubfm_LookUp(
     BfMHashKey          *key,                   /* IN a hash key in Buffer Manager */
     Four                type)                   /* IN buffer type */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Two                 i, j;                   /* indices */
     Two                 hashValue;
 
@@ -213,7 +225,7 @@ Four edubfm_LookUp(
  */
 Four edubfm_DeleteAll(void)
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Two 	i;
     Four        tableSize;
     
