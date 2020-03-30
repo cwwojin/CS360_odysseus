@@ -121,7 +121,7 @@ Four EduBfM_GetTrain(
 		//2.not in pool
 		index = bfm_AllocTrain(type); //allocate a new buffer element.
 		printf("%d\n",index);
-		bfm_ReadTrain(trainId, pool[index], type); //read in train.
+		bfm_ReadTrain(trainId, pool + BI_BUFSIZE(type)*index, type); //read in train.
 		//update buftable.
 		BfMHashKey* newkey;
 		newkey->pageNo = trainId->pageNo;
@@ -135,7 +135,7 @@ Four EduBfM_GetTrain(
 	}
 	else{
 		//3. In pool.
-		bfm_ReadTrain(trainId, pool[index], type); //read in train.
+		bfm_ReadTrain(trainId, pool + BI_BUFSIZE(type)*index, type); //read in train.
 		//update buftable.
 		btable[index].fixed++;
 		btable[index].bits = btable[index].bits & REFER;
