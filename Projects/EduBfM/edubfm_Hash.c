@@ -240,8 +240,23 @@ Four edubfm_DeleteAll(void)
 	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Two 	i;
     Four        tableSize;
+	Four type;
+	Two* hashtable;
     
-
+	/* NEWCODE */
+	type = PAGE_BUF;
+	hashtable = BI_HASHTABLE(type);
+	tableSize = HASHTABLESIZE(type);
+	for(i=0;i<tableSize;i++){
+		hashtable[i] = -1;
+	}
+	type = LOT_LEAF_BUF;
+	hashtable = BI_HASHTABLE(type);
+	tableSize = HASHTABLESIZE(type);
+	for(i=0;i<tableSize;i++){
+		hashtable[i] = -1;
+	}
+	/* ENDOFNEWCODE */
 
     return(eNOERROR);
 
