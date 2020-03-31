@@ -116,23 +116,16 @@ Four EduBfM_GetTrain(
 	//1.lookup key from hash table.
 	pool = BI_BUFFERPOOL(type); //get the pool.
 	index = bfm_LookUp(trainId, type);
-	//printf("%d -> ",index);
 	if(index == NOTFOUND_IN_HTABLE){
 		//2.not in pool
 		index = bfm_AllocTrain(type); //allocate a new buffer element.
-		//printf("%d\n",index);
 		bfm_ReadTrain(trainId, pool + BI_BUFSIZE(type)*index, type); //read in train.
-		//printf("Read successful\n");
-		//update buftable.
 		BfMHashKey* newkey;
-		//printf("New key made.\n");
 		newkey = trainId;
-		//printf("& Edited.\n");
 		bufInfo[type].bufTable[index].key = *newkey;
 		bufInfo[type].bufTable[index].fixed = 1;
 		bufInfo[type].bufTable[index].bits = REFER;
-		//printf("Updated bufTable : %d\n",bufInfo[type].bufTable[index].fixed);
-		//insert index to hashtable
+		//edubfm_Insert.
 		bfm_Insert(trainId, index, type);
 		retBuf = &(pool[index]);
 	}
