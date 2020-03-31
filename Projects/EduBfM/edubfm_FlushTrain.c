@@ -88,14 +88,24 @@ Four edubfm_FlushTrain(
     TrainID 			*trainId,		/* IN train to be flushed */
     Four   			type)			/* IN buffer type */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Four 			e;			/* for errors */
     Four 			index;			/* for an index */
 
 
 	/* Error check whether using not supported functionality by EduBfM */
 	if (RM_IS_ROLLBACK_REQUIRED()) ERR(eNOTSUPPORTED_EDUBFM);
-
+	
+	/* NEWCODE */
+	index = bfm_LookUp(trainId,type);
+	if(index == NOTFOUND_IN_HTABLE) ERR(eNOTFOUND_BFM);
+	if((BI_BITS(type, i) & DIRTY) == DIRTY){		//if DIRTY
+		//write to disk.
+		RDsM_WriteTrain();
+		//reset DIRTY bit.
+		bufInfo[type].bufTable[idx].bits = bufInfo[type].bufTable[idx].bits & ~(DIRTY);
+	}
+	/* ENDOFNEWCODE */
 
 	
     return( eNOERROR );
