@@ -100,8 +100,8 @@ Four EduBfM_GetTrain(
     Four                e;                      /* for error */
     Four                index;                  /* index of the buffer pool */
 	char* pool;
-	BufferTable* btable;
-	btable = bufInfo[type].bufTable;
+	//BufferTable* btable;
+	//btable = bufInfo[type].bufTable;
 
 
     /*@ Check the validity of given parameters */
@@ -122,14 +122,15 @@ Four EduBfM_GetTrain(
 		index = bfm_AllocTrain(type); //allocate a new buffer element.
 		printf("%d\n",index);
 		bfm_ReadTrain(trainId, pool + BI_BUFSIZE(type)*index, type); //read in train.
-		printf("Read successful\n");
+		printf("Read successful : %c\n",*(pool + BI_BUFSIZE(type)*index));
 		//update buftable.
 		BfMHashKey* newkey;
 		newkey->pageNo = trainId->pageNo;
 		newkey->volNo = trainId->volNo;
-		btable[index].key = *newkey;
-		btable[index].fixed = 1;
-		btable[index].bits = REFER;
+		bufInfo[type].bufTable[index].key = *newkey;
+		bufInfo[type].bufTable[index].fixed = 1;
+		bufInfo[type].bufTable[index].bits = REFER;
+		printf("Updated bufTable : %d\n",bufInfo[type].bufTable[index].fixed);
 		//insert index to hashtable
 		bfm_Insert(trainId, index, type);
 		retBuf = &(pool[index]);
