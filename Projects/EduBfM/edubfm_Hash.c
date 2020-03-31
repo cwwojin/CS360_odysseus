@@ -168,13 +168,13 @@ Four edubfm_Delete(
 	Two* hashtable = BI_HASHTABLE(type); //get the hash table.
 	hashValue = BFM_HASH(key, type); //calculate hash value.
 	prev = BI_HASHTABLEENTRY(type,hashValue);
-	if(prev == NOTFOUND_IN_HTABLE){
-		ERR( eNOTFOUND_BFM );
-	}
-	else{
+	if(prev == NOTFOUND_IN_HTABLE) ERR( eNOTFOUND_BFM );
+	
+	if(EQUALKEY(key, &(BI_KEY(type, prev)))){		//check if [prev] and *key are the same key.
 		i = (bufInfo[type].bufTable)[prev].nextHashEntry;
 		hashtable[hashValue] = i;
 	}
+	else ERR( eNOTFOUND_BFM );
 	return( eNOERROR );
 	/* ENDOFNEWCODE */
 
