@@ -126,8 +126,9 @@ Four EduBfM_GetTrain(
 		//update buftable.
 		BfMHashKey* newkey;
 		printf("New key made.\n");
-		newkey->pageNo = trainId->pageNo;
-		newkey->volNo = trainId->volNo;
+		newkey = trainId;
+		//newkey->pageNo = trainId->pageNo;
+		//newkey->volNo = trainId->volNo;
 		printf("& Edited.\n");
 		printf("fixed = %d\n",BI_FIXED(type,index));
 		bufInfo[type].bufTable[index].key = *newkey;
