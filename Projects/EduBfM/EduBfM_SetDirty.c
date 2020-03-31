@@ -100,8 +100,8 @@ Four EduBfM_SetDirty(
 	//printf("Hello!\n");
 	index = bfm_LookUp(trainId, type);
 	if(index == NOTFOUND_IN_HTABLE) ERR(eNOTFOUND_BFM);
-	printf("Current Index : %d\n",index);
-	printf("Current Bits : %d\n",bufInfo[type].bufTable[index].bits);
+	//printf("Current Index : %d\n",index);
+	//printf("Current Bits : %d\n",bufInfo[type].bufTable[index].bits);
 	bufInfo[type].bufTable[index].bits = bufInfo[type].bufTable[index].bits & DIRTY;
 	/* ENDOFNEWCODE */
 
