@@ -121,10 +121,11 @@ Four EduBfM_GetTrain(
 		//2.not in pool
 		index = bfm_AllocTrain(type); //allocate a new buffer element.
 		printf("%d\n",index);
-		bfm_ReadTrain(trainId, pool + index, type); //read in train.
-		printf("Read successful : %c saved.\n",pool[index]);
+		bfm_ReadTrain(trainId, pool + BI_BUFSIZE(type)*index, type); //read in train.
+		printf("Read successful\n");
 		//update buftable.
 		BfMHashKey* newkey;
+		printf("New key made.\n");
 		newkey->pageNo = trainId->pageNo;
 		newkey->volNo = trainId->volNo;
 		bufInfo[type].bufTable[index].key = *newkey;
