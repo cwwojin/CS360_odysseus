@@ -75,9 +75,9 @@
 
 #define _EDUBFM_GETTRAIN_		TRUE
 #define _EDUBFM_FREETRAIN_		TRUE
-#define _EDUBFM_SETDIRTY_		FALSE //TRUE
-#define _EDUBFM_FLUSHALL_		FALSE //TRUE
-#define _EDUBFM_DISCARDALL_		FALSE //TRUE
+#define _EDUBFM_SETDIRTY_		TRUE
+#define _EDUBFM_FLUSHALL_		TRUE
+#define _EDUBFM_DISCARDALL_		TRUE
 
 /***************************************************************************/
 
