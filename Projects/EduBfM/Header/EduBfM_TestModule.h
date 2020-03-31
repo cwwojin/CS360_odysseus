@@ -73,8 +73,8 @@
 /* For API function that you want to test, define it TRUE.                 */
 /* Otherwise, define it FALSE so that the solution API function is called. */
 
-#define _EDUBFM_GETTRAIN_		TRUE
-#define _EDUBFM_FREETRAIN_		TRUE
+#define _EDUBFM_GETTRAIN_		FALSE //TRUE
+#define _EDUBFM_FREETRAIN_		FALSE //TRUE
 #define _EDUBFM_SETDIRTY_		TRUE
 #define _EDUBFM_FLUSHALL_		TRUE
 #define _EDUBFM_DISCARDALL_		TRUE
