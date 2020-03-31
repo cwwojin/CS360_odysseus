@@ -94,7 +94,7 @@ Four EduBfM_FlushAll(void)
 		if((BI_BITS(type, i) & DIRTY) == DIRTY){
 			//flush dirty train.
 			bfm_FlushTrain(&(BI_KEY(type, i)), type);
-			printf("Flush successful: %d %d\n", type, i);
+			//printf("Flush successful: %d %d\n", type, i);
 		}
 	}
 	type = LOT_LEAF_BUF;
@@ -103,7 +103,7 @@ Four EduBfM_FlushAll(void)
 		if((BI_BITS(type, i) & DIRTY) == DIRTY){
 			//flush dirty train.
 			bfm_FlushTrain(&(BI_KEY(type, i)), type);
-			printf("Flush successful: %d %d\n", type, i);
+			//printf("Flush successful: %d %d\n", type, i);
 		}
 	}
 	/* ENDOFNEWCODE */
