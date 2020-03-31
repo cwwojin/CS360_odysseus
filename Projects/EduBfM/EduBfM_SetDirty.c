@@ -97,12 +97,14 @@ Four EduBfM_SetDirty(
     if (IS_BAD_BUFFERTYPE(type)) ERR(eBADBUFFERTYPE_BFM);
 
 	/* NEWCODE */
+	/*
 	printf("Hello!\n");
 	index = bfm_LookUp(trainId, type);
 	if(index == NOTFOUND_IN_HTABLE) ERR(eNOTFOUND_BFM);
 	printf("Current Index : %d\n",index);
 	printf("Current Bits : %d\n",bufInfo[type].bufTable[index].bits);
 	bufInfo[type].bufTable[index].bits = bufInfo[type].bufTable[index].bits & DIRTY;
+	*/
 	/* ENDOFNEWCODE */
 
     return( eNOERROR );
