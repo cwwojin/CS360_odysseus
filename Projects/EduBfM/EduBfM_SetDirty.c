@@ -88,14 +88,19 @@ Four EduBfM_SetDirty(
     TrainID             *trainId,               /* IN which train has been modified in the buffer?  */
     Four                type )                  /* IN buffer type */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Four                index;                  /* an index of the buffer table & pool */
-
+	BufferTable* btable;
+	btable = bufInfo[type].bufTable;
 
     /*@ Is the paramter valid? */
     if (IS_BAD_BUFFERTYPE(type)) ERR(eBADBUFFERTYPE_BFM);
 
-
+	/* NEWCODE */
+	index = bfm_LookUp(trainId, type);
+	if(index == NOTFOUND_IN_HTABLE) ERR(eNOTFOUND_BFM);
+	btable[index].bits = btable[index].bits & DIRTY;
+	/* ENDOFNEWCODE */
 
     return( eNOERROR );
 
