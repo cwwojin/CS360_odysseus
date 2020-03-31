@@ -102,7 +102,7 @@ Four EduBfM_SetDirty(
 	if(index == NOTFOUND_IN_HTABLE) ERR(eNOTFOUND_BFM);
 	//printf("Current Index : %d\n",index);
 	//printf("Current Bits : %d\n",bufInfo[type].bufTable[index].bits);
-	bufInfo[type].bufTable[index].bits = bufInfo[type].bufTable[index].bits & DIRTY;
+	bufInfo[type].bufTable[index].bits = bufInfo[type].bufTable[index].bits | DIRTY;
 	/* ENDOFNEWCODE */
 
     return( eNOERROR );
