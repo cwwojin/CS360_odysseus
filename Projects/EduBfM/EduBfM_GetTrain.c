@@ -128,6 +128,7 @@ Four EduBfM_GetTrain(
 		printf("New key made.\n");
 		newkey->pageNo = trainId->pageNo;
 		newkey->volNo = trainId->volNo;
+		printf("fixed = %d\n",BI_FIXED(type,index));
 		bufInfo[type].bufTable[index].key = *newkey;
 		bufInfo[type].bufTable[index].fixed = 1;
 		bufInfo[type].bufTable[index].bits = REFER;
