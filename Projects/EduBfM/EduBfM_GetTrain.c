@@ -125,7 +125,7 @@ Four EduBfM_GetTrain(
 		newkey = trainId;
 		bufInfo[type].bufTable[index].key = *newkey;
 		bufInfo[type].bufTable[index].fixed = 1;
-		bufInfo[type].bufTable[index].bits = REFER;
+		bufInfo[type].bufTable[index].bits = bufInfo[type].bufTable[index].bits | REFER;
 		//edubfm_Insert.
 		bfm_Insert(trainId, index, type);
 		*retBuf = (pool + BI_BUFSIZE(type)*index);
