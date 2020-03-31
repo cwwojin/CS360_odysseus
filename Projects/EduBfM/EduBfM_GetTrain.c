@@ -125,7 +125,7 @@ Four EduBfM_GetTrain(
 		printf("Read successful\n");
 		//update buftable.
 		BfMHashKey* newkey;
-		printf("New key made, ");
+		printf("New key made.\n");
 		newkey->pageNo = trainId->pageNo;
 		newkey->volNo = trainId->volNo;
 		printf("& Edited.\n");
