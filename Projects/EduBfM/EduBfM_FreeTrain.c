@@ -101,7 +101,8 @@ Four EduBfM_FreeTrain(
 	btable[index].fixed--;
 	//error msg if fixed < 0.
 	if(btable[index].fixed < 0){
-		printf("Warning: Fixed counter is less than 0!!!");
+		printf("Warning: Fixed counter is less than 0!!!\n");
+		PRINT_TRAINID("trainId",trainId);
 		btable[index].fixed = 0;
 	}
 	/* ENDOFNEWCODE */
