@@ -139,8 +139,8 @@ Four EduBfM_GetTrain(
 		//3. In pool.
 		bfm_ReadTrain(trainId, pool + BI_BUFSIZE(type)*index, type); //read in train.
 		//update buftable.
-		btable[index].fixed++;
-		btable[index].bits = btable[index].bits & REFER;
+		bufInfo[type].bufTable[index].fixed++;
+		bufInfo[type].bufTable[index].bits = bufInfo[type].bufTable[index].bits & REFER;
 		retBuf = &(pool[index]);
 	}
 	/* ENDOFNEWCODE */
