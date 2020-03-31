@@ -120,8 +120,8 @@ Four EduBfM_GetTrain(
 		//2.not in pool
 		index = bfm_AllocTrain(type); //allocate a new buffer element.
 		bfm_ReadTrain(trainId, pool + BI_BUFSIZE(type)*index, type); //read in train.
-		newkey->pageNo = 0;
-		//newkey = trainId;
+		BfMHashKey* newkey;
+		newkey = trainId;
 		bufInfo[type].bufTable[index].key = *newkey;
 		bufInfo[type].bufTable[index].fixed = 1;
 		bufInfo[type].bufTable[index].bits = REFER;
