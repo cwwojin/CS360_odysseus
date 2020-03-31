@@ -101,7 +101,8 @@ Four edubfm_FlushTrain(
 	if(index == NOTFOUND_IN_HTABLE) ERR(eNOTFOUND_BFM);
 	if((BI_BITS(type, index) & DIRTY) == DIRTY){		//if DIRTY
 		//write to disk.
-		RDsM_WriteTrain();
+		e = RDsM_WriteTrain(BI_BUFFER(type, index), trainId, BI_BUFSIZE(type));
+		if(e < 0) ERR(e);
 		//reset DIRTY bit.
 		bufInfo[type].bufTable[index].bits = bufInfo[type].bufTable[index].bits & ~(DIRTY);
 	}
