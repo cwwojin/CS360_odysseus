@@ -99,11 +99,11 @@ Four edubfm_FlushTrain(
 	/* NEWCODE */
 	index = bfm_LookUp(trainId,type);
 	if(index == NOTFOUND_IN_HTABLE) ERR(eNOTFOUND_BFM);
-	if((BI_BITS(type, i) & DIRTY) == DIRTY){		//if DIRTY
+	if((BI_BITS(type, index) & DIRTY) == DIRTY){		//if DIRTY
 		//write to disk.
 		RDsM_WriteTrain();
 		//reset DIRTY bit.
-		bufInfo[type].bufTable[idx].bits = bufInfo[type].bufTable[idx].bits & ~(DIRTY);
+		bufInfo[type].bufTable[index].bits = bufInfo[type].bufTable[index].bits & ~(DIRTY);
 	}
 	/* ENDOFNEWCODE */
 
