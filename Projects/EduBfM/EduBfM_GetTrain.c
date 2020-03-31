@@ -116,7 +116,7 @@ Four EduBfM_GetTrain(
 	//1.lookup key from hash table.
 	pool = BI_BUFFERPOOL(type); //get the pool.
 	index = bfm_LookUp(trainId, type);
-	printf("%d\n",index);
+	printf("%d -> ",index);
 	if(index == NOTFOUND_IN_HTABLE){
 		//2.not in pool
 		index = bfm_AllocTrain(type); //allocate a new buffer element.
@@ -125,9 +125,10 @@ Four EduBfM_GetTrain(
 		printf("Read successful\n");
 		//update buftable.
 		BfMHashKey* newkey;
-		printf("New key made.\n");
+		printf("New key made, ");
 		newkey->pageNo = trainId->pageNo;
 		newkey->volNo = trainId->volNo;
+		printf("& Edited.\n");
 		printf("fixed = %d\n",BI_FIXED(type,index));
 		bufInfo[type].bufTable[index].key = *newkey;
 		bufInfo[type].bufTable[index].fixed = 1;
