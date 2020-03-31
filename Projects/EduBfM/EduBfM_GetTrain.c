@@ -127,8 +127,8 @@ Four EduBfM_GetTrain(
 		bufInfo[type].bufTable[index].key = *newkey;
 		bufInfo[type].bufTable[index].fixed = 1;
 		bufInfo[type].bufTable[index].bits = bufInfo[type].bufTable[index].bits | REFER;
-		//edubfm_Insert.
-		bfm_Insert(trainId, index, type);
+		edubfm_Insert(trainId, index, type);
+		//bfm_Insert(trainId, index, type);
 		*retBuf = (pool + BI_BUFSIZE(type)*index);
 	}
 	else{
