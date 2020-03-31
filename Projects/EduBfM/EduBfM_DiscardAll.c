@@ -96,7 +96,10 @@ Four EduBfM_DiscardAll(void)
 		bufInfo[type].bufTable[i].key.pageNo = -1;
 		bufInfo[type].bufTable[i].bits = ALL_0;
 	}
+	
+	//edubfm_DeleteAll();
 	bfm_DeleteAll();
+	
 	/* ENDOFNEWCODE */
 
     return(eNOERROR);
