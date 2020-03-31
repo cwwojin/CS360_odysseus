@@ -92,18 +92,16 @@ Four EduBfM_FlushAll(void)
 	for(i=0;i<BI_NBUFS(type);i++){
 		//iterate through all buffer elements, check if DIRTY = 1.
 		if((BI_BITS(type, i) & DIRTY) == DIRTY){
-			//flush dirty train.
+			//edubfm_FlushTrain(&(BI_KEY(type, i)), type);
 			bfm_FlushTrain(&(BI_KEY(type, i)), type);
-			//printf("Flush successful: %d %d\n", type, i);
 		}
 	}
 	type = LOT_LEAF_BUF;
 	for(i=0;i<BI_NBUFS(type);i++){
 		//iterate through all buffer elements, check if DIRTY = 1.
 		if((BI_BITS(type, i) & DIRTY) == DIRTY){
-			//flush dirty train.
+			//edubfm_FlushTrain(&(BI_KEY(type, i)), type);
 			bfm_FlushTrain(&(BI_KEY(type, i)), type);
-			//printf("Flush successful: %d %d\n", type, i);
 		}
 	}
 	/* ENDOFNEWCODE */
