@@ -97,7 +97,7 @@ Four EduBfM_SetDirty(
     if (IS_BAD_BUFFERTYPE(type)) ERR(eBADBUFFERTYPE_BFM);
 
 	/* NEWCODE */
-	printf("Hello!\n");
+	//printf("Hello!\n");
 	/*
 	index = bfm_LookUp(trainId, type);
 	if(index == NOTFOUND_IN_HTABLE) ERR(eNOTFOUND_BFM);
