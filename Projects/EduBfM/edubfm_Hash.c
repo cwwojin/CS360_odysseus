@@ -118,14 +118,14 @@ Four edubfm_Insert(
 	/* NEWCODE */
 	Two* hashtable = BI_HASHTABLE(type); //get the hash table.
 	hashValue = BFM_HASH(key, type); //calculate hash value.
-	Two n = BI_HASHTABLEENTRY(type,hashValue);
+	Two n = BI_HASHTABLEENTRY(type,hashValue); //get the element.
 	//1. No Collision.
 	if(n == NOTFOUND_IN_HTABLE){
 		hashtable[hashValue] = index;
 	}
 	//2. Collision -> Chaining.
 	else{
-		(bufInfo[type].bufTable)[index].nextHashEntry = n;
+		bufInfo[type].bufTable[index].nextHashEntry = n;
 		hashtable[hashValue] = index;
 	}
 	/* ENDOFNEWCODE */
