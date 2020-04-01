@@ -119,7 +119,7 @@ Four EduBfM_GetTrain(
 	if(index == NOTFOUND_IN_HTABLE){
 		//2.not in pool
 		index = bfm_AllocTrain(type); //allocate a new buffer element.
-		edubfm_ReadTrain(trainId, pool + BI_BUFSIZE(type)*index, type);
+		edubfm_ReadTrain(trainId, &(pool + BI_BUFSIZE(type)*index), type);
 		//bfm_ReadTrain(trainId, pool + BI_BUFSIZE(type)*index, type); //read in train.
 		BfMHashKey* newkey;
 		//newkey->pageNo = 0;
@@ -133,7 +133,7 @@ Four EduBfM_GetTrain(
 	}
 	else{
 		//3. In pool.
-		edubfm_ReadTrain(trainId, pool + BI_BUFSIZE(type)*index, type);
+		edubfm_ReadTrain(trainId, &(pool + BI_BUFSIZE(type)*index), type);
 		//bfm_ReadTrain(trainId, pool + BI_BUFSIZE(type)*index, type); //read in train.
 		//update buftable.
 		bufInfo[type].bufTable[index].fixed++;
