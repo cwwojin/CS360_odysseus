@@ -96,7 +96,7 @@ Four EduBfM_FlushAll(void)
 			//bfm_FlushTrain(&(BI_KEY(type, i)), type);
 			
 			/*flush myself: write to disk & reset dirty bit.*/
-			e = RDsM_WriteTrain(BI_BUFFER(type, i), BI_KEY(type, i), BI_BUFSIZE(type));
+			e = RDsM_WriteTrain(BI_BUFFER(type, i), &(BI_KEY(type, i)), BI_BUFSIZE(type));
 			if(e < 0) ERR(e);
 			bufInfo[type].bufTable[i].bits = bufInfo[type].bufTable[i].bits & ~(DIRTY);
 		}
@@ -108,7 +108,7 @@ Four EduBfM_FlushAll(void)
 			//edubfm_FlushTrain(&(BI_KEY(type, i)), type);
 			//bfm_FlushTrain(&(BI_KEY(type, i)), type);
 			
-			e = RDsM_WriteTrain(BI_BUFFER(type, i), BI_KEY(type, i), BI_BUFSIZE(type));
+			e = RDsM_WriteTrain(BI_BUFFER(type, i), &(BI_KEY(type, i)), BI_BUFSIZE(type));
 			if(e < 0) ERR(e);
 			bufInfo[type].bufTable[i].bits = bufInfo[type].bufTable[i].bits & ~(DIRTY);
 		}
