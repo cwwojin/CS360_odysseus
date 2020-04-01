@@ -91,15 +91,17 @@ Four EduBfM_FlushAll(void)
 	type = PAGE_BUF;
 	for(i=0;i<BI_NBUFS(type);i++){
 		//iterate through all buffer elements, check if DIRTY = 1.
+		/*
 		if((BI_BITS(type, i) & DIRTY) == DIRTY){
 			//edubfm_FlushTrain(&(BI_KEY(type, i)), type);
 			//bfm_FlushTrain(&(BI_KEY(type, i)), type);
 			
-			/*flush myself: write to disk & reset dirty bit.*/
 			e = RDsM_WriteTrain((BI_BUFFER(type, i)), &(BI_KEY(type, i)), BI_BUFSIZE(type));
 			if(e < 0) ERR(e);
 			bufInfo[type].bufTable[i].bits = bufInfo[type].bufTable[i].bits & ~(DIRTY);
 		}
+		*/
+		bfm_FlushTrain(&(BI_KEY(type, i)), type);
 	}
 	type = LOT_LEAF_BUF;
 	for(i=0;i<BI_NBUFS(type);i++){
