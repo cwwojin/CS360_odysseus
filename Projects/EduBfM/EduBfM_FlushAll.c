@@ -96,9 +96,14 @@ Four EduBfM_FlushAll(void)
 			//bfm_FlushTrain(&(BI_KEY(type, i)), type);
 			
 			/*flush myself: write to disk & reset dirty bit.*/
-			e = RDsM_WriteTrain(*(BI_BUFFER(type, i)), &(BI_KEY(type, i)), BI_BUFSIZE(type));
+			e = RDsM_WriteTrain((BI_BUFFER(type, i)), &(BI_KEY(type, i)), BI_BUFSIZE(type));
 			if(e < 0) ERR(e);
 			bufInfo[type].bufTable[i].bits = bufInfo[type].bufTable[i].bits & ~(DIRTY);
+			
+			Page* pg = malloc(sizeof(Page));
+			e = RDsM_ReadTrain(&(BI_KEY(type, i)), pg, BI_BUFSIZE(type));
+			if(e < 0) ERR(e);
+			printf("flags : %d\n",pg->header.flags);
 		}
 	}
 	type = LOT_LEAF_BUF;
@@ -108,7 +113,7 @@ Four EduBfM_FlushAll(void)
 			//edubfm_FlushTrain(&(BI_KEY(type, i)), type);
 			//bfm_FlushTrain(&(BI_KEY(type, i)), type);
 			
-			e = RDsM_WriteTrain(*(BI_BUFFER(type, i)), &(BI_KEY(type, i)), BI_BUFSIZE(type));
+			e = RDsM_WriteTrain((BI_BUFFER(type, i)), &(BI_KEY(type, i)), BI_BUFSIZE(type));
 			if(e < 0) ERR(e);
 			bufInfo[type].bufTable[i].bits = bufInfo[type].bufTable[i].bits & ~(DIRTY);
 		}
