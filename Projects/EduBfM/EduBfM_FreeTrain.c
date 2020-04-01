@@ -95,8 +95,8 @@ Four EduBfM_FreeTrain(
 	
 	/* NEWCODE */
 	//1.lookup key from hash table.
-	//index = edubfm_LookUp(trainId, type);
-	index = bfm_LookUp(trainId, type);
+	index = edubfm_LookUp(trainId, type);
+	//index = bfm_LookUp(trainId, type);
 	//error if not int htable.
 	if(index == NOTFOUND_IN_HTABLE) ERR(eNOTFOUND_BFM);
 	btable[index].fixed--;
