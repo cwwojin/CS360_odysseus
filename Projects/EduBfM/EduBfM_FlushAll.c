@@ -99,11 +99,6 @@ Four EduBfM_FlushAll(void)
 			e = RDsM_WriteTrain((BI_BUFFER(type, i)), &(BI_KEY(type, i)), BI_BUFSIZE(type));
 			if(e < 0) ERR(e);
 			bufInfo[type].bufTable[i].bits = bufInfo[type].bufTable[i].bits & ~(DIRTY);
-			
-			Page* pg = malloc(sizeof(Page));
-			e = RDsM_ReadTrain(&(BI_KEY(type, i)), pg, BI_BUFSIZE(type));
-			if(e < 0) ERR(e);
-			printf("flags : %d\n",pg->header.flags);
 		}
 	}
 	type = LOT_LEAF_BUF;
