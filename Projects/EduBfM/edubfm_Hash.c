@@ -211,6 +211,25 @@ Four edubfm_LookUp(
 
 
     CHECKKEY(key);    /*@ check validity of key */
+	
+	
+	/* NEWCODE */
+	Two* hashtable = BI_HASHTABLE(type); //get hashtable.
+	hashValue = BFM_HASH(key, type);
+	i = BI_HASHTABLEENTRY(type,hashValue); //get index in hashtable.
+	if(i == NOTFOUND_IN_HTABLE) return (NOTFOUND_IN_HTABLE);
+	while(1){
+		if(EQUALKEY(key, &(BI_KEY(type, i)))){
+			return i;
+		}
+		else{
+			j = BI_NEXTHASHENTRY(type, i);
+			if(j == NOTFOUND_IN_HTABLE) return (NOTFOUND_IN_HTABLE);
+			i = j;
+			continue;
+		}
+	}
+	/* ENDOFNEWCODE */
 
 
 
