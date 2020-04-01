@@ -115,7 +115,8 @@ Four EduBfM_GetTrain(
 	/* NEWCODE */
 	//1.lookup key from hash table.
 	pool = BI_BUFFERPOOL(type); //get the pool.
-	index = bfm_LookUp(trainId, type);
+	index = edubfm_LookUp(trainId, type);
+	//index = bfm_LookUp(trainId, type);
 	if(index == NOTFOUND_IN_HTABLE){
 		//2.not in pool
 		index = bfm_AllocTrain(type); //allocate a new buffer element.
