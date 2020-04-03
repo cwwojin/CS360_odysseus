@@ -121,8 +121,13 @@ Four edubfm_AllocTrain(
 		}
 		if((BI_BITS(type, victim) & REFER) == 0){	//if REFER == 0.
 			printf("current entry (bits = %X) is not REFERed!! allocating...\n", BI_BITS(type, victim));
-			edubfm_FlushTrain(&(BI_KEY(type, victim)), type);	//flush the original train.
-			printf("flush successful!\n");
+			if((BI_BITS(type, victim) & DIRTY) == DIRTY){
+				printf("needs flushing...\n");
+				edubfm_FlushTrain(&(BI_KEY(type, victim)), type);	//flush the original train.
+				printf("flush successful!\n");
+			}
+			//edubfm_FlushTrain(&(BI_KEY(type, victim)), type);	//flush the original train.
+			//printf("flush successful!\n");
 			bufInfo[type].bufTable[victim].bits = ALL_0;	//reset bits.
 			printf("bits reset to %X\n", BI_BITS(type, victim));
 			bufInfo[type].nextVictim = ((victim + 1) % n);	//set new nextvictim.
