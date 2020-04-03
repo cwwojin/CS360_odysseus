@@ -98,8 +98,6 @@ Four EduBfM_DiscardAll(void)
 	}
 	
 	edubfm_DeleteAll();
-	//bfm_DeleteAll();
-	
 	/* ENDOFNEWCODE */
 
     return(eNOERROR);
