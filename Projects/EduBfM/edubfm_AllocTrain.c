@@ -107,24 +107,20 @@ Four edubfm_AllocTrain(
 	/* NEWCODE */
 	//1. Buffer-Replacement Algorithm.
 	Two n;
-	//Four m;
 	n = BI_NBUFS(type);
 	victim = BI_NEXTVICTIM(type);
-	//m = BI_NEXTVICTIM(type);
-	/*
-	i = 0;
-	for(i = 0; i < n; i++){
-		if(BI_FIXED(type, i) == 0) break;
-	}
-	if(i == n) ERR(eNOUNFIXEDBUF_BFM);
-	*/
+	
+	printf("victim : %d, n : %d\n", victim, n);
+	
 	for(i = 0; i < n + 1; i++){	//take 2 passes.
-		//m = (victim + i) % n;
+		printf("loop #. %d	victim = %d\n", i, victim);
 		if(BI_FIXED(type, victim) != 0){	//skip if element is FIXED.
+			printf("current entry is fixed!\n");
 			victim = (victim + 1) % n;
 			continue;
 		}
 		if(BI_BITS(type, victim) & REFER == 0){	//if REFER == 0.
+			printf("current entry is not REFERed!! allocating...\n");
 			edubfm_FlushTrain(&(BI_KEY(type, victim)), type);	//flush the original train.
 			bufInfo[type].bufTable[victim].bits = ALL_0;	//reset bits.
 			bufInfo[type].nextVictim = (victim + 1) % n;	//set new nextvictim.
@@ -133,10 +129,12 @@ Four edubfm_AllocTrain(
 			break;
 		}
 		else{	//if REFER != 0 -> set REFER to 0 and continue.
+			printf("current entry is REFERed. resetting & continue...\n");
 			bufInfo[type].bufTable[victim].bits = bufInfo[type].bufTable[victim].bits & ~(REFER);
 		}
 		victim = (victim + 1) % n;
 	}
+	printf("exited loop successfully.\n");
 	if(i == (n + 1)) ERR(eNOUNFIXEDBUF_BFM);
 	/* ENDOFNEWCODE */
 
