@@ -313,7 +313,8 @@ Four EduBfM_Test(Four volId)
 	printf("*Test 3_1 : Test for EduBfM_FlushAll()\n");
 	printf("->Flush all pages \n\n");
 	/* The successful default solution code is called if "Edu" is omitted from the function name in the following line */
-	e = EduBfM_FlushAll();	
+	e = BfM_FlushAll();
+	//e = EduBfM_FlushAll();
 	if ( e < eNOERROR ) ERR(e);
 	printf("Press enter key to continue...");
 	getchar();
