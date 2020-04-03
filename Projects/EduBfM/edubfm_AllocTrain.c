@@ -120,12 +120,16 @@ Four edubfm_AllocTrain(
 			continue;
 		}
 		if((BI_BITS(type, victim) & REFER) == 0){	//if REFER == 0.
-			printf("current entry is not REFERed!! allocating...\n");
+			printf("current entry (bits = %X) is not REFERed!! allocating...\n", BI_BITS(type, victim));
 			edubfm_FlushTrain(&(BI_KEY(type, victim)), type);	//flush the original train.
+			printf("flush successful!\n");
 			bufInfo[type].bufTable[victim].bits = ALL_0;	//reset bits.
-			bufInfo[type].nextVictim = (victim + 1) % n;	//set new nextvictim.
+			printf("bits reset to %X\n", BI_BITS(type, victim));
+			bufInfo[type].nextVictim = ((victim + 1) % n);	//set new nextvictim.
+			printf("set new nextVictim value to %d.\n", ((victim + 1) % n));
 			//edubfm_Delete(&(BI_KEY(type, victim)), type);	//delete from hash table.
 			bfm_Delete(&(BI_KEY(type, victim)), type);
+			printf("deleted key from hash table.\n");
 			break;
 		}
 		else{	//if REFER != 0 -> set REFER to 0 and continue.
