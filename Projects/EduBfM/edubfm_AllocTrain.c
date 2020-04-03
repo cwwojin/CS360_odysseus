@@ -118,7 +118,7 @@ Four edubfm_AllocTrain(
 	}
 	if(i == n) ERR(eNOUNFIXEDBUF_BFM);
 	*/
-	for(i = 0; i < 2n; i++){	//take 2 passes.
+	for(i = 0; i < n + 1; i++){	//take 2 passes.
 		//m = (victim + i) % n;
 		if(BI_FIXED(type, victim) != 0){	//skip if element is FIXED.
 			victim = (victim + 1) % n;
@@ -135,9 +135,9 @@ Four edubfm_AllocTrain(
 		else{	//if REFER != 0 -> set REFER to 0 and continue.
 			bufInfo[type].bufTable[victim].bits = bufInfo[type].bufTable[victim].bits & ~(REFER);
 		}
-		victim = (victim+1) % n;
+		victim = (victim + 1) % n;
 	}
-	if(i == 2n) ERR(eNOUNFIXEDBUF_BFM);
+	if(i == (n + 1)) ERR(eNOUNFIXEDBUF_BFM);
 	/* ENDOFNEWCODE */
 
 
