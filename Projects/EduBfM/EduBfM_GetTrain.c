@@ -117,8 +117,8 @@ Four EduBfM_GetTrain(
 	//index = bfm_LookUp(trainId, type);
 	if(index == NOTFOUND_IN_HTABLE){
 		//2.not in pool
-		//index = edubfm_AllocTrain(type);
-		index = bfm_AllocTrain(type); //allocate a new buffer element.
+		index = edubfm_AllocTrain(type);
+		//index = bfm_AllocTrain(type); //allocate a new buffer element.
 		edubfm_ReadTrain(trainId, (pool + PAGESIZE*BI_BUFSIZE(type)*index), type);	//read in train.
 		BfMHashKey* newkey;
 		newkey = trainId;
