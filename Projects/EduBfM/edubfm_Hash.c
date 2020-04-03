@@ -167,14 +167,32 @@ Four edubfm_Delete(
 	/* NEWCODE */
 	Two* hashtable = BI_HASHTABLE(type); //get the hash table.
 	hashValue = BFM_HASH(key, type); //calculate hash value.
-	prev = BI_HASHTABLEENTRY(type,hashValue);
-	if(prev == NOTFOUND_IN_HTABLE) ERR( eNOTFOUND_BFM );
+	i = BI_HASHTABLEENTRY(type,hashValue);
+	prev = NOTFOUND_IN_HTABLE;
+	//if(i == NOTFOUND_IN_HTABLE) ERR( eNOTFOUND_BFM );
 	
-	if(EQUALKEY(key, &(BI_KEY(type, prev)))){		//check if [prev] and *key are the same key.
-		i = (bufInfo[type].bufTable)[prev].nextHashEntry;
-		hashtable[hashValue] = i;
+	while(1){
+		if(i == NOTFOUND_IN_HTABLE) ERR( eNOTFOUND_BFM );
+		
+		if(EQUALKEY(key, &(BI_KEY(type, i)))){
+			//delete element at index "i". & break.
+			if(prev == NOTFOUND_IN_HTABLE){
+				hashtable[hashValue] = BI_NEXTHASHENTRY(type, i);
+				//bufInfo[type].bufTable[i].nextHashEntry = -1;
+			}
+			else{
+				bufInfo[type].bufTable[prev].nextHashEntry = BI_NEXTHASHENTRY(type, i);;
+				//bufInfo[type].bufTable[i].nextHashEntry = -1;
+			}
+			bufInfo[type].bufTable[i].nextHashEntry = -1;
+			break;
+		}
+		else{
+			prev = i;
+			i = BI_NEXTHASHENTRY(type, i);
+			continue;
+		}
 	}
-	else ERR( eNOTFOUND_BFM );
 	return( eNOERROR );
 	/* ENDOFNEWCODE */
 
