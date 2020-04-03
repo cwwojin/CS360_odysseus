@@ -104,20 +104,27 @@ Four edubfm_AllocTrain(
 	/* Error check whether using not supported functionality by EduBfM */
 	if(sm_cfgParams.useBulkFlush) ERR(eNOTSUPPORTED_EDUBFM);
 	
-	/*
-	
+	/* NEWCODE */
 	//1. Buffer-Replacement Algorithm.
 	Two n;
 	n = BI_NBUFS(type);
 	victim = BI_NEXTVICTIM(type);
 	//if(victim == -1) ERR(eNOUNFIXEDBUF_BFM);
 	for(i = 0; i < n; i++){
-		if(BI_BITS(type, idx) & REFER == 0){	//if REFER == 0.
-			
+		if(BI_BITS(type, ((victim + i) % n)) & REFER == 0){	//if REFER == 0.
+			victim = (victim + i) % n;
+			edubfm_FlushTrain(&(BI_KEY(type, victim)), type);	//flush the original train.
+			bufInfo[type].bufTable[victim].bits = ALL_0;	//reset bits.
+			bufInfo[type].nextVictim = (victim + 1) % n;	//set new nextvictim.
+			//edubfm_Delete(&(BI_KEY(type, victim)), type);	//delete from hash table.
+			bfm_Delete(&(BI_KEY(type, victim)), type);
+			break;
+		}
+		else{	//if REFER != 0 -> set REFER to 0 and continue.
+			bufInfo[type].bufTable[(victim + i) % n].bits = bufInfo[type].bufTable[(victim + i) % n].bits & ~(REFER);
 		}
 	}
-	*/
-	
+	if(i == n) ERR(eNOUNFIXEDBUF_BFM);
 	/* ENDOFNEWCODE */
 
 
