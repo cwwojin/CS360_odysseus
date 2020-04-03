@@ -109,38 +109,25 @@ Four edubfm_AllocTrain(
 	Two n;
 	n = BI_NBUFS(type);
 	victim = BI_NEXTVICTIM(type);
-	//printf("victim : %d, n : %d\n", victim, n);
 	for(i = 0; i < 2*n; i++){	//take 2 passes.
-		//printf("loop #. %d	victim = %d\n", i, victim);
 		if(BI_FIXED(type, victim) != 0){	//skip if element is FIXED.
-			//printf("current entry is fixed!\n");
 			victim = (victim + 1) % n;
 			continue;
 		}
 		if((BI_BITS(type, victim) & REFER) == 0){	//if REFER == 0.
-			//printf("current entry (bits = %X) is not REFERed!! allocating...\n", BI_BITS(type, victim));
 			if((BI_BITS(type, victim) & DIRTY) == DIRTY){
-				//printf("needs flushing...\n");
 				edubfm_FlushTrain(&(BI_KEY(type, victim)), type);	//flush the original train.
-				//printf("flush successful!\n");
 			}
 			bufInfo[type].bufTable[victim].bits = ALL_0;	//reset bits.
-			//printf("bits reset to %X\n", BI_BITS(type, victim));
 			bufInfo[type].nextVictim = ((victim + 1) % n);	//set new nextvictim.
-			//printf("set new nextVictim value to %d.\n", ((victim + 1) % n));
-			//edubfm_Delete(&(BI_KEY(type, victim)), type);	//delete from hash table.
 			edubfm_Delete(&(BI_KEY(type, victim)), type);
-			//printf("deleted key from hash table.\n");
 			break;
 		}
 		else{	//if REFER != 0 -> set REFER to 0 and continue.
-			//printf("current entry is REFERed, bit = %X. resetting & continue...\n", BI_BITS(type, victim));
 			bufInfo[type].bufTable[victim].bits = bufInfo[type].bufTable[victim].bits & ~(REFER);
-			//printf("bit is changed to %X\n", BI_BITS(type, victim));
 		}
 		victim = (victim + 1) % n;
 	}
-	//printf("exited loop successfully. i = %d\n",i);
 	if(i == (2*n)) ERR(eNOUNFIXEDBUF_BFM);
 	/* ENDOFNEWCODE */
 
