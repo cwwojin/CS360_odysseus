@@ -131,10 +131,11 @@ Four edubfm_AllocTrain(
 		else{	//if REFER != 0 -> set REFER to 0 and continue.
 			printf("current entry is REFERed. resetting & continue...\n");
 			bufInfo[type].bufTable[victim].bits = bufInfo[type].bufTable[victim].bits & ~(REFER);
+			printf("bit is changed to %X\n", BI_BITS(type, victim));
 		}
 		victim = (victim + 1) % n;
 	}
-	printf("exited loop successfully.\n");
+	printf("exited loop successfully. i = %d\n",i);
 	if(i == (n + 1)) ERR(eNOUNFIXEDBUF_BFM);
 	/* ENDOFNEWCODE */
 
