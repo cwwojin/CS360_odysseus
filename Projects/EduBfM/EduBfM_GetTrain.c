@@ -114,11 +114,9 @@ Four EduBfM_GetTrain(
 	//1.lookup key from hash table.
 	pool = BI_BUFFERPOOL(type); //get the pool.
 	index = edubfm_LookUp(trainId, type);
-	//index = bfm_LookUp(trainId, type);
 	if(index == NOTFOUND_IN_HTABLE){
 		//2.not in pool
-		index = edubfm_AllocTrain(type);
-		//index = bfm_AllocTrain(type); //allocate a new buffer element.
+		index = edubfm_AllocTrain(type);	//allocate a new buffer element.
 		edubfm_ReadTrain(trainId, (pool + PAGESIZE*BI_BUFSIZE(type)*index), type);	//read in train.
 		BfMHashKey* newkey;
 		newkey = trainId;
@@ -126,7 +124,6 @@ Four EduBfM_GetTrain(
 		bufInfo[type].bufTable[index].fixed = 1;
 		bufInfo[type].bufTable[index].bits = bufInfo[type].bufTable[index].bits | REFER;
 		edubfm_Insert(trainId, index, type);
-		//bfm_Insert(trainId, index, type);
 		*retBuf = (pool + PAGESIZE*BI_BUFSIZE(type)*index);
 	}
 	else{
