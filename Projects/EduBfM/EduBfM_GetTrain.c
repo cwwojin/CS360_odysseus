@@ -100,8 +100,6 @@ Four EduBfM_GetTrain(
     Four                e;                      /* for error */
     Four                index;                  /* index of the buffer pool */
 	char* pool;
-	//BufferTable* btable;
-	//btable = bufInfo[type].bufTable;
 
 
     /*@ Check the validity of given parameters */
@@ -119,12 +117,10 @@ Four EduBfM_GetTrain(
 	//index = bfm_LookUp(trainId, type);
 	if(index == NOTFOUND_IN_HTABLE){
 		//2.not in pool
+		//index = edubfm_AllocTrain(type);
 		index = bfm_AllocTrain(type); //allocate a new buffer element.
-		//edubfm_ReadTrain(trainId, BI_BUFFER(type, index), type);
-		edubfm_ReadTrain(trainId, (pool + PAGESIZE*BI_BUFSIZE(type)*index), type);
-		//bfm_ReadTrain(trainId, pool + BI_BUFSIZE(type)*index, type); //read in train.
+		edubfm_ReadTrain(trainId, (pool + PAGESIZE*BI_BUFSIZE(type)*index), type);	//read in train.
 		BfMHashKey* newkey;
-		//newkey->pageNo = 0;
 		newkey = trainId;
 		bufInfo[type].bufTable[index].key = *newkey;
 		bufInfo[type].bufTable[index].fixed = 1;
@@ -135,9 +131,7 @@ Four EduBfM_GetTrain(
 	}
 	else{
 		//3. In pool.
-		edubfm_ReadTrain(trainId, (pool + PAGESIZE*BI_BUFSIZE(type)*index), type);
-		//bfm_ReadTrain(trainId, pool + BI_BUFSIZE(type)*index, type); //read in train.
-		//update buftable.
+		edubfm_ReadTrain(trainId, (pool + PAGESIZE*BI_BUFSIZE(type)*index), type);	//read in train.
 		bufInfo[type].bufTable[index].fixed++;
 		bufInfo[type].bufTable[index].bits = bufInfo[type].bufTable[index].bits | REFER;
 		*retBuf = (pool + PAGESIZE*BI_BUFSIZE(type)*index);
