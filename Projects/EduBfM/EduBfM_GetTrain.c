@@ -131,7 +131,7 @@ Four EduBfM_GetTrain(
 		bufInfo[type].bufTable[index].bits = bufInfo[type].bufTable[index].bits | REFER;
 		edubfm_Insert(trainId, index, type);
 		//bfm_Insert(trainId, index, type);
-		*retBuf = (pool + BI_BUFSIZE(type)*index);
+		*retBuf = (pool + PAGESIZE*BI_BUFSIZE(type)*index);
 	}
 	else{
 		//3. In pool.
@@ -140,7 +140,7 @@ Four EduBfM_GetTrain(
 		//update buftable.
 		bufInfo[type].bufTable[index].fixed++;
 		bufInfo[type].bufTable[index].bits = bufInfo[type].bufTable[index].bits | REFER;
-		*retBuf = (pool + BI_BUFSIZE(type)*index);
+		*retBuf = (pool + PAGESIZE*BI_BUFSIZE(type)*index);
 	}
 	/* ENDOFNEWCODE */
 
