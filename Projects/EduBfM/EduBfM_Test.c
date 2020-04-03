@@ -313,8 +313,8 @@ Four EduBfM_Test(Four volId)
 	printf("*Test 3_1 : Test for EduBfM_FlushAll()\n");
 	printf("->Flush all pages \n\n");
 	/* The successful default solution code is called if "Edu" is omitted from the function name in the following line */
-	e = BfM_FlushAll();
-	//e = EduBfM_FlushAll();
+	//e = BfM_FlushAll();
+	e = EduBfM_FlushAll();
 	if ( e < eNOERROR ) ERR(e);
 	printf("Press enter key to continue...");
 	getchar();
@@ -377,7 +377,7 @@ Four EduBfM_Test(Four volId)
 	for (i = 0; i < NUM_PAGE_BUFS; i = i + 2)
 	{
 		/* The successful default solution code is called if "Edu" is omitted from the function name in the following line */
-		e = EduBfM_GetTrain(&pageID[i], (char **)&apage, PAGE_BUF);
+		e = BfM_GetTrain(&pageID[i], (char **)&apage, PAGE_BUF);
 		if (e < eNOERROR) ERR(e);
 		printf("The header flags value of flushed pageNo %d is %d\n", pageID[i].pageNo, apage->header.flags);
 		/* The successful default solution code is called if "Edu" is omitted from the function name in the following line */
