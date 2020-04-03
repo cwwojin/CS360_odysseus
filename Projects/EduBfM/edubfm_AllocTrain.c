@@ -95,7 +95,7 @@ extern CfgParams_T sm_cfgParams;
 Four edubfm_AllocTrain(
     Four 	type)			/* IN type of buffer (PAGE or TRAIN) */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Four 	e;			/* for error */
     Four 	victim;			/* return value */
     Four 	i;
@@ -103,6 +103,22 @@ Four edubfm_AllocTrain(
 
 	/* Error check whether using not supported functionality by EduBfM */
 	if(sm_cfgParams.useBulkFlush) ERR(eNOTSUPPORTED_EDUBFM);
+	
+	/*
+	
+	//1. Buffer-Replacement Algorithm.
+	Two n;
+	n = BI_NBUFS(type);
+	victim = BI_NEXTVICTIM(type);
+	//if(victim == -1) ERR(eNOUNFIXEDBUF_BFM);
+	for(i = 0; i < n; i++){
+		if(BI_BITS(type, idx) & REFER == 0){	//if REFER == 0.
+			
+		}
+	}
+	*/
+	
+	/* ENDOFNEWCODE */
 
 
     
