@@ -97,16 +97,16 @@ Four edubfm_FlushTrain(
 	if (RM_IS_ROLLBACK_REQUIRED()) ERR(eNOTSUPPORTED_EDUBFM);
 	
 	/* NEWCODE */
-	//index = edubfm_LookUp(trainId, type);
-	index = bfm_LookUp(trainId,type);
+	index = edubfm_LookUp(trainId, type);
+	//index = bfm_LookUp(trainId,type);
 	if(index == NOTFOUND_IN_HTABLE) ERR(eNOTFOUND_BFM);
 	//write to disk.
+	/*
 	e = RDsM_WriteTrain(BI_BUFFER(type, index), trainId, BI_BUFSIZE(type));
 	if(e < 0) ERR(e);
 	//reset DIRTY bit.
 	bufInfo[type].bufTable[index].bits = bufInfo[type].bufTable[index].bits & ~(DIRTY);
-	
-	/*
+	*/
 	if((BI_BITS(type, index) & DIRTY) == DIRTY){		//if DIRTY
 		//write to disk.
 		e = RDsM_WriteTrain(BI_BUFFER(type, index), trainId, BI_BUFSIZE(type));
@@ -114,8 +114,6 @@ Four edubfm_FlushTrain(
 		//reset DIRTY bit.
 		bufInfo[type].bufTable[index].bits = bufInfo[type].bufTable[index].bits & ~(DIRTY);
 	}
-	*/
-	
 	/* ENDOFNEWCODE */
 
 	
