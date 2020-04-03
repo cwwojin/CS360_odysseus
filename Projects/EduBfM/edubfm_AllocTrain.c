@@ -129,7 +129,7 @@ Four edubfm_AllocTrain(
 			bufInfo[type].nextVictim = ((victim + 1) % n);	//set new nextvictim.
 			//printf("set new nextVictim value to %d.\n", ((victim + 1) % n));
 			//edubfm_Delete(&(BI_KEY(type, victim)), type);	//delete from hash table.
-			bfm_Delete(&(BI_KEY(type, victim)), type);
+			edubfm_Delete(&(BI_KEY(type, victim)), type);
 			//printf("deleted key from hash table.\n");
 			break;
 		}
