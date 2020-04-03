@@ -107,12 +107,23 @@ Four edubfm_AllocTrain(
 	/* NEWCODE */
 	//1. Buffer-Replacement Algorithm.
 	Two n;
+	Four m;
 	n = BI_NBUFS(type);
 	victim = BI_NEXTVICTIM(type);
-	//if(victim == -1) ERR(eNOUNFIXEDBUF_BFM);
+	m = BI_NEXTVICTIM(type);
+	i = 0;
 	for(i = 0; i < n; i++){
-		if(BI_BITS(type, ((victim + i) % n)) & REFER == 0){	//if REFER == 0.
-			victim = (victim + i) % n;
+		if(BI_FIXED(type, i) == 0) break;
+	}
+	if(i == n) ERR(eNOUNFIXEDBUF_BFM);
+	while(1){
+		//m = (victim + i) % n;
+		if(BI_FIXED(type, m) != 0){
+			m = (m+1) % n;
+			continue;
+		}	//skip if element is FIXED.
+		if(BI_BITS(type, m) & REFER == 0){	//if REFER == 0.
+			victim = m;
 			edubfm_FlushTrain(&(BI_KEY(type, victim)), type);	//flush the original train.
 			bufInfo[type].bufTable[victim].bits = ALL_0;	//reset bits.
 			bufInfo[type].nextVictim = (victim + 1) % n;	//set new nextvictim.
@@ -121,10 +132,10 @@ Four edubfm_AllocTrain(
 			break;
 		}
 		else{	//if REFER != 0 -> set REFER to 0 and continue.
-			bufInfo[type].bufTable[(victim + i) % n].bits = bufInfo[type].bufTable[(victim + i) % n].bits & ~(REFER);
+			bufInfo[type].bufTable[m].bits = bufInfo[type].bufTable[m].bits & ~(REFER);
 		}
+		m = (m+1) % n;
 	}
-	if(i == n) ERR(eNOUNFIXEDBUF_BFM);
 	/* ENDOFNEWCODE */
 
 
