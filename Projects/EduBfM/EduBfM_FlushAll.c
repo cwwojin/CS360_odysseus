@@ -92,7 +92,6 @@ Four EduBfM_FlushAll(void)
 		//iterate through all buffer elements, check if DIRTY = 1.
 		if((BI_BITS(type, i) & DIRTY) == DIRTY){
 			edubfm_FlushTrain(&(BI_KEY(type, i)), type);
-			//bfm_FlushTrain(&(BI_KEY(type, i)), type);
 		}
 	}
 	type = LOT_LEAF_BUF;
@@ -100,7 +99,6 @@ Four EduBfM_FlushAll(void)
 		//iterate through all buffer elements, check if DIRTY = 1.
 		if((BI_BITS(type, i) & DIRTY) == DIRTY){
 			edubfm_FlushTrain(&(BI_KEY(type, i)), type);
-			//bfm_FlushTrain(&(BI_KEY(type, i)), type);
 		}
 	}
 	/* ENDOFNEWCODE */
