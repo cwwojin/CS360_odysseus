@@ -98,7 +98,6 @@ Four edubfm_FlushTrain(
 	
 	/* NEWCODE */
 	index = edubfm_LookUp(trainId, type);
-	//index = bfm_LookUp(trainId,type);
 	if(index == NOTFOUND_IN_HTABLE) ERR(eNOTFOUND_BFM);
 	if((BI_BITS(type, index) & DIRTY) == DIRTY){		//if DIRTY
 		//write to disk.
