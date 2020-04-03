@@ -87,7 +87,6 @@ Four EduBfM_FlushAll(void)
     
 	
 	/* NEWCODE */
-	//trainId* tid;
 	type = PAGE_BUF;
 	for(i=0;i<BI_NBUFS(type);i++){
 		//iterate through all buffer elements, check if DIRTY = 1.
@@ -95,8 +94,6 @@ Four EduBfM_FlushAll(void)
 			edubfm_FlushTrain(&(BI_KEY(type, i)), type);
 			//bfm_FlushTrain(&(BI_KEY(type, i)), type);
 		}
-		//edubfm_FlushTrain(&(BI_KEY(type, i)), type);
-		//bfm_FlushTrain(&(BI_KEY(type, i)), type);
 	}
 	type = LOT_LEAF_BUF;
 	for(i=0;i<BI_NBUFS(type);i++){
@@ -105,8 +102,6 @@ Four EduBfM_FlushAll(void)
 			edubfm_FlushTrain(&(BI_KEY(type, i)), type);
 			//bfm_FlushTrain(&(BI_KEY(type, i)), type);
 		}
-		//edubfm_FlushTrain(&(BI_KEY(type, i)), type);
-		//bfm_FlushTrain(&(BI_KEY(type, i)), type);
 	}
 	/* ENDOFNEWCODE */
 	
