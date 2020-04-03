@@ -113,9 +113,9 @@ Four edubfm_AllocTrain(
 	printf("victim : %d, n : %d\n", victim, n);
 	
 	for(i = 0; i < n + 1; i++){	//take 2 passes.
-		//printf("loop #. %d	victim = %d\n", i, victim);
+		printf("loop #. %d	victim = %d\n", i, victim);
 		if(BI_FIXED(type, victim) != 0){	//skip if element is FIXED.
-			//printf("current entry is fixed!\n");
+			printf("current entry is fixed!\n");
 			victim = (victim + 1) % n;
 			continue;
 		}
@@ -136,9 +136,9 @@ Four edubfm_AllocTrain(
 			break;
 		}
 		else{	//if REFER != 0 -> set REFER to 0 and continue.
-			//printf("current entry is REFERed, bit = %X. resetting & continue...\n", BI_BITS(type, victim));
+			printf("current entry is REFERed, bit = %X. resetting & continue...\n", BI_BITS(type, victim));
 			bufInfo[type].bufTable[victim].bits = bufInfo[type].bufTable[victim].bits & ~(REFER);
-			//printf("bit is changed to %X\n", BI_BITS(type, victim));
+			printf("bit is changed to %X\n", BI_BITS(type, victim));
 		}
 		victim = (victim + 1) % n;
 	}
