@@ -112,7 +112,7 @@ Four edubfm_AllocTrain(
 	
 	printf("victim : %d, n : %d\n", victim, n);
 	
-	for(i = 0; i < n + 1; i++){	//take 2 passes.
+	for(i = 0; i < 2*n; i++){	//take 2 passes.
 		printf("loop #. %d	victim = %d\n", i, victim);
 		if(BI_FIXED(type, victim) != 0){	//skip if element is FIXED.
 			printf("current entry is fixed!\n");
@@ -143,7 +143,7 @@ Four edubfm_AllocTrain(
 		victim = (victim + 1) % n;
 	}
 	printf("exited loop successfully. i = %d\n",i);
-	if(i == (n + 1)) ERR(eNOUNFIXEDBUF_BFM);
+	if(i == (2*n)) ERR(eNOUNFIXEDBUF_BFM);
 	/* ENDOFNEWCODE */
 
 
