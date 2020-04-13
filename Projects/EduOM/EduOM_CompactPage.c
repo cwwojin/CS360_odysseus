@@ -112,6 +112,8 @@ Four EduOM_CompactPage(
     Two    lastSlot;		/* last non empty slot */
     Two    i;			/* index variable */
 	
+	Two unused = 0;
+	
 	
 	/* NEWCODE */
 	//1. save page to tpage.
@@ -130,7 +132,9 @@ Four EduOM_CompactPage(
 		apage->data[apageDataOffset] = *obj;
 		apage->slot[i].offset = apageDataOffset;
 		//get the new apageDataOffset : += 
-		apageDataOffset = apageDataOffset + sizeof(ObjectHdr) + 4 * ((obj->header.length / 4) + 1);
+		Two alignsize = 4 * ((obj->header.length / 4) + 1);
+		unused = unused + alignsize - obj->header.length / 4;
+		apageDataOffset = apageDataOffset + sizeof(ObjectHdr) + alignsize;
 	}
 	//save the last slot(slotNo).
 	if(slotNo != -1){
@@ -144,7 +148,7 @@ Four EduOM_CompactPage(
 	}
 	//update free & unused.
 	apage->header.free = apageDataOffset;
-	//apage->header.unused = 
+	apage->header.unused = unused;
 	
 	
 	/* ENDOFNEWCODE */
