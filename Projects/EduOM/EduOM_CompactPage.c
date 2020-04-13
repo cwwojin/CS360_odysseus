@@ -116,6 +116,7 @@ Four EduOM_CompactPage(
 	
 	
 	/* NEWCODE */
+	/*
 	//1. save page to tpage.
 	tpage = *apage;
 	apageDataOffset = 0;
@@ -149,7 +150,7 @@ Four EduOM_CompactPage(
 	apage->header.free = apageDataOffset;
 	apage->header.unused = unused;
 	
-	
+	*/
 	/* ENDOFNEWCODE */
 
     
