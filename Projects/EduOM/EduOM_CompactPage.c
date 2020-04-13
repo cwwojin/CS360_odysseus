@@ -118,7 +118,7 @@ Four EduOM_CompactPage(
 	tpage = *apage;
 	apageDataOffset = 0;
 	//2. do for each nonempty slot : slot[0] ~ slot[apage->nSlots-1], empty slots have "slot.offset == EMPTYSLOT".
-	for(i=0; i>apage->nSlots; i--){
+	for(i=0; i> -(apage->nSlots); i--){
 		if(i == -slotNo){
 			//this slot should go at the end.
 			continue;
@@ -129,6 +129,16 @@ Four EduOM_CompactPage(
 		obj = &tpage.data[tpage.slot[i].offset];
 		apage->data[apageDataOffset] = *obj;
 		apage->slot[i].offset = apageDataOffset;
+		//get the new apageDataOffset : += 
+		apageDataOffset = apageDataOffset + sizeof(ObjectHdr) + 4 * ((obj->header.length / 4) + 1);
+	}
+	//save the last slot(slotNo).
+	if(slotNo != -1){
+		if(tpage.slot[-slotNo].offset == EMPTYSLOT) continue;
+		
+		obj = &tpage.data[tpage.slot[-slotNo].offset];
+		apage->data[apageDataOffset] = *obj;
+		apage->slot[-slotNo].offset = apageDataOffset;
 		//get the new apageDataOffset : += 
 		apageDataOffset = apageDataOffset + sizeof(ObjectHdr) + 4 * ((obj->header.length / 4) + 1);
 	}
