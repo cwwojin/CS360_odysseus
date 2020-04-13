@@ -129,8 +129,8 @@ Four EduOM_CompactPage(
 		if(tpage.slot[i].offset == EMPTYSLOT) continue;
 		
 		obj = &tpage.data[tpage.slot[i].offset];
-		apage->data[apageDataOffset] = *obj;
-		//apage->slot[i].offset = apageDataOffset;
+		//apage->data[apageDataOffset] = *obj;
+		apage->slot[i].offset = apageDataOffset;
 		//get the new apageDataOffset : += 
 		Two alignsize = 4 * ((obj->header.length / 4) + 1);
 		unused = unused + alignsize - obj->header.length / 4;
@@ -140,7 +140,7 @@ Four EduOM_CompactPage(
 	if(slotNo != -1){
 		//if(tpage.slot[-slotNo].offset == EMPTYSLOT) continue;
 		obj = &tpage.data[tpage.slot[-slotNo].offset];
-		apage->data[apageDataOffset] = *obj;
+		//apage->data[apageDataOffset] = *obj;
 		apage->slot[-slotNo].offset = apageDataOffset;
 		//get the new apageDataOffset : += 
 		apageDataOffset = apageDataOffset + sizeof(ObjectHdr) + 4 * ((obj->header.length / 4) + 1);
