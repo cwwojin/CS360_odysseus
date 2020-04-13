@@ -130,7 +130,7 @@ Four EduOM_CompactPage(
 		
 		obj = &tpage.data[tpage.slot[i].offset];
 		apage->data[apageDataOffset] = *obj;
-		apage->slot[i].offset = apageDataOffset;
+		//apage->slot[i].offset = apageDataOffset;
 		//get the new apageDataOffset : += 
 		Two alignsize = 4 * ((obj->header.length / 4) + 1);
 		unused = unused + alignsize - obj->header.length / 4;
