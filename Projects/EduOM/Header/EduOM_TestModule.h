@@ -69,8 +69,8 @@
 /* Otherwise, define it FALSE so that the solution API function is called. */
 
 #define _EDUOM_CREATEOBJECT_ 	TRUE
-#define _EDUOM_DESTROYOBJECT_ 	TRUE
-#define _EDUOM_COMPACTPAGE_		TRUE
+#define _EDUOM_DESTROYOBJECT_ 	FALSE   //TRUE
+#define _EDUOM_COMPACTPAGE_		FALSE   //TRUE
 #define _EDUOM_READOBJECT_		TRUE
 #define _EDUOM_NEXTOBJECT_		TRUE
 #define _EDUOM_PREVOBJECT_		TRUE
