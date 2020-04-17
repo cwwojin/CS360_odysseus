@@ -182,6 +182,8 @@ Four EduOM_DestroyObject(
 	}
 	else{
 		//put this page in the appropriate 'availspacelist'.
+		e = om_PutInAvailSpaceList(catObjForFile, &pid, apage);
+		if(e < 0) ERRB1(e, &pid, PAGE_BUF);
 	}
 	//Set Dirty & Free pages.
 	e = BfM_SetDirty((TrainID*)&pid, PAGE_BUF);
