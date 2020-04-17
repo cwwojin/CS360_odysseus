@@ -217,6 +217,19 @@ Four eduom_CreateObject(
 			}
 		}
 	}
+	//3. now "apage" is the target page. insert new object into this page.
+	//update header.
+	objHdr->length = length;
+	//copy new object to the continuous free area.
+	i = apage->free;
+	memcpy(&apage->data[i], objHdr, sizeof(ObjectHdr));
+	for(int j=0; j< length; j++){
+		apage->data[i + sizeof(ObjectHdr) + j] = data[j];
+	}
+	//find an empty slot or allocate a new slot.
+	for(){
+	}
+	
 	
 	
 	/* ENDOFNEWCODE */
