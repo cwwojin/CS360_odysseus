@@ -156,6 +156,9 @@ Four EduOM_DestroyObject(
 	if(last){
 		apage->header.nSlots--;
 		newfree = newfree + sizeof(SlottedPageSlot);
+	}
+	//if target object is the last in data area, update "free". Else, update "unused".
+	if(offset + sizeof(ObjectHder) + alignedLen == apage->header.free){
 		//new "free" -> target object's offset.
 		apage->header.free = offset;
 	}
@@ -163,6 +166,7 @@ Four EduOM_DestroyObject(
 		//not the last slot, so update "unused".
 		apage->header.unused = apage->header.unused + newfree;
 	}
+	//6. Check if there are no more objects in this page. If so, free it.
 	
 	
 	/* ENDOFNEWCODE */
