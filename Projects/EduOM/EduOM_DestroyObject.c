@@ -121,6 +121,8 @@ Four EduOM_DestroyObject(
     sm_CatOverlayForData *catEntry; /* overlay structure for catalog object access */
     DeallocListElem *dlElem;	/* pointer to element of dealloc list */
     PhysicalFileID pFid;	/* physical ID of file */
+	
+	Four	newfree;
     
     
 
@@ -140,16 +142,27 @@ Four EduOM_DestroyObject(
 	e = BfM_GetTrain((TrainID*)oid, (char**)&apage, PAGE_BUF);
 	if(e < 0) ERR(e);
 	MAKE_PAGEID(pid, oid->volNo, oid->pageNo);
+	last = (oid->slotNo == apage->header.nSlots - 1);
 	//3. Remove the target page from "available space list".
 	om_RemoveFromAvailSpaceList(catObjForFile, &pid, apage);
 	//4. Set target slot's offset to EMPTY
+	offset = apage->slot[-(oid->slotNo)].offset;
 	apage->slot[-(oid->slotNo)].offset = EMPTYSLOT;
 	//5. Update the Page Header.
+	//calculate new free area size.
+	alignedLen = 4 * ((obj->header.length / 4) + 1);
+	newfree = sizeof(ObjectHdr) + alignedLen;
 	//if target slot was the last slot(slotNo == nSlots-1), then nSlots--.
-	if(oid->slotNo == apage->header.nSlots - 1){
+	if(last){
 		apage->header.nSlots--;
+		newfree = newfree + sizeof(SlottedPageSlot);
+		//new "free" -> target object's offset.
+		apage->header.free = offset;
 	}
-	
+	else{
+		//not the last slot, so update "unused".
+		apage->header.unused = apage->header.unused + newfree;
+	}
 	
 	
 	/* ENDOFNEWCODE */
