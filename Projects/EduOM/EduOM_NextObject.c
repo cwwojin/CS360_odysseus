@@ -134,8 +134,9 @@ Four EduOM_NextObject(
 			for(i = 0; i < apage->header.nSlots; i++){
 				offset = apage->slot[-i].offset;
 				if (offset != EMPTYSLOT){
-					nextOID = &apage->data[offset];
-					objHdr = &nextOID->header;
+					obj = &apage->data[offset];
+					MAKE_OBJECTID(nextOID, pid.volNo, pid.pageNo, i, apage->slot[-i].unique);
+					objHdr = &obj->header;
 					e = BfM_FreeTrain((TrainID*)&pid, PAGE_BUF);
 					if(e < 0) ERR(e);
 					e = BfM_FreeTrain((TrainID*)catobjForFile, PAGE_BUF);
@@ -163,8 +164,9 @@ Four EduOM_NextObject(
 				offset = apage->slot[-i].offset;
 				if(offset != EMPTYSLOT){
 					//return this object
-					nextOID = &apage->data[offset];
-					objHdr = &nextOID->header;
+					obj = &apage->data[offset];
+					MAKE_OBJECTID(nextOID, pid.volNo, pid.pageNo, i, apage->slot[-i].unique);
+					objHdr = &obj->header;
 					e = BfM_FreeTrain((TrainID*)&pid, PAGE_BUF);
 					if(e < 0) ERR(e);
 					e = BfM_FreeTrain((TrainID*)catobjForFile, PAGE_BUF);
