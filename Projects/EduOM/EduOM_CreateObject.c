@@ -142,7 +142,7 @@ Four EduOM_CreateObject(
 	}
 	//2. call eduom_CreateObject().
 	//om_CreateObject(catObjForFile, nearObj, &objectHdr, length, data, oid);
-	om_CreateObject(catObjForFile, nearObj, &objectHdr, length, data, oid);
+	eduom_CreateObject(catObjForFile, nearObj, &objectHdr, length, data, oid);
 	
 	/* ENDOFNEWCODE */
     
