@@ -130,6 +130,7 @@ Four EduOM_NextObject(
 			MAKE_PAGEID(pid,catEntry->fid.volNo, pageNo);
 			e = BfM_GetTrain((TrainID*)&pid, (char**)&apage, PAGE_BUF);
 			if(e < 0) ERR(e);
+			/*
 			//get the first object of "apage".
 			offset = apage->slot[0].offset;
 			if (offset != EMPTYSLOT){
@@ -137,6 +138,16 @@ Four EduOM_NextObject(
 				nextOID = &apage->data[offset];
 				objHdr = &nextOID->header;
 				return(e);
+			}
+			*/
+			//look for the first non-empty slot in the page.
+			for(i = 0; i < apage->header.nSlots; i++){
+				offset = apage->slot[-i].offset;
+				if (offset != EMPTYSLOT){
+					nextOID = &apage->data[offset];
+					objHdr = &nextOID->header;
+					return(e);
+				}
 			}
 			//this page is empty, move on to next page.
 			pageNo = apage->header.nextPage;
@@ -147,8 +158,11 @@ Four EduOM_NextObject(
 		//curOID is not NULL, so get its page & object.
 		e = BfM_GetTrain((TrainID*)curOID, (char**)&apage, PAGE_BUF);
 		if(e < 0) ERR(e);
-		
-	
+		//check if curOID's object is the last slot or not.
+		if(oid->slotNo >= apage->header.nSlots - 1){
+		}
+		else{
+		}
 	}
 	//Free catpage & apage.
 	e = BfM_FreeTrain((TrainID*)&pid, PAGE_BUF);
