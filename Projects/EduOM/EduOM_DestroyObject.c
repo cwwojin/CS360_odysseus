@@ -107,7 +107,7 @@ Four EduOM_DestroyObject(
     Pool     *dlPool,		/* INOUT pool of dealloc list elements */
     DeallocListElem *dlHead)	/* INOUT head of dealloc list */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Four        e;		/* error number */
     Two         i;		/* temporary variable */
     FileID      fid;		/* ID of file where the object was placed */
@@ -128,6 +128,31 @@ Four EduOM_DestroyObject(
     if (catObjForFile == NULL) ERR(eBADCATALOGOBJECT_OM);
 
     if (oid == NULL) ERR(eBADOBJECTID_OM);
+	
+	
+	/* NEWCODE */
+	//1. Read in the catalog.
+	e = BfM_GetTrain((TrainID*)catObjForFile, (char**)&catPage, PAGE_BUF);
+	if(e < 0) ERR(e);
+	GET_PTR_TO_CATENTRY_FOR_DATA(catObjForFile, catPage, catEntry);
+	fid = catEntry->fid;
+	//2. Read in the target page.
+	e = BfM_GetTrain((TrainID*)oid, (char**)&apage, PAGE_BUF);
+	if(e < 0) ERR(e);
+	MAKE_PAGEID(pid, oid->volNo, oid->pageNo);
+	//3. Remove the target page from "available space list".
+	om_RemoveFromAvailSpaceList(catObjForFile, &pid, apage);
+	//4. Set target slot's offset to EMPTY
+	apage->slot[-(oid->slotNo)].offset = EMPTYSLOT;
+	//5. Update the Page Header.
+	//if target slot was the last slot(slotNo == nSlots-1), then nSlots--.
+	if(oid->slotNo == apage->header.nSlots - 1){
+		apage->header.nSlots--;
+	}
+	
+	
+	
+	/* ENDOFNEWCODE */
 
 
     
