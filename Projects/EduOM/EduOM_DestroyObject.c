@@ -139,12 +139,13 @@ Four EduOM_DestroyObject(
 	GET_PTR_TO_CATENTRY_FOR_DATA(catObjForFile, catPage, catEntry);
 	fid = catEntry->fid;
 	//2. Read in the target page.
-	e = BfM_GetTrain((TrainID*)oid, (char**)&apage, PAGE_BUF);
-	if(e < 0) ERR(e);
 	MAKE_PAGEID(pid, oid->volNo, oid->pageNo);
+	e = BfM_GetTrain((TrainID*)&pid, (char**)&apage, PAGE_BUF);
+	if(e < 0) ERR(e);
 	last = (oid->slotNo == apage->header.nSlots - 1);
 	//3. Remove the target page from "available space list".
-	om_RemoveFromAvailSpaceList(catObjForFile, &pid, apage);
+	e = om_RemoveFromAvailSpaceList(catObjForFile, &pid, apage);
+	if(e < 0) ERRB1(e, &pid, PAGE_BUF);
 	//4. Set target slot's offset to EMPTY
 	offset = apage->slot[-(oid->slotNo)].offset;
 	apage->slot[-(oid->slotNo)].offset = EMPTYSLOT;
@@ -158,7 +159,7 @@ Four EduOM_DestroyObject(
 		newfree = newfree + sizeof(SlottedPageSlot);
 	}
 	//if target object is the last in data area, update "free". Else, update "unused".
-	if(offset + sizeof(ObjectHder) + alignedLen == apage->header.free){
+	if(offset + sizeof(ObjectHdr) + alignedLen == apage->header.free){
 		//new "free" -> target object's offset.
 		apage->header.free = offset;
 	}
@@ -167,7 +168,28 @@ Four EduOM_DestroyObject(
 		apage->header.unused = apage->header.unused + newfree;
 	}
 	//6. Check if there are no more objects in this page. If so, free it.
-	
+	if(apage->header.free == 0){
+		//remove page from file map
+		e = om_FileMapDeletePage(catObjForFile, &pid);
+		if(e < 0) ERRB1(e, &pid, PAGE_BUF);
+		//deallocate page.
+		e = Util_getElementFromPoll(dlPool, &dlElem);
+		if(e < 0) ERR(e);
+		dlElem->type = DL_PAGE;
+		dlElem->elem.pid = pid;
+		dlElem->next = dlHead->next;
+		dlHead->next = dlElem;
+	}
+	else{
+		//put this page in the appropriate 'availspacelist'.
+	}
+	//Set Dirty & Free pages.
+	e = BfM_SetDirty((TrainID*)&pid, PAGE_BUF);
+	if(e < 0) ERRB1(e, &pid, PAGE_BUF);
+	e = BfM_FreeTrain((TrainID*)&pid, PAGE_BUF);
+	if(e < 0) ERR(e);
+	e = BfM_FreeTrain((TrainID*)catObjForFile, PAGE_BUF);
+	if(e < 0) ERR(e);
 	
 	/* ENDOFNEWCODE */
 
