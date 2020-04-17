@@ -113,7 +113,7 @@ Four EduOM_CreateObject(
     char      *data,		/* IN the initial data for the object */
     ObjectID  *oid)		/* OUT the object's ObjectID */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Four        e;		/* error number */
     ObjectHdr   objectHdr;	/* ObjectHdr with tag set from parameter */
 
@@ -128,6 +128,23 @@ Four EduOM_CreateObject(
 
 	/* Error check whether using not supported functionality by EduOM */
 	if(ALIGNED_LENGTH(length) > LRGOBJ_THRESHOLD) ERR(eNOTSUPPORTED_EDUOM);
+	
+	
+	/* NEWCODE */
+	//1. initialize the header, get the TAG from parameter objHdr.
+	objectHdr.properties = P_CLEAR;
+	objectHdr.length = 0;
+	if(objHdr == NULL){
+		objectHdr.tag = 0;
+	}
+	else{
+		objectHdr.tag = objHdr->tag;
+	}
+	//2. call eduom_CreateObject().
+	//om_CreateObject(catObjForFile, nearObj, &objectHdr, length, data, oid);
+	om_CreateObject(catObjForFile, nearObj, &objectHdr, length, data, oid);
+	
+	/* ENDOFNEWCODE */
     
 
     
