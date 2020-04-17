@@ -227,11 +227,33 @@ Four eduom_CreateObject(
 		apage->data[i + sizeof(ObjectHdr) + j] = data[j];
 	}
 	//find an empty slot or allocate a new slot.
-	for(){
+	for(int j=0; j< apage->nSlots; j++){
+		if(apage->slot[-j].offset == EMPTYSLOT){
+			apage->slot[-j].offset = i;
+			e = om_GetUnique(&pid, &(apage->slot[-j].unique));
+			if (e < 0) ERRB1(e, &pid, PAGE_BUF);
+			break;
+		}
 	}
-	
-	
-	
+	if(j == apage->nSlots){
+		//isTmp = TRUE;
+		apage->slot[-j].offset = i;
+		e = om_GetUnique(&pid, &(apage->slot[-j].unique));
+		if (e < 0) ERRB1(e, &pid, PAGE_BUF);
+		apage->nSlots++;
+	}
+	//4. Update page header & put page back in "availspacelist".
+	apage->header.free = apage->header.free + sizeof(ObjectHdr) + alignedLen;
+	apage->header.unused = apage->header.unused + alignedLen - length;
+	e = om_PutInAvailSpaceList(catObjForFile, &pid, apage);
+	if(e < 0) ERRB1(e, &pid, PAGE_BUF);
+	//5. Set dirty & free the buffers.
+	e = BfM_SetDirty(&pid, PAGE_BUF);
+	if(e < 0) ERRB1(e, &pid, PAGE_BUF);
+	e = BfM_FreeTrain(&pid, PAGE_BUF);
+	if(e < 0) ERR(e);
+	e = BfM_FreeTrain((TrainID*)catObjForFile, PAGE_BUF);
+	if(e < 0) ERR(e);
 	/* ENDOFNEWCODE */
 
 
