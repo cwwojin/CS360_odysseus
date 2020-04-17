@@ -153,6 +153,7 @@ Four EduOM_PrevObject(
 		//curOID is not NULL, so get its page & object.
 		pageNo = curOID->pageNo;
 		i = curOID->slotNo - 1;		//prev slot number.
+		int firstloop = 1;
 		//scan the entire file for the previous nonempty object.
 		while(pageNo != NULL){
 			//get the page at "pageNo" into "apage".
@@ -160,9 +161,10 @@ Four EduOM_PrevObject(
 			e = BfM_GetTrain((TrainID*)&pid, (char**)&apage, PAGE_BUF);
 			if(e < 0) ERR(e);
 			//look for the first non-empty slot in the page.
-			if(i == -1){
+			if(!firstloop){
 				i = apage->header.nSlots - 1;
 			}
+			firstloop = 0;
 			while(i >= 0){
 				offset = apage->slot[-i].offset;
 				if(offset != EMPTYSLOT){
