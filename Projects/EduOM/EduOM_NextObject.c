@@ -94,7 +94,7 @@ Four EduOM_NextObject(
     ObjectID  *nextOID,		/* OUT the next Object of a current Object */
     ObjectHdr *objHdr)		/* OUT the object header of next object */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Four e;			/* error */
     Two  i;			/* index */
     Four offset;		/* starting offset of object within a page */
@@ -114,6 +114,27 @@ Four EduOM_NextObject(
     if (catObjForFile == NULL) ERR(eBADCATALOGOBJECT_OM);
     
     if (nextOID == NULL) ERR(eBADOBJECTID_OM);
+	
+	/* NEWCODE */
+	//1. get the catalog.
+	e = BfM_GetTrain((TrainID*)catobjForFile, (char**)&catPage, PAGE_BUF);
+	if(e < 0) ERR(e);
+	GET_PTR_TO_CATENTRY_FOR_DATA(catObjForFile, catPage, catEntry);
+	//2. check if curoid == NULL.
+	if(curOID == NULL){
+		//get the first page into "apage".
+		MAKE_PAGEID(pid,catEntry->fid.volNo, (pageNo)catEntry->firstPage);
+		e = BfM_GetTrain((TrainID*)&pid, (char**)&apage, PAGE_BUF);
+		if(e < 0) ERR(e);
+		
+		
+		
+	}
+	else{
+	
+	}
+	
+	/* ENDOFNEWCODE */
 
 
 
