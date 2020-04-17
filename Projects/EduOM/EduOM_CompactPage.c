@@ -116,25 +116,26 @@ Four EduOM_CompactPage(
 	
 	
 	/* NEWCODE */
-	/*
+	
 	//1. save page to tpage.
 	tpage = *apage;
 	apageDataOffset = 0;
 	//2. do for each nonempty slot : slot[0] ~ slot[apage->nSlots-1], empty slots have "slot.offset == EMPTYSLOT".
-	for(i=0; i> -(apage->header.nSlots); i--){
-		if(i == -slotNo){
+	for(i=0; i< apage->header.nSlots; i++){
+		if(i == slotNo){
 			//this slot should go at the end.
 			continue;
 		}
 		//copy to data area. & update slot offset.
-		if(tpage.slot[i].offset == EMPTYSLOT) continue;
+		if(tpage.slot[-i].offset == EMPTYSLOT) continue;
 		
-		obj = &tpage.data[tpage.slot[i].offset];
+		obj = &tpage.data[tpage.slot[-i].offset];
 		//copy entire object to apage.
-		for(int j=0; j<sizeof(ObjectHdr) + obj->header.length; j++){
-			apage->data[apageDataOffset + j] = tpage.data[tpage.slot[i].offset + j];
+		len = sizeof(ObjectHdr) + obj->header.length;
+		for(int j=0; j< len; j++){
+			apage->data[apageDataOffset + j] = tpage.data[tpage.slot[-i].offset + j];
 		}
-		apage->slot[i].offset = apageDataOffset;
+		apage->slot[-i].offset = apageDataOffset;
 		//get the new apageDataOffset : += 
 		Two alignsize = 4 * ((obj->header.length / 4) + 1);
 		unused = unused + alignsize - obj->header.length;
@@ -143,17 +144,20 @@ Four EduOM_CompactPage(
 	//save the last slot(slotNo).
 	if(slotNo != -1){
 		obj = &tpage.data[tpage.slot[-slotNo].offset];
-		for(int j=0; j<sizeof(ObjectHdr) + obj->header.length; j++){
+		len = sizeof(ObjectHdr) + obj->header.length;
+		for(int j=0; j< len; j++){
 			apage->data[apageDataOffset + j] = tpage.data[tpage.slot[-slotNo].offset + j];
 		}
 		apage->slot[-slotNo].offset = apageDataOffset;
 		//get the new apageDataOffset : += 
-		apageDataOffset = apageDataOffset + sizeof(ObjectHdr) + 4 * ((obj->header.length / 4) + 1);
+		Two alignsize = 4 * ((obj->header.length / 4) + 1);
+		unused = unused + alignsize - obj->header.length;
+		apageDataOffset = apageDataOffset + sizeof(ObjectHdr) + alignsize;
 	}
 	//update free & unused.
 	apage->header.free = apageDataOffset;
 	apage->header.unused = unused;
-	*/
+	
 	/* ENDOFNEWCODE */
 
     
