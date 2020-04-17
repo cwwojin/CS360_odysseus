@@ -146,6 +146,8 @@ Four EduOM_NextObject(
 			}
 			//this page is empty, move on to next page.
 			pageNo = apage->header.nextPage;
+			e = BfM_FreeTrain((TrainID*)&pid, PAGE_BUF);
+			if(e < 0) ERR(e);
 		}
 		//End of Scan.
 	}
@@ -178,6 +180,8 @@ Four EduOM_NextObject(
 			//this page is empty, move on to next page.
 			i=0;
 			pageNo = apage->header.nextPage;
+			e = BfM_FreeTrain((TrainID*)&pid, PAGE_BUF);
+			if(e < 0) ERR(e);
 		}
 		//End of Scan.
 	}
