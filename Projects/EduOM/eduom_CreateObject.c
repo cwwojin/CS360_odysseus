@@ -130,14 +130,23 @@ Four eduom_CreateObject(
     if(ALIGNED_LENGTH(length) > LRGOBJ_THRESHOLD) ERR(eNOTSUPPORTED_EDUOM);
 	
 	/* NEWCODE */
-	//0. get Catalog.
+	//0. get Catalog, physicalfile ID, firstExt.
 	e = BfM_GetTrain((TrainID*)catObjForFile, (char**)&catPage, PAGE_BUF);
 	if(e < 0) ERR(e);
 	GET_PTR_TO_CATENTRY_FOR_DATA(catObjForFile, catPage, catEntry);
 	fid = catEntry->fid;
+	MAKE_PHYSICALFILEID(pFid, catEntry->fid.volNo, catEntry->firstPage);
+	e = RDsM_PageIdToExtNo((PageID*)&pFid, &firstExt);
+	if(e < 0) ERR(e);
 	//1. calculate amount of new space needed.
 	alignedLen = 4 * ((length / 4) + 1);
 	neededSpace = sizeof(ObjectHdr) + alignedLen + sizeof(SlottedPageSlot);
+	//determine which is the right "availspacelist".
+	ShortPageID rightlist = catEntry->availSpaceList50;
+	if(neededSpace < SP_50SIZE) rightlist = catEntry->availSpaceList40;
+	if(neededSpace < SP_40SIZE) rightlist = catEntry->availSpaceList30;
+	if(neededSpace < SP_30SIZE) rightlist = catEntry->availSpaceList20;
+	if(neededSpace < SP_20SIZE) rightlist = catEntry->availSpaceList10;
 	//2. Choose a Page.
 	if(nearObj != NULL){
 		//get the "near page".
@@ -147,12 +156,45 @@ Four eduom_CreateObject(
 		//condition : is there enough room in "nearpage"??
 		needToAllocPage = (SP_FREE(apage) < neededSpace);
 		if(needToAllocPage){
+			//Allocate a new page to "pid", initialize header.
+			e = RDsM_AllocTrains(fid.volNo, firstExt, &nearPid, catEntry->eff, 1, PAGESIZE2, &pid);
+			if(e < 0) ERR(e);
+			e = BfM_FreeTrain(&nearPid, PAGE_BUF);
+			if(e < 0) ERR(e);
+			e = BfM_GetNewTrain(&pid, (char **)&apage, PAGE_BUF);
+			if(e < 0) ERR(e);
+			apage->header.pid = pid;
+			apage->header.nSlots = 1;
+			apage->header.free = 0;
+			apage->header.unused = 0;
+			apage->header.fid = fid;
+			//insert new page as the next page of "nearpage".
+			e = om_FileMapAddPage(catObjForFile, &nearPid, &pid);
+			if (e < 0) ERRB1(e, &pid, PAGE_BUF);
 		}
 		else{
-			
+			//"nearpage" is the target page, remove this page from AvailList.
+			pid = nearPid;
+			e = om_RemoveFromAvailSpaceList(catObjForFile, &pid, apage);
+			if (e < 0) ERRB1(e, &pid, PAGE_BUF);
+			//compact the page.
+			EduOM_CompactPage(apage, -1);
 		}
 	}
 	else{
+		if((neededSpace <= SP_50SIZE) && rightlist != NULL){
+			pid = rightlist;
+			e = BfM_GetTrain((TrainID*)&pid, (char**)&apage, PAGE_BUF);
+			if(e < 0) ERR(e);
+			e = om_RemoveFromAvailSpaceList(catObjForFile, &pid, apage);
+			if (e < 0) ERRB1(e, &pid, PAGE_BUF);
+			EduOM_CompactPage(apage, -1);
+		}
+		else if(){
+			
+		}
+		else{
+		}
 	}
 	
 	
