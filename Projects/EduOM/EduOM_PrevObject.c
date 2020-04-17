@@ -94,7 +94,7 @@ Four EduOM_PrevObject(
     ObjectID *prevOID,		/* OUT the previous object of a current object */
     ObjectHdr*objHdr)		/* OUT the object header of previous object */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Four e;			/* error */
     Two  i;			/* index */
     Four offset;		/* starting offset of object within a page */
@@ -112,6 +112,88 @@ Four EduOM_PrevObject(
     
     if (prevOID == NULL) ERR(eBADOBJECTID_OM);
 
+	
+	/* NEWCODE */
+	//1. get the catalog.
+	e = BfM_GetTrain((TrainID*)catObjForFile, (char**)&catPage, PAGE_BUF);
+	if(e < 0) ERR(e);
+	GET_PTR_TO_CATENTRY_FOR_DATA(catObjForFile, catPage, catEntry);
+	//2. check if curoid == NULL.
+	if(curOID == NULL){
+		//get the last page into "apage".
+		pageNo = catEntry->lastPage;
+		//scan pages, check first object each time, until EOS.
+		while(pageNo != NULL){
+			//get the page at "pageNo" into "apage".
+			MAKE_PAGEID(pid,catEntry->fid.volNo, pageNo);
+			e = BfM_GetTrain((TrainID*)&pid, (char**)&apage, PAGE_BUF);
+			if(e < 0) ERR(e);
+			//look for the first non-empty slot in the page.
+			for(i = apage->header.nSlots - 1; i >= 0; i--){
+				offset = apage->slot[-i].offset;
+				if (offset != EMPTYSLOT){
+					obj = &apage->data[offset];
+					MAKE_OBJECTID(*nextOID, pid.volNo, pid.pageNo, i, apage->slot[-i].unique);
+					objHdr = &obj->header;
+					e = BfM_FreeTrain((TrainID*)&pid, PAGE_BUF);
+					if(e < 0) ERR(e);
+					e = BfM_FreeTrain((TrainID*)catObjForFile, PAGE_BUF);
+					if(e < 0) ERR(e);
+					return(e);
+				}
+			}
+			//this page is empty, move on to prev page.
+			pageNo = apage->header.prevPage;
+			e = BfM_FreeTrain((TrainID*)&pid, PAGE_BUF);
+			if(e < 0) ERR(e);
+		}
+		//End of Scan.
+	}
+	else{
+		//curOID is not NULL, so get its page & object.
+		pageNo = curOID->pageNo;
+		i = curOID->slotNo - 1;		//prev slot number.
+		//scan the entire file for the previous nonempty object.
+		while(pageNo != NULL){
+			//get the page at "pageNo" into "apage".
+			MAKE_PAGEID(pid,catEntry->fid.volNo, pageNo);
+			e = BfM_GetTrain((TrainID*)&pid, (char**)&apage, PAGE_BUF);
+			if(e < 0) ERR(e);
+			//look for the first non-empty slot in the page.
+			if(i == -1){
+				i = apage->header.nSlots - 1;
+			}
+			while(i >= 0){
+				offset = apage->slot[-i].offset;
+				if(offset != EMPTYSLOT){
+					//return this object
+					obj = &apage->data[offset];
+					MAKE_OBJECTID(*nextOID, pid.volNo, pid.pageNo, i, apage->slot[-i].unique);
+					objHdr = &obj->header;
+					e = BfM_FreeTrain((TrainID*)&pid, PAGE_BUF);
+					if(e < 0) ERR(e);
+					e = BfM_FreeTrain((TrainID*)catObjForFile, PAGE_BUF);
+					if(e < 0) ERR(e);
+					return(e);
+				}
+				i--;
+			}
+			//this page is empty, move on to prev page.
+			pageNo = apage->header.prevPage;
+			e = BfM_FreeTrain((TrainID*)&pid, PAGE_BUF);
+			if(e < 0) ERR(e);
+		}
+		//End of Scan.
+	}
+	//Free catpage & apage.
+	e = BfM_FreeTrain((TrainID*)&pid, PAGE_BUF);
+	if(e < 0) ERR(e);
+	e = BfM_FreeTrain((TrainID*)catObjForFile, PAGE_BUF);
+	if(e < 0) ERR(e);
+	/* ENDOFNEWCODE */
+	
+	
+	
     
 
     return(EOS);
