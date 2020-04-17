@@ -130,39 +130,54 @@ Four EduOM_NextObject(
 			MAKE_PAGEID(pid,catEntry->fid.volNo, pageNo);
 			e = BfM_GetTrain((TrainID*)&pid, (char**)&apage, PAGE_BUF);
 			if(e < 0) ERR(e);
-			/*
-			//get the first object of "apage".
-			offset = apage->slot[0].offset;
-			if (offset != EMPTYSLOT){
-				//this page is not empty, so get nextOID and return.
-				nextOID = &apage->data[offset];
-				objHdr = &nextOID->header;
-				return(e);
-			}
-			*/
 			//look for the first non-empty slot in the page.
 			for(i = 0; i < apage->header.nSlots; i++){
 				offset = apage->slot[-i].offset;
 				if (offset != EMPTYSLOT){
 					nextOID = &apage->data[offset];
 					objHdr = &nextOID->header;
+					e = BfM_FreeTrain((TrainID*)&pid, PAGE_BUF);
+					if(e < 0) ERR(e);
+					e = BfM_FreeTrain((TrainID*)catobjForFile, PAGE_BUF);
+					if(e < 0) ERR(e);
 					return(e);
 				}
 			}
 			//this page is empty, move on to next page.
 			pageNo = apage->header.nextPage;
 		}
-		//return(EOS);
+		//End of Scan.
 	}
 	else{
 		//curOID is not NULL, so get its page & object.
-		e = BfM_GetTrain((TrainID*)curOID, (char**)&apage, PAGE_BUF);
-		if(e < 0) ERR(e);
-		//check if curOID's object is the last slot or not.
-		if(oid->slotNo >= apage->header.nSlots - 1){
+		pageNo = curOID->pageNo;
+		i = curOID->slotNo + 1;		//next slot number.
+		//scan the entire file for the next nonempty object.
+		while(pageNo != NULL){
+			//get the page at "pageNo" into "apage".
+			MAKE_PAGEID(pid,catEntry->fid.volNo, pageNo);
+			e = BfM_GetTrain((TrainID*)&pid, (char**)&apage, PAGE_BUF);
+			if(e < 0) ERR(e);
+			//look for the first non-empty slot in the page.
+			while(i < apage->header.nSlots){
+				offset = apage->slot[-i].offset;
+				if(offset != EMPTYSLOT){
+					//return this object
+					nextOID = &apage->data[offset];
+					objHdr = &nextOID->header;
+					e = BfM_FreeTrain((TrainID*)&pid, PAGE_BUF);
+					if(e < 0) ERR(e);
+					e = BfM_FreeTrain((TrainID*)catobjForFile, PAGE_BUF);
+					if(e < 0) ERR(e);
+					return(e);
+				}
+				i++;
+			}
+			//this page is empty, move on to next page.
+			i=0;
+			pageNo = apage->header.nextPage;
 		}
-		else{
-		}
+		//End of Scan.
 	}
 	//Free catpage & apage.
 	e = BfM_FreeTrain((TrainID*)&pid, PAGE_BUF);
