@@ -148,6 +148,7 @@ Four EduOM_DestroyObject(
 	if(e < 0) ERRB1(e, &pid, PAGE_BUF);
 	//4. Set target slot's offset to EMPTY
 	offset = apage->slot[-(oid->slotNo)].offset;
+	obj = &apage->data[offset];	//This is the target object.
 	apage->slot[-(oid->slotNo)].offset = EMPTYSLOT;
 	//5. Update the Page Header.
 	//calculate new free area size.
