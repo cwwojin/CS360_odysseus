@@ -101,7 +101,7 @@ Four eduom_CreateObject(
     char	*data,		/* IN the initial data for the object */
     ObjectID	*oid)		/* OUT the object's ObjectID */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Four        e;		/* error number */
     Four	neededSpace;	/* space needed to put new object [+ header] */
     SlottedPage *apage;		/* pointer to the slotted page buffer */
@@ -128,6 +128,35 @@ Four eduom_CreateObject(
     
     /* Error check whether using not supported functionality by EduOM */
     if(ALIGNED_LENGTH(length) > LRGOBJ_THRESHOLD) ERR(eNOTSUPPORTED_EDUOM);
+	
+	/* NEWCODE */
+	//0. get Catalog.
+	e = BfM_GetTrain((TrainID*)catObjForFile, (char**)&catPage, PAGE_BUF);
+	if(e < 0) ERR(e);
+	GET_PTR_TO_CATENTRY_FOR_DATA(catObjForFile, catPage, catEntry);
+	fid = catEntry->fid;
+	//1. calculate amount of new space needed.
+	alignedLen = 4 * ((length / 4) + 1);
+	neededSpace = sizeof(ObjectHdr) + alignedLen + sizeof(SlottedPageSlot);
+	//2. Choose a Page.
+	if(nearObj != NULL){
+		//get the "near page".
+		MAKE_PAGEID(nearPid, nearObj->volNo, nearObj->pageNo);
+		e = BfM_GetTrain((TrainID*)&nearPid, (char**)&apage, PAGE_BUF);
+		if(e < 0) ERR(e);
+		//condition : is there enough room in "nearpage"??
+		needToAllocPage = (SP_FREE(apage) < neededSpace);
+		if(needToAllocPage){
+		}
+		else{
+			
+		}
+	}
+	else{
+	}
+	
+	
+	/* ENDOFNEWCODE */
 
 
 
