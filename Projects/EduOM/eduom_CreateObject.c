@@ -183,9 +183,9 @@ Four eduom_CreateObject(
 	}
 	else{
 		if((neededSpace <= SP_50SIZE) && rightlist != NULL){
-			pid = (PageID) rightlist;
-			e = BfM_GetTrain((TrainID*)&pid, (char**)&apage, PAGE_BUF);
+			e = BfM_GetTrain((TrainID*)&rightlist, (char**)&apage, PAGE_BUF);
 			if(e < 0) ERR(e);
+			pid = apage->header.pid;
 			e = om_RemoveFromAvailSpaceList(catObjForFile, &pid, apage);
 			if (e < 0) ERRB1(e, &pid, PAGE_BUF);
 			EduOM_CompactPage(apage, -1);
@@ -195,7 +195,7 @@ Four eduom_CreateObject(
 			e = BfM_GetTrain(&catEntry->lastPage, (char**)&apage, PAGE_BUF);
 			if(e < 0) ERR(e);
 			if(SP_FREE(apage) >= neededSpace){
-				pid = (PageID) catEntry->lastPage;
+				pid = apage->header.pid;
 				EduOM_CompactPage(apage, -1);
 			}
 			else{
@@ -236,7 +236,7 @@ Four eduom_CreateObject(
 			break;
 		}
 	}
-	if(j == apage->nSlots){
+	if(j == apage->header.nSlots){
 		//isTmp = TRUE;
 		apage->slot[-j].offset = i;
 		e = om_GetUnique(&pid, &(apage->slot[-j].unique));
