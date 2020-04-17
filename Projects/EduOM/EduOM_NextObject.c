@@ -123,17 +123,38 @@ Four EduOM_NextObject(
 	//2. check if curoid == NULL.
 	if(curOID == NULL){
 		//get the first page into "apage".
-		MAKE_PAGEID(pid,catEntry->fid.volNo, (pageNo)catEntry->firstPage);
-		e = BfM_GetTrain((TrainID*)&pid, (char**)&apage, PAGE_BUF);
-		if(e < 0) ERR(e);
-		
-		
-		
+		pageNo = catEntry->firstPage;
+		//scan pages, check first object each time, until EOS.
+		while(pageNo != NULL){
+			//get the page at "pageNo" into "apage".
+			MAKE_PAGEID(pid,catEntry->fid.volNo, pageNo);
+			e = BfM_GetTrain((TrainID*)&pid, (char**)&apage, PAGE_BUF);
+			if(e < 0) ERR(e);
+			//get the first object of "apage".
+			offset = apage->slot[0].offset;
+			if (offset != EMPTYSLOT){
+				//this page is not empty, so get nextOID and return.
+				nextOID = &apage->data[offset];
+				objHdr = &nextOID->header;
+				return(e);
+			}
+			//this page is empty, move on to next page.
+			pageNo = apage->header.nextPage;
+		}
+		//return(EOS);
 	}
 	else{
+		//curOID is not NULL, so get its page & object.
+		e = BfM_GetTrain((TrainID*)curOID, (char**)&apage, PAGE_BUF);
+		if(e < 0) ERR(e);
+		
 	
 	}
-	
+	//Free catpage & apage.
+	e = BfM_FreeTrain((TrainID*)&pid, PAGE_BUF);
+	if(e < 0) ERR(e);
+	e = BfM_FreeTrain((TrainID*)catobjForFile, PAGE_BUF);
+	if(e < 0) ERR(e);
 	/* ENDOFNEWCODE */
 
 
