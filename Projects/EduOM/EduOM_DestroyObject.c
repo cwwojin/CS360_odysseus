@@ -173,7 +173,7 @@ Four EduOM_DestroyObject(
 		e = om_FileMapDeletePage(catObjForFile, &pid);
 		if(e < 0) ERRB1(e, &pid, PAGE_BUF);
 		//deallocate page.
-		e = Util_getElementFromPoll(dlPool, &dlElem);
+		e = Util_getElementFromPool(dlPool, &dlElem);
 		if(e < 0) ERR(e);
 		dlElem->type = DL_PAGE;
 		dlElem->elem.pid = pid;
