@@ -140,7 +140,7 @@ Four EduOM_ReadObject(
 	e = BfM_GetTrain((TrainID*)oid, (char**)&apage, PAGE_BUF);
 	if(e < 0) ERR(e);
 	//2. Get the object header & set offset.
-	offset = apage->slot[oid->slotNo].offset;
+	offset = apage->slot[-(oid->slotNo)].offset;
 	obj = &apage->data[offset];
 	//3. Now obj has the target object. check if "START" is valid.
 	if (start > obj->header.length || start < 0) ERR(eBADSTART_OM);
