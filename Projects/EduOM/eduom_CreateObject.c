@@ -183,7 +183,7 @@ Four eduom_CreateObject(
 	}
 	else{
 		if((neededSpace <= SP_50SIZE) && rightlist != NULL){
-			pid = rightlist;
+			pid = (PageID) rightlist;
 			e = BfM_GetTrain((TrainID*)&pid, (char**)&apage, PAGE_BUF);
 			if(e < 0) ERR(e);
 			e = om_RemoveFromAvailSpaceList(catObjForFile, &pid, apage);
@@ -195,7 +195,7 @@ Four eduom_CreateObject(
 			e = BfM_GetTrain(&catEntry->lastPage, (char**)&apage, PAGE_BUF);
 			if(e < 0) ERR(e);
 			if(SP_FREE(apage) >= neededSpace){
-				pid = catEntry->lastPage;
+				pid = (PageID) catEntry->lastPage;
 				EduOM_CompactPage(apage, -1);
 			}
 			else{
@@ -221,13 +221,14 @@ Four eduom_CreateObject(
 	//update header.
 	objHdr->length = length;
 	//copy new object to the continuous free area.
-	i = apage->free;
+	i = apage->header.free;
 	memcpy(&apage->data[i], objHdr, sizeof(ObjectHdr));
-	for(int j=0; j< length; j++){
+	int j;
+	for(j=0; j< length; j++){
 		apage->data[i + sizeof(ObjectHdr) + j] = data[j];
 	}
 	//find an empty slot or allocate a new slot.
-	for(int j=0; j< apage->nSlots; j++){
+	for(j=0; j< apage->header.nSlots; j++){
 		if(apage->slot[-j].offset == EMPTYSLOT){
 			apage->slot[-j].offset = i;
 			e = om_GetUnique(&pid, &(apage->slot[-j].unique));
@@ -240,7 +241,7 @@ Four eduom_CreateObject(
 		apage->slot[-j].offset = i;
 		e = om_GetUnique(&pid, &(apage->slot[-j].unique));
 		if (e < 0) ERRB1(e, &pid, PAGE_BUF);
-		apage->nSlots++;
+		apage->header.nSlots++;
 	}
 	//4. Update page header & put page back in "availspacelist".
 	apage->header.free = apage->header.free + sizeof(ObjectHdr) + alignedLen;
