@@ -145,7 +145,7 @@ Four EduOM_ReadObject(
 	//3. Now obj has the target object. check if "START" is valid.
 	if (start > obj->header.length || start < 0) ERR(eBADSTART_OM);
 	//4. Read in data from object, from START to START + LENGTH or REMAINDER.
-	offset = offset + start;
+	offset = offset + sizeof(ObjectHdr) + start;
 	if(length == REMAINDER){
 		for(i = 0; i < obj->header.length - start; i++){
 			buf[i] = apage->data[offset + i];
