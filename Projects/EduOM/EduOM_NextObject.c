@@ -117,7 +117,7 @@ Four EduOM_NextObject(
 	
 	/* NEWCODE */
 	//1. get the catalog.
-	e = BfM_GetTrain((TrainID*)catobjForFile, (char**)&catPage, PAGE_BUF);
+	e = BfM_GetTrain((TrainID*)catObjForFile, (char**)&catPage, PAGE_BUF);
 	if(e < 0) ERR(e);
 	GET_PTR_TO_CATENTRY_FOR_DATA(catObjForFile, catPage, catEntry);
 	//2. check if curoid == NULL.
@@ -135,11 +135,11 @@ Four EduOM_NextObject(
 				offset = apage->slot[-i].offset;
 				if (offset != EMPTYSLOT){
 					obj = &apage->data[offset];
-					MAKE_OBJECTID(nextOID, pid.volNo, pid.pageNo, i, apage->slot[-i].unique);
+					MAKE_OBJECTID(*nextOID, pid.volNo, pid.pageNo, i, apage->slot[-i].unique);
 					objHdr = &obj->header;
 					e = BfM_FreeTrain((TrainID*)&pid, PAGE_BUF);
 					if(e < 0) ERR(e);
-					e = BfM_FreeTrain((TrainID*)catobjForFile, PAGE_BUF);
+					e = BfM_FreeTrain((TrainID*)catObjForFile, PAGE_BUF);
 					if(e < 0) ERR(e);
 					return(e);
 				}
@@ -165,11 +165,11 @@ Four EduOM_NextObject(
 				if(offset != EMPTYSLOT){
 					//return this object
 					obj = &apage->data[offset];
-					MAKE_OBJECTID(nextOID, pid.volNo, pid.pageNo, i, apage->slot[-i].unique);
+					MAKE_OBJECTID(*nextOID, pid.volNo, pid.pageNo, i, apage->slot[-i].unique);
 					objHdr = &obj->header;
 					e = BfM_FreeTrain((TrainID*)&pid, PAGE_BUF);
 					if(e < 0) ERR(e);
-					e = BfM_FreeTrain((TrainID*)catobjForFile, PAGE_BUF);
+					e = BfM_FreeTrain((TrainID*)catObjForFile, PAGE_BUF);
 					if(e < 0) ERR(e);
 					return(e);
 				}
@@ -184,7 +184,7 @@ Four EduOM_NextObject(
 	//Free catpage & apage.
 	e = BfM_FreeTrain((TrainID*)&pid, PAGE_BUF);
 	if(e < 0) ERR(e);
-	e = BfM_FreeTrain((TrainID*)catobjForFile, PAGE_BUF);
+	e = BfM_FreeTrain((TrainID*)catObjForFile, PAGE_BUF);
 	if(e < 0) ERR(e);
 	/* ENDOFNEWCODE */
 
