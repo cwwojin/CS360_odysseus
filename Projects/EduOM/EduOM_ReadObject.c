@@ -116,13 +116,13 @@ Four EduOM_ReadObject(
     Four     	length,		/* IN amount of data to read */
     char     	*buf)		/* OUT user buffer to return the read data */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Four     	e;              /* error code */
     PageID 	pid;		/* page containing object specified by 'oid' */
     SlottedPage	*apage;		/* pointer to the buffer of the page  */
     Object	*obj;		/* pointer to the object in the slotted page */
     Four	offset;		/* offset of the object in the page */
-
+	Four	i;	//number of bytes read (RETURN VALUE)
     
     
     /*@ check parameters */
@@ -134,7 +134,36 @@ Four EduOM_ReadObject(
     if (buf == NULL) ERR(eBADUSERBUF_OM);
 
     
+	/* NEWCODE */
+	
+	//1. Read in the slotted page using objectID.
+	e = BFM_GetTrain((TrainID*)oid, (char**)&apage, PAGE_BUF);
+	if(e < 0) ERR(e);
+	//2. Get the object header & set offset.
+	offset = apage->slot[oid->slotNo].offset;
+	obj = &apage->data[offset];
+	//3. Now obj has the target object. check if "START" is valid.
+	if (start > obj->header.length || start < 0) ERR(eBADSTART_OM);
+	//4. Read in data from object, from START to START + LENGTH or REMAINDER.
+	offset = offset + start;
+	if(length == REMAINDER){
+		for(i = 0; i < obj->header.length - start; i++){
+			buf[i] = apage->data[offset + i];
+		}
+	}
+	else{
+		for(i = 0; i < length; i++){
+			buf[i] = apage->data[offset + i];
+		}
+	}
+	//5. Free the buffer page.
+	e = BFM_FreeTrain((TrainID*)oid, PAGE_BUF);
+	if(e < 0) ERR(e);
+	
+	/* ENDOFNEWCODE*/
+	
+	
 
-    return(length);
+    return(i);
     
 } /* EduOM_ReadObject() */
