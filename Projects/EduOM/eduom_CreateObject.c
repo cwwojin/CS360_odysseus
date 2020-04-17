@@ -190,10 +190,31 @@ Four eduom_CreateObject(
 			if (e < 0) ERRB1(e, &pid, PAGE_BUF);
 			EduOM_CompactPage(apage, -1);
 		}
-		else if(){
-			
-		}
 		else{
+			//get the last page of the file. Check if it has enough free space.
+			e = BfM_GetTrain(&catEntry->lastPage, (char**)&apage, PAGE_BUF);
+			if(e < 0) ERR(e);
+			if(SP_FREE(apage) >= neededSpace){
+				pid = catEntry->lastPage;
+				EduOM_CompactPage(apage, -1);
+			}
+			else{
+				//allocate new page.
+				e = RDsM_AllocTrains(fid.volNo, firstExt, &nearPid, catEntry->eff, 1, PAGESIZE2, &pid);
+				if(e < 0) ERR(e);
+				e = BfM_FreeTrain(&catEntry->lastPage, PAGE_BUF);
+				if(e < 0) ERR(e);
+				e = BfM_GetNewTrain(&pid, (char **)&apage, PAGE_BUF);
+				if(e < 0) ERR(e);
+				apage->header.pid = pid;
+				apage->header.nSlots = 1;
+				apage->header.free = 0;
+				apage->header.unused = 0;
+				apage->header.fid = fid;
+				//insert new page as the last page.
+				e = om_FileMapAddPage(catObjForFile, &catEntry->lastPage, &pid);
+				if (e < 0) ERRB1(e, &pid, PAGE_BUF);
+			}
 		}
 	}
 	
