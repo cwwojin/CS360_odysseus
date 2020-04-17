@@ -137,7 +137,7 @@ Four EduOM_ReadObject(
 	/* NEWCODE */
 	
 	//1. Read in the slotted page using objectID.
-	e = BFM_GetTrain((TrainID*)oid, (char**)&apage, PAGE_BUF);
+	e = BfM_GetTrain((TrainID*)oid, (char**)&apage, PAGE_BUF);
 	if(e < 0) ERR(e);
 	//2. Get the object header & set offset.
 	offset = apage->slot[oid->slotNo].offset;
@@ -157,7 +157,7 @@ Four EduOM_ReadObject(
 		}
 	}
 	//5. Free the buffer page.
-	e = BFM_FreeTrain((TrainID*)oid, PAGE_BUF);
+	e = BfM_FreeTrain((TrainID*)oid, PAGE_BUF);
 	if(e < 0) ERR(e);
 	
 	/* ENDOFNEWCODE*/
