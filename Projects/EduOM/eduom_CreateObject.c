@@ -246,7 +246,7 @@ Four eduom_CreateObject(
 		apage->header.nSlots++;
 	}
 	//save the new object's id @ "oid"
-	MAKE_OBJECTID(*oid, pid->volNo, pid->pageNo, j, apage->slot[-j].unique);
+	MAKE_OBJECTID(*oid, pid.volNo, pid.pageNo, j, apage->slot[-j].unique);
 	//4. Update page header & put page back in "availspacelist".
 	apage->header.free = apage->header.free + sizeof(ObjectHdr) + alignedLen;
 	apage->header.unused = apage->header.unused + alignedLen - length;
