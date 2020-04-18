@@ -182,7 +182,10 @@ Four eduom_CreateObject(
 		}
 	}
 	else{
+		printf("nearobj is NULL.\n");
 		if((neededSpace <= SP_50SIZE) && rightlist != NULL){
+			printf("getting page from availspacelist.\n");
+			
 			e = BfM_GetTrain((TrainID*)&rightlist, (char**)&apage, PAGE_BUF);
 			if(e < 0) ERR(e);
 			pid = apage->header.pid;
@@ -191,14 +194,17 @@ Four eduom_CreateObject(
 			EduOM_CompactPage(apage, -1);
 		}
 		else{
+			printf("getting the last page of the file.\n");
 			//get the last page of the file. Check if it has enough free space.
 			e = BfM_GetTrain(&catEntry->lastPage, (char**)&apage, PAGE_BUF);
 			if(e < 0) ERR(e);
 			if(SP_FREE(apage) >= neededSpace){
+				printf("got last page.\n");
 				pid = apage->header.pid;
 				EduOM_CompactPage(apage, -1);
 			}
 			else{
+				printf("allocating a new page..\n");
 				//allocate new page.
 				e = RDsM_AllocTrains(fid.volNo, firstExt, &nearPid, catEntry->eff, 1, PAGESIZE2, &pid);
 				if(e < 0) ERR(e);
