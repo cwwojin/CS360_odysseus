@@ -188,7 +188,7 @@ Four eduom_CreateObject(
 			e = BfM_GetTrain((TrainID*)&rightlist, (char**)&apage, PAGE_BUF);
 			if(e < 0) ERR(e);
 			pid = apage->header.pid;
-			printf("Got page number : %d from rightlist = %d\n", pid->pageNo, rightlist->pageNo);
+			printf("Got page number : %d from rightlist = %d\n", pid.pageNo, rightlist.pageNo);
 			e = om_RemoveFromAvailSpaceList(catObjForFile, &pid, apage);
 			if (e < 0) ERRB1(e, &pid, PAGE_BUF);
 			EduOM_CompactPage(apage, -1);
