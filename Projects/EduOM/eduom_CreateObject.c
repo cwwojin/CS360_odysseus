@@ -148,7 +148,6 @@ Four eduom_CreateObject(
 	if(neededSpace < SP_30SIZE) rightlist = catEntry->availSpaceList20;
 	if(neededSpace < SP_20SIZE) rightlist = catEntry->availSpaceList10;
 	//2. Choose a Page.
-	printf("====================\n");
 	if(nearObj != NULL){
 		//get the "near page".
 		MAKE_PAGEID(nearPid, nearObj->volNo, nearObj->pageNo);
@@ -159,7 +158,6 @@ Four eduom_CreateObject(
 		//condition : is there enough room in "nearpage"??
 		needToAllocPage = (SP_CFREE(apage) < neededSpace);
 		if(needToAllocPage){
-			printf("need to allocate new page, nearPid : %d\n", nearPid.pageNo);
 			//Allocate a new page to "pid", initialize header.
 			e = RDsM_AllocTrains(fid.volNo, firstExt, &nearPid, catEntry->eff, 1, PAGESIZE2, &pid);
 			if(e < 0) ERR(e);
@@ -167,7 +165,6 @@ Four eduom_CreateObject(
 			if(e < 0) ERR(e);
 			e = BfM_GetNewTrain(&pid, (char **)&apage, PAGE_BUF);
 			if(e < 0) ERR(e);
-			printf("allocated new page number %d\n", pid.pageNo);
 			apage->header.pid = pid;
 			apage->header.nSlots = 1;
 			apage->header.free = 0;
@@ -180,18 +177,13 @@ Four eduom_CreateObject(
 		}
 		else{
 			//"nearpage" is the target page, remove this page from AvailList.
-			printf("nearpage is the target, number : %d\n", nearPid);
 			pid = nearPid;
 			e = om_RemoveFromAvailSpaceList(catObjForFile, &pid, apage);
 			if (e < 0) ERRB1(e, &pid, PAGE_BUF);
-			//compact the page.
-			//EduOM_CompactPage(apage, -1);
 		}
 	}
 	else{
-		printf("nearobj is NULL.\n");
 		if((neededSpace <= SP_50SIZE) && rightlist != NIL){
-			printf("getting page from availlist, rightlist == %d", rightlist);
 			MAKE_PAGEID(pid, fid.volNo, rightlist);
 			e = BfM_GetTrain((TrainID*)&pid, (char**)&apage, PAGE_BUF);
 			if(e < 0) ERR(e);
@@ -208,13 +200,7 @@ Four eduom_CreateObject(
 			OM_CompactPage(apage, -1);
 			//condition : is there enough room in "nearpage"??
 			needToAllocPage = (SP_CFREE(apage) < neededSpace);
-			/*
-			if(SP_CFREE(apage) >= neededSpace){
-				EduOM_CompactPage(apage, -1);
-			}
-			*/
 			if(needToAllocPage){
-				printf("allocating a new page..\n");
 				//allocate new page.
 				e = BfM_FreeTrain(&pid, PAGE_BUF);
 				if(e < 0) ERR(e);
@@ -222,7 +208,6 @@ Four eduom_CreateObject(
 				if(e < 0) ERR(e);
 				e = BfM_GetNewTrain(&pid, (char **)&apage, PAGE_BUF);
 				if(e < 0) ERR(e);
-				printf("allocated new page number %d\n", pid.pageNo);
 				apage->header.pid = pid;
 				apage->header.nSlots = 1;
 				apage->header.free = 0;
@@ -254,7 +239,6 @@ Four eduom_CreateObject(
 			break;
 		}
 	}
-	printf("new object is saved to slot number %d\n", j);
 	if(j == apage->header.nSlots){
 		printf("nSlots ++.\n");
 		apage->slot[-j].offset = i;
@@ -264,10 +248,8 @@ Four eduom_CreateObject(
 	}
 	//save the new object's id @ "oid"
 	MAKE_OBJECTID(*oid, pid.volNo, pid.pageNo, j, apage->slot[-j].unique);
-	printf("made OUTPUT object id : v=%d, p=%d, s=%d, u=%d\n", oid->volNo, oid->pageNo, oid->slotNo, oid->unique);
 	//4. Update page header & put page back in "availspacelist".
 	apage->header.free = apage->header.free + sizeof(ObjectHdr) + alignedLen;
-	//apage->header.unused = apage->header.unused + alignedLen - length;
 	e = om_PutInAvailSpaceList(catObjForFile, &pid, apage);
 	if(e < 0) ERRB1(e, &pid, PAGE_BUF);
 	//5. Set dirty & free the buffers.
