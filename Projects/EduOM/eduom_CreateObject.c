@@ -240,7 +240,6 @@ Four eduom_CreateObject(
 		}
 	}
 	if(j == apage->header.nSlots){
-		printf("nSlots ++.\n");
 		apage->slot[-j].offset = i;
 		e = om_GetUnique(&pid, &(apage->slot[-j].unique));
 		if (e < 0) ERRB1(e, &pid, PAGE_BUF);
