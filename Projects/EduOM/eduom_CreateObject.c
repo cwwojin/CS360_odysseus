@@ -237,7 +237,7 @@ Four eduom_CreateObject(
 	int j;
 	for(j=0; j< length; j++){
 		apage->data[i + sizeof(ObjectHdr) + j] = data[j];
-		printf("copied char %s to data area.\n", apage->data[i + sizeof(ObjectHdr) + j]);
+		printf("copied char %c to data area.\n", apage->data[i + sizeof(ObjectHdr) + j]);
 		//obj->data[j] = data[j];
 	}
 	//find an empty slot or allocate a new slot.
