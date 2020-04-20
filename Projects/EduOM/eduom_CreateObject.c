@@ -171,6 +171,7 @@ Four eduom_CreateObject(
 			apage->header.free = 0;
 			apage->header.unused = 0;
 			apage->header.fid = fid;
+			apage->slot[0].offset = EMPTYSLOT;
 			//insert new page as the next page of "nearpage".
 			e = om_FileMapAddPage(catObjForFile, &nearPid, &pid);
 			if (e < 0) ERRB1(e, &pid, PAGE_BUF);
@@ -220,6 +221,7 @@ Four eduom_CreateObject(
 				apage->header.free = 0;
 				apage->header.unused = 0;
 				apage->header.fid = fid;
+				apage->slot[0].offset = EMPTYSLOT;
 				//insert new page as the last page.
 				e = om_FileMapAddPage(catObjForFile, &catEntry->lastPage, &pid);
 				if (e < 0) ERRB1(e, &pid, PAGE_BUF);
