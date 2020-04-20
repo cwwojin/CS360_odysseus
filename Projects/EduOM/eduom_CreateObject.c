@@ -231,7 +231,7 @@ Four eduom_CreateObject(
 	obj->header = *objHdr;
 	//copy new object to the continuous free area.
 	i = apage->header.free;
-	prinf("free area start is %d\n", i);
+	printf("free area start is %d\n", i);
 	memcpy(&apage->data[i], objHdr, sizeof(ObjectHdr));
 	int j;
 	for(j=0; j< length; j++){
