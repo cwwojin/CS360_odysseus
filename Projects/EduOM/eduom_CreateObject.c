@@ -228,7 +228,7 @@ Four eduom_CreateObject(
 	//3. now "apage" is the target page. insert new object into this page.
 	//update header.
 	objHdr->length = length;
-	obj->header = *objHdr;
+	//obj->header = *objHdr;
 	//copy new object to the continuous free area.
 	i = apage->header.free;
 	printf("free area start is %d\n", i);
@@ -237,7 +237,7 @@ Four eduom_CreateObject(
 	for(j=0; j< length; j++){
 		apage->data[i + sizeof(ObjectHdr) + j] = data[j];
 		printf("copied char %s to data area.\n", apage->data[i + sizeof(ObjectHdr) + j]);
-		obj->data[j] = data[j];
+		//obj->data[j] = data[j];
 	}
 	//find an empty slot or allocate a new slot.
 	for(j=0; j< apage->header.nSlots; j++){
@@ -258,6 +258,7 @@ Four eduom_CreateObject(
 	}
 	//save the new object's id @ "oid"
 	MAKE_OBJECTID(*oid, pid.volNo, pid.pageNo, j, apage->slot[-j].unique);
+	printf("made OUTPUT object id : v=%d, p=%d, s=%d, u=%d\n", oid->volNo, oid->pageNo, oid->slotNo, oid->unique);
 	//4. Update page header & put page back in "availspacelist".
 	apage->header.free = apage->header.free + sizeof(ObjectHdr) + alignedLen;
 	apage->header.unused = apage->header.unused + alignedLen - length;
