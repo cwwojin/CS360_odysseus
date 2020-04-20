@@ -218,6 +218,10 @@ Four eduom_CreateObject(
 				e = om_FileMapAddPage(catObjForFile, &catEntry->lastPage, &pid);
 				if (e < 0) ERRB1(e, &pid, PAGE_BUF);
 			}
+			else{
+				e = om_RemoveFromAvailSpaceList(catObjForFile, &pid, apage);
+				if (e < 0) ERRB1(e, &pid, PAGE_BUF);
+			}
 		}
 	}
 	//3. now "apage" is the target page. insert new object into this page.
