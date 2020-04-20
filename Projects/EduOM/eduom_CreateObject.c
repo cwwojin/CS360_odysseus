@@ -183,7 +183,7 @@ Four eduom_CreateObject(
 	}
 	else{
 		printf("nearobj is NULL.\n");
-		if((neededSpace <= SP_50SIZE) && rightlist != NULL){
+		if((neededSpace <= SP_50SIZE) && rightlist != NIL){
 			printf("getting page from availspacelist, rightlist == %d\n", rightlist);
 			MAKE_PAGEID(pid, fid.volNo, rightlist);
 			e = BfM_GetTrain((TrainID*)&pid, (char**)&apage, PAGE_BUF);
