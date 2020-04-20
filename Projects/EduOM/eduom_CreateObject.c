@@ -148,7 +148,7 @@ Four eduom_CreateObject(
 	if(neededSpace < SP_30SIZE) rightlist = catEntry->availSpaceList20;
 	if(neededSpace < SP_20SIZE) rightlist = catEntry->availSpaceList10;
 	//2. Choose a Page.
-	prinf("====================\n");
+	printf("====================\n");
 	if(nearObj != NULL){
 		//get the "near page".
 		MAKE_PAGEID(nearPid, nearObj->volNo, nearObj->pageNo);
