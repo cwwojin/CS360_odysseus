@@ -154,7 +154,8 @@ Four eduom_CreateObject(
 		MAKE_PAGEID(nearPid, nearObj->volNo, nearObj->pageNo);
 		e = BfM_GetTrain((TrainID*)&nearPid, (char**)&apage, PAGE_BUF);
 		if(e < 0) ERR(e);
-		EduOM_CompactPage(apage, -1);
+		//EduOM_CompactPage(apage, -1);
+		OM_CompactPage(apage, -1);
 		//condition : is there enough room in "nearpage"??
 		needToAllocPage = (SP_CFREE(apage) < neededSpace);
 		if(needToAllocPage){
@@ -203,7 +204,8 @@ Four eduom_CreateObject(
 			MAKE_PAGEID(pid, fid.volNo, catEntry->lastPage);
 			e = BfM_GetTrain(&pid, (char**)&apage, PAGE_BUF);
 			if(e < 0) ERR(e);
-			EduOM_CompactPage(apage, -1);
+			//EduOM_CompactPage(apage, -1);
+			OM_CompactPage(apage, -1);
 			//condition : is there enough room in "nearpage"??
 			needToAllocPage = (SP_CFREE(apage) < neededSpace);
 			/*
