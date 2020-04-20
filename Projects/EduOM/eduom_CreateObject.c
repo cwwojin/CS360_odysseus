@@ -156,7 +156,7 @@ Four eduom_CreateObject(
 		//condition : is there enough room in "nearpage"??
 		needToAllocPage = (SP_FREE(apage) < neededSpace);
 		if(needToAllocPage){
-			prinf("need to allocate new page, nearPid : %d\n", nearPid.pageNo);
+			printf("need to allocate new page, nearPid : %d\n", nearPid.pageNo);
 			//Allocate a new page to "pid", initialize header.
 			e = RDsM_AllocTrains(fid.volNo, firstExt, &nearPid, catEntry->eff, 1, PAGESIZE2, &pid);
 			if(e < 0) ERR(e);
@@ -187,7 +187,7 @@ Four eduom_CreateObject(
 	else{
 		printf("nearobj is NULL.\n");
 		if((neededSpace <= SP_50SIZE) && rightlist != NIL){
-			prinf("getting page from availlist, rightlist == %d", rightlist);
+			printf("getting page from availlist, rightlist == %d", rightlist);
 			MAKE_PAGEID(pid, fid.volNo, rightlist);
 			e = BfM_GetTrain((TrainID*)&pid, (char**)&apage, PAGE_BUF);
 			if(e < 0) ERR(e);
