@@ -233,6 +233,7 @@ Four eduom_CreateObject(
 	i = apage->header.free;
 	printf("free area start is %d\n", i);
 	memcpy(&apage->data[i], objHdr, sizeof(ObjectHdr));
+	printf("copied header.\n");
 	int j;
 	for(j=0; j< length; j++){
 		apage->data[i + sizeof(ObjectHdr) + j] = data[j];
