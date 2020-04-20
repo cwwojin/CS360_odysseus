@@ -258,7 +258,7 @@ Four eduom_CreateObject(
 	printf("made OUTPUT object id : v=%d, p=%d, s=%d, u=%d\n", oid->volNo, oid->pageNo, oid->slotNo, oid->unique);
 	//4. Update page header & put page back in "availspacelist".
 	apage->header.free = apage->header.free + sizeof(ObjectHdr) + alignedLen;
-	apage->header.unused = apage->header.unused + alignedLen - length;
+	//apage->header.unused = apage->header.unused + alignedLen - length;
 	e = om_PutInAvailSpaceList(catObjForFile, &pid, apage);
 	if(e < 0) ERRB1(e, &pid, PAGE_BUF);
 	//5. Set dirty & free the buffers.
