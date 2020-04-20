@@ -112,11 +112,9 @@ Four EduOM_CompactPage(
     Two    lastSlot;		/* last non empty slot */
     Two    i;			/* index variable */
 	
-	Two unused = 0;
 	
 	
 	/* NEWCODE */
-	/*
 	//1. save page to tpage.
 	tpage = *apage;
 	apageDataOffset = 0;
@@ -129,35 +127,28 @@ Four EduOM_CompactPage(
 		//copy to data area. & update slot offset.
 		if(tpage.slot[-i].offset == EMPTYSLOT) continue;
 		
-		obj = &tpage.data[tpage.slot[-i].offset];
+		obj = (Object*) &tpage.data[tpage.slot[-i].offset];
 		//copy entire object to apage.
 		len = sizeof(ObjectHdr) + obj->header.length;
-		for(int j=0; j< len; j++){
-			apage->data[apageDataOffset + j] = tpage.data[tpage.slot[-i].offset + j];
-		}
+		memcpy(&apage->data[apageDataOffset], obj, len);
 		apage->slot[-i].offset = apageDataOffset;
 		//get the new apageDataOffset : += 
 		Two alignsize = 4 * ((obj->header.length / 4) + 1);
-		unused = unused + alignsize - obj->header.length;
 		apageDataOffset = apageDataOffset + sizeof(ObjectHdr) + alignsize;
 	}
 	//save the last slot(slotNo).
 	if(slotNo != -1){
-		obj = &tpage.data[tpage.slot[-slotNo].offset];
+		obj = (Object*) &tpage.data[tpage.slot[-slotNo].offset];
 		len = sizeof(ObjectHdr) + obj->header.length;
-		for(int j=0; j< len; j++){
-			apage->data[apageDataOffset + j] = tpage.data[tpage.slot[-slotNo].offset + j];
-		}
+		memcpy(&apage->data[apageDataOffset], obj, len);
 		apage->slot[-slotNo].offset = apageDataOffset;
 		//get the new apageDataOffset : += 
 		Two alignsize = 4 * ((obj->header.length / 4) + 1);
-		unused = unused + alignsize - obj->header.length;
 		apageDataOffset = apageDataOffset + sizeof(ObjectHdr) + alignsize;
 	}
 	//update free & unused.
 	apage->header.free = apageDataOffset;
-	apage->header.unused = unused;
-	*/
+	apage->header.unused = 0;
 	/* ENDOFNEWCODE */
 
     
