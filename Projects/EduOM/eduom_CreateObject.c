@@ -185,7 +185,7 @@ Four eduom_CreateObject(
 		printf("nearobj is NULL.\n");
 		if((neededSpace <= SP_50SIZE) && rightlist != NULL){
 			printf("getting page from availspacelist.\n");
-			MAKE_PAGEID(pid, fid->volNo, rightlist);
+			MAKE_PAGEID(pid, fid.volNo, rightlist);
 			e = BfM_GetTrain((TrainID*)&pid, (char**)&apage, PAGE_BUF);
 			if(e < 0) ERR(e);
 			printf("Got page number : %d from rightlist = %d\n", pid.pageNo, rightlist);
@@ -197,7 +197,7 @@ Four eduom_CreateObject(
 		else{
 			printf("getting the last page of the file.\n");
 			//get the last page of the file. Check if it has enough free space.
-			MAKE_PAGEID(pid, fid->volNo, catEntry->lastPage);
+			MAKE_PAGEID(pid, fid.volNo, catEntry->lastPage);
 			e = BfM_GetTrain(&pid, (char**)&apage, PAGE_BUF);
 			if(e < 0) ERR(e);
 			if(SP_FREE(apage) >= neededSpace){
