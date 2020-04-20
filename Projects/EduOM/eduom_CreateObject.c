@@ -185,10 +185,10 @@ Four eduom_CreateObject(
 		printf("nearobj is NULL.\n");
 		if((neededSpace <= SP_50SIZE) && rightlist != NULL){
 			printf("getting page from availspacelist.\n");
-			e = BfM_GetTrain((TrainID*)&rightlist, (char**)&apage, PAGE_BUF);
+			MAKE_PAGEID(pid, fid->volNo, rightlist);
+			e = BfM_GetTrain((TrainID*)&pid, (char**)&apage, PAGE_BUF);
 			if(e < 0) ERR(e);
-			pid = apage->header.pid;
-			printf("Got page number : %d from rightlist = %d\n", pid.pageNo, rightlist.pageNo);
+			printf("Got page number : %d from rightlist = %d\n", pid.pageNo, rightlist);
 			e = om_RemoveFromAvailSpaceList(catObjForFile, &pid, apage);
 			if (e < 0) ERRB1(e, &pid, PAGE_BUF);
 			EduOM_CompactPage(apage, -1);
@@ -197,19 +197,20 @@ Four eduom_CreateObject(
 		else{
 			printf("getting the last page of the file.\n");
 			//get the last page of the file. Check if it has enough free space.
-			e = BfM_GetTrain(&catEntry->lastPage, (char**)&apage, PAGE_BUF);
+			MAKE_PAGEID(pid, fid->volNo, catEntry->lastPage);
+			e = BfM_GetTrain(&pid, (char**)&apage, PAGE_BUF);
 			if(e < 0) ERR(e);
 			if(SP_FREE(apage) >= neededSpace){
 				printf("got last page.\n");
-				pid = apage->header.pid;
+				//pid = apage->header.pid;
 				EduOM_CompactPage(apage, -1);
 			}
 			else{
 				printf("allocating a new page..\n");
 				//allocate new page.
-				e = RDsM_AllocTrains(fid.volNo, firstExt, &nearPid, catEntry->eff, 1, PAGESIZE2, &pid);
+				e = BfM_FreeTrain(&pid, PAGE_BUF);
 				if(e < 0) ERR(e);
-				e = BfM_FreeTrain(&catEntry->lastPage, PAGE_BUF);
+				e = RDsM_AllocTrains(fid.volNo, firstExt, &nearPid, catEntry->eff, 1, PAGESIZE2, &pid);
 				if(e < 0) ERR(e);
 				e = BfM_GetNewTrain(&pid, (char **)&apage, PAGE_BUF);
 				if(e < 0) ERR(e);
