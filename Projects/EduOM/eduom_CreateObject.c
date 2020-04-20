@@ -201,7 +201,7 @@ Four eduom_CreateObject(
 			e = BfM_GetTrain(&pid, (char**)&apage, PAGE_BUF);
 			if(e < 0) ERR(e);
 			if(SP_FREE(apage) >= neededSpace){
-				printf("got last page.\n");
+				printf("got last page: %d\n", pid.pageNo);
 				//pid = apage->header.pid;
 				EduOM_CompactPage(apage, -1);
 			}
