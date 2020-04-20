@@ -250,7 +250,7 @@ Four eduom_CreateObject(
 	}
 	printf("new object is saved to slot number %d\n", j);
 	if(j == apage->header.nSlots){
-		prinf("nSlots ++.\n");
+		printf("nSlots ++.\n");
 		apage->slot[-j].offset = i;
 		e = om_GetUnique(&pid, &(apage->slot[-j].unique));
 		if (e < 0) ERRB1(e, &pid, PAGE_BUF);
