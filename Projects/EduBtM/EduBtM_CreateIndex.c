@@ -106,7 +106,7 @@ Four EduBtM_CreateIndex(
 	e = btm_AllocPage(catObjForFile, (PageID*)&pFid, rootPid);
 	if (e < 0) ERR(e);
 	//3. Initialize root.
-	e = btm_InitLeaf(rootPid, true, isTmp);
+	e = btm_InitLeaf(rootPid, TRUE , isTmp);
 	if (e < 0) ERR(e);
 	//4. Free buffer.
 	e = BfM_FreeTrain((TrainID*)catObjForFile, PAGE_BUF);
