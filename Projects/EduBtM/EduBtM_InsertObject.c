@@ -92,7 +92,7 @@ Four EduBtM_InsertObject(
     Pool     *dlPool,		/* INOUT pool of dealloc list */
     DeallocListElem *dlHead) /* INOUT head of the dealloc list */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     int i;
     Four e;			/* error number */
     Boolean lh;			/* for spliting */
@@ -121,6 +121,25 @@ Four EduBtM_InsertObject(
         if(kdesc->kpart[i].type!=SM_INT && kdesc->kpart[i].type!=SM_VARSTRING)
             ERR(eNOTSUPPORTED_EDUBTM);
     }
+	
+	/* NEWCODE */
+	//1. get the catalog.
+	e = BfM_GetTrain((TrainID*)catObjForFile, (char**)&catPage, PAGE_BUF);
+	if(e < 0) ERR(e);
+	GET_PTR_TO_CATENTRY_FOR_BTREE(catObjForFile, catPage, catEntry);
+	MAKE_PHYSICALFILEID(pFid, catEntry->fid.volNo, catEntry->firstPage);
+	//2. call edubfm_insert() -> insert <object key, object id> pair into the B+ Tree.
+	e = bfm_Insert(catObjForFile, catEntry->firstPage, kdesc, kval, oid, &lf, &lh, &item, dlPool, dlHead);
+	if(e < 0) ERR(e);
+	//3. if root page splits (lh is true), then call edubfm_root_insert().
+	if(lh){
+		e = bfm_root_insert(catObjForFile, root, item);
+		if(e < 0) ERR(e);
+	}
+	//4. free buffer page.
+	e = BfM_FreeTrain((TrainID*)catObjForFile, PAGE_BUF);
+	if(e < 0) ERR(e);
+	/* ENDOFNEWCODE */
     
     
     return(eNOERROR);
