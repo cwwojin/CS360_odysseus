@@ -97,7 +97,7 @@ Four EduBtM_DeleteObject(
     Pool     *dlPool,		/* INOUT pool of dealloc list elements */
     DeallocListElem *dlHead) /* INOUT head of the dealloc list */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     int		i;
     Four    e;			/* error number */
     Boolean lf;			/* flag for merging */
@@ -130,9 +130,35 @@ Four EduBtM_DeleteObject(
 
 
 	/* Delete following 3 lines before implement this function */
+	/*
 	printf("Implementation of delete operation is optional (not compulsory),\n");
 	printf("and delete operation has not been implemented yet.\n");
 	return(eNOTSUPPORTED_EDUBTM);
+	*/
+	
+	/* NEWCODE */
+	//1. get the catalog.
+	e = BfM_GetTrain((TrainID*)catObjForFile, (char**)&catPage, PAGE_BUF);
+	if(e < 0) ERR(e);
+	GET_PTR_TO_CATENTRY_FOR_BTREE(catObjForFile, catPage, catEntry);
+	//MAKE_PHYSICALFILEID(pFid, catEntry->fid.volNo, catEntry->firstPage);
+	//2. call edubtm_Delete() 
+	e = btm_Delete(catObjForFile, root, kdesc, kval, oid, &lf, &lh, &item, dlPool, dlHead);
+	if(e < 0) ERR(e);
+	//3. if root underflow, call btm_root_delete().
+	if(!lf){
+		e = btm_root_delete(catObjForFile, root, item);
+		if(e < 0) ERR(e);
+	}
+	//4. if root page splits (lh is true), then call edubtm_root_insert().
+	if(lh){
+		e = btm_root_insert(catObjForFile, root, item);
+		if(e < 0) ERR(e);
+	}
+	//5. free buffer page.
+	e = BfM_FreeTrain((TrainID*)catObjForFile, PAGE_BUF);
+	if(e < 0) ERR(e);
+	/* ENDOFNEWCODE */
 
     
     return(eNOERROR);
