@@ -147,7 +147,7 @@ Four EduBtM_DeleteObject(
 	if(e < 0) ERR(e);
 	//3. if root underflow, call btm_root_delete().
 	if(!lf){
-		e = btm_root_delete(pFid, root, dlPool, dlHead);
+		e = btm_root_delete(&pFid, root, dlPool, dlHead);
 		if(e < 0) ERR(e);
 	}
 	//4. if root page splits (lh is true), then call edubtm_root_insert().
