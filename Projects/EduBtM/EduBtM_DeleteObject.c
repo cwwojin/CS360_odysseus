@@ -146,7 +146,7 @@ Four EduBtM_DeleteObject(
 	e = btm_Delete(catObjForFile, root, kdesc, kval, oid, &lf, &lh, &item, dlPool, dlHead);
 	if(e < 0) ERR(e);
 	//3. if root underflow, call btm_root_delete().
-	if(!lf){
+	if(lf){
 		e = btm_root_delete(&pFid, root, dlPool, dlHead);
 		if(e < 0) ERR(e);
 	}
