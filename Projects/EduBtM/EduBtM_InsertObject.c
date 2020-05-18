@@ -134,7 +134,7 @@ Four EduBtM_InsertObject(
 	//3. if root page splits (lh is true), then call edubtm_root_insert().
 	if(lh){
 		printf("Root page : %d split, so calling root_insert()..\n", root->pageNo);
-		e = btm_root_insert(catObjForFile, root, item);
+		e = btm_root_insert(catObjForFile, root, &item);
 		if(e < 0) ERR(e);
 	}
 	//4. free buffer page.
