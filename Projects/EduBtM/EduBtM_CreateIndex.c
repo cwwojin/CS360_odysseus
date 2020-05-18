@@ -103,10 +103,14 @@ Four EduBtM_CreateIndex(
 	GET_PTR_TO_CATENTRY_FOR_BTREE(catObjForFile, catPage, catEntry);
 	//2. Allocate the first page of the file : catalog->firstPage.
 	MAKE_PHYSICALFILEID(pFid, catEntry->fid.volNo, catEntry->firstPage);
-	/* Allocate a new page to be used as a B+ tree index page */
 	e = btm_AllocPage(catObjForFile, (PageID*)&pFid, rootPid);
 	if (e < 0) ERR(e);
-	
+	//3. Initialize root.
+	e = btm_InitLeaf(rootPid, true, isTmp);
+	if (e < 0) ERR(e);
+	//4. Free buffer.
+	e = BfM_FreeTrain((TrainID*)catObjForFile, PAGE_BUF);
+	if(e < 0) ERR(e);
 	/* ENDOFNEWCODE */
 
 
