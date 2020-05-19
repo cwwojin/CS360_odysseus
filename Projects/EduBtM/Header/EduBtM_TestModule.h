@@ -73,7 +73,7 @@
 #define _EDUBTM_INSERTOBJECT_	TRUE
 #define _EDUBTM_DELETEOBJECT_	TRUE
 #define _EDUBTM_FETCH_			TRUE
-#define _EDUBTM_FETCHNEXT_		FALSE   //TRUE
+#define _EDUBTM_FETCHNEXT_		TRUE
 
 /***************************************************************************/
 
