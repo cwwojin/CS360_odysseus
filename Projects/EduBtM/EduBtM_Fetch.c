@@ -104,7 +104,7 @@ Four EduBtM_Fetch(
     Four     stopCompOp,	/* IN comparison operator of stop condition */
     BtreeCursor *cursor)	/* OUT Btree Cursor */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     int i;
     Four e;		   /* error number */
 
@@ -117,6 +117,27 @@ Four EduBtM_Fetch(
         if(kdesc->kpart[i].type!=SM_INT && kdesc->kpart[i].type!=SM_VARSTRING)
             ERR(eNOTSUPPORTED_EDUBTM);
     }
+	
+	/* NEWCODE */
+	//1. cases depending on startCompOp value.
+	switch(startCompOp){
+		case SM_BOF :
+			//get the first object -> edubtm_FirstObject().
+			e = btm_FirstObject(root, kdesc, stopKval, stopCompOp, cursor);
+			if (e < 0) ERR(e);
+			break;
+		case SM_EOF :
+			//get the last object -> edubtm_LastObject().
+			e = btm_LastObject(root, kdesc, stopKval, stopCompOp, cursor);
+			if (e < 0) ERR(e);
+			break;
+		default :
+			//call edubtm_Fetch().
+			e = btm_Fetch(root, kdesc, startKval, startCompOp, stopKval, stopCompOp, cursor);
+			if (e < 0) ERR(e);
+			break;
+	}
+	/* ENDOFNEWCODE */
     
 
     return(eNOERROR);
@@ -154,7 +175,7 @@ Four edubtm_Fetch(
     Four                stopCompOp,     /* IN comparison operator of stop condition */
     BtreeCursor         *cursor)        /* OUT Btree Cursor */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Four                e;              /* error number */
     Four                cmp;            /* result of comparison */
     Two                 idx;            /* index */
