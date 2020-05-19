@@ -134,7 +134,7 @@ Four EduBtM_FetchNext(
 	
 	/* NEWCODE */
 	//1. Call edubtm_FetchNext() to retrieve the next object, given the stop condition.
-	e = btm_FetchNext(kdesc, Kval, compOp, current, next);
+	e = btm_FetchNext(kdesc, kval, compOp, current, next);
 	if (e < 0) ERR(e);
 	/* ENDOFNEWCODE*/
 
