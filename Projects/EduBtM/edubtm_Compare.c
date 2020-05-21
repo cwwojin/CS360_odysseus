@@ -143,8 +143,8 @@ Four edubtm_KeyCompare(
 				memcpy(&len1, &key1->val[kdesc->kpart[j].offset], sizeof(Two));
 				memcpy(&len2, &key2->val[kdesc->kpart[j].offset], sizeof(Two));
 				//save strings to left, right.
-				memcpy(&left, &key1->val[kdesc->kpart[j].offset + sizeof(Two)], len1);
-				memcpy(&right, &key2->val[kdesc->kpart[j].offset + sizeof(Two)], len2);
+				left = &key1->val[kdesc->kpart[j].offset + sizeof(Two)]
+				right = &key2->val[kdesc->kpart[j].offset + sizeof(Two)];
 				//compare.
 				if(strcmp(left, right) == 0){
 					result = EQUAL;
