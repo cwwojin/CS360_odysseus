@@ -112,7 +112,15 @@ Four edubtm_FreePages(
 	if(e < 0) ERR(e);
 	//2. If the page is an INTERNAL page, then recursively free all child pages.
 	if((apage->hdr.type & INTERNAL) == INTERNAL){
-		
+		for(i=0; i < apage->hdr.nSlots; i++){	//for slot[0] ~ slot[-(nSlots - 1)].
+			//access the internal entry.
+			iEntryOffset = apage->slot[-i].offset;
+			iEntry = &apage->data[iEntryOffset];
+			MAKE_PAGEID(tPid, pFid->volNo, iEntry->spid);
+			//free the child page.
+			e = edubtm_FreePages(pFid, &tPid, dlPool, dlHead);
+			if(e < 0) ERR(e);
+		}
 	}
 	//3. Free the page.
 	apage->hdr.type = FREEPAGE;
