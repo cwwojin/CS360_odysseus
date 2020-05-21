@@ -127,7 +127,23 @@ Four edubtm_InitLeaf(
 	
 	/* NEWCODE */
 	//1. get the target page into a buffer. use BfM_GetNewTrain().
-	e = BfM_GetNewTrain((TrainID*) leaf, (char**) &page, PAGE_BUF);
+	e = BfM_GetNewTrain((TrainID*)leaf, (char**)&page, PAGE_BUF);
+	if(e < 0) ERR(e);
+	//2. initialize page header.
+	page->hdr.flags = BTREE_PAGE_TYPE;	//set flags as BTREE_PAGE_TYPE
+	page->hdr.type = page->hdr.type | LEAF;	//set LEAF bit, set ROOT bit only if root is TRUE.
+	if(root){
+		page->hdr.type = page->hdr.type | ROOT;
+	}
+	page->hdr.nSlots = 0;
+	page->hdr.free = 0;
+	page->hdr.unused = 0;
+	page->hdr.prevPage = NIL;
+	page->hdr.nextPage = NIL;
+	//3. set dirty & free buffer.
+	e = BfM_SetDirty((TrainID*)leaf, PAGE_BUF);
+	if(e < 0) ERRB1(e, leaf, PAGE_BUF);
+	e = BfM_FreeTrain((TrainID*)leaf, PAGE_BUF);
 	if(e < 0) ERR(e);
 	/* ENDOFNEWCODE */
 
