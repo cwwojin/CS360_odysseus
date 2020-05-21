@@ -149,7 +149,7 @@ Four edubtm_KeyCompare(
 				if(strcmp(left, right) == 0){
 					result = EQUAL;
 				}
-				else if(strcmp(left, right) < 0){
+				else if(strcmp(left, right) > 0){
 					result = GREATER;
 				}
 				else{
