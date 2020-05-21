@@ -122,25 +122,50 @@ Four edubtm_KeyCompare(
 	/* NEWCODE */
 	i = kdesc->nparts;	//#. of key parts.
 	for(j=0; j < i; j++){	//compare all key parts.
-		kpartSize = kdesc->kpart[j].length;
 		switch(kdesc->kpart[j].type){
 			case SM_INT :
+				kpartSize = kdesc->kpart[j].length;
 				//save key values to i1, i2.
 				memcpy(&i1, &key1->val[kdesc->kpart[j].offset], kpartSize);
 				memcpy(&i2, &key2->val[kdesc->kpart[j].offset], kpartSize);
+				if(i1 == i2){
+					result = EQUAL;
+				}
+				else if(i1 > i2){
+					result = GREATER;
+				}
+				else{
+					result = LESS;
+				}
 				break;
 			case SM_VARSTRING :
-				
+				//save key string length values to len1, len2 (Two).
+				memcpy(&len1, &key1->val[kdesc->kpart[j].offset], sizeof(Two));
+				memcpy(&len2, &key2->val[kdesc->kpart[j].offset], sizeof(Two));
+				//save strings to left, right.
+				memcpy(&left, &key1->val[kdesc->kpart[j].offset + sizeof(Two)], len1);
+				memcpy(&right, &key2->val[kdesc->kpart[j].offset + sizeof(Two)], len2);
+				//compare.
+				if(*left == *right){
+					result = EQUAL;
+				}
+				else if(*left > *right){
+					result = GREATER;
+				}
+				else{
+					result = LESS;
+				}
 				break;
 			default :
 				break;
 		}
+		if(result != EQUAL) break;
 	}
 	
 	
 	/* ENDOFNEWCODE */
 
         
-    return(EQUAL);
+    return result;
     
 }   /* edubtm_KeyCompare() */
