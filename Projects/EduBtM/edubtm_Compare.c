@@ -93,7 +93,7 @@ Four edubtm_KeyCompare(
     KeyValue                    *key1,		/* IN the first key value */
     KeyValue                    *key2)		/* IN the second key value */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     register unsigned char      *left;          /* left key value */
     register unsigned char      *right;         /* right key value */
     Two                         i;              /* index for # of key parts */
@@ -116,6 +116,12 @@ Four edubtm_KeyCompare(
         if(kdesc->kpart[i].type!=SM_INT && kdesc->kpart[i].type!=SM_VARSTRING)
             ERR(eNOTSUPPORTED_EDUBTM);
     }
+	
+	/* NEWCODE */
+	i = kdesc->nparts;	//#. of key parts.
+	
+	
+	/* ENDOFNEWCODE */
 
         
     return(EQUAL);
