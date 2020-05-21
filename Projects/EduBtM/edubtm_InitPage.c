@@ -87,7 +87,7 @@ Four edubtm_InitInternal(
     Boolean root,		/* IN Is it root ? */
     Boolean isTmp)              /* IN Is it temporary ? - COOKIE12FEB98 */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Four e;			/* error number */
     BtreeInternal *page;	/* a page pointer */
 
@@ -121,9 +121,15 @@ Four edubtm_InitLeaf(
     Boolean root,		/* IN Is it root ? */
     Boolean isTmp)              /* IN Is it temporary ? */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Four e;			/* error number */
     BtreeLeaf *page;		/* a page pointer */
+	
+	/* NEWCODE */
+	//1. get the target page into a buffer. use BfM_GetNewTrain().
+	e = BfM_GetNewTrain((TrainID*) leaf, (char**) &page, PAGE_BUF);
+	if(e < 0) ERR(e);
+	/* ENDOFNEWCODE */
 
 
     
