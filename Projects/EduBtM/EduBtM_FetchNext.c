@@ -180,7 +180,9 @@ Four edubtm_FetchNext(
     ObjectID 		*oidArray;	/* array of ObjectIDs */
     BtreeLeaf 		*apage;		/* pointer to a buffer holding a leaf page */
     BtreeOverflow 	*opage;		/* pointer to a buffer holding an overflow page */
-    btm_LeafEntry 	*entry;		/* pointer to a leaf entry */    
+    btm_LeafEntry 	*entry;		/* pointer to a leaf entry */   
+	
+	Two		idx;
     
     
     /* Error check whether using not supported functionality by EduBtM */
@@ -194,16 +196,50 @@ Four edubtm_FetchNext(
 	/* NEWCODE */
 	//1. get leaf page into buffer. set LEAF as the current leaf page.
 	leaf = current->leaf;
+	idx = current->slotNo + 1;
 	e = BfM_GetTrain((TrainID*) &leaf, (char**)&apage, PAGE_BUF);
 	if(e < 0) ERR(e);
-	//2. start the search from the next slot, which is (current->slotNo + 1).
-	i = current->slotNo;
-	while(i < apage->hdr.nSlots){
-		entry = &apage->data[apage->slot[-i]];
-		cmp = btm_KeyCompare(kdesc, (KeyValue*) &entry->klen, kval);
-		//cmp = edubtm_KeyCompare(kdesc, kval, (KeyValue*) &entry->klen);
+	//2. see if current slotNo is the last slot or not. If so, we should get the NEXT leaf page.
+	if(current->slotNo == apage->hdr.nSlots - 1){
+		e = BfM_FreeTrain((TrainID*) &leaf, PAGE_BUF);
+		if(e < 0) ERR(e);
+		MAKE_PAGEID(leaf, leaf->volNo, apage->hdr.nextPage);
+		e = BfM_GetTrain((TrainID*) &leaf, (char**)&apage, PAGE_BUF);
+		if(e < 0) ERR(e);
+		idx = 0;
+	}
+	//3. get the target leaf entry. it should be in current->slotNo + 1 or slot #0.
+	entry = &apage->data[apage->slot[-idx]];
+	cmp = btm_KeyCompare(kdesc, (KeyValue*) &entry->klen, kval);
+	switch(compOp){			//IF the stop condition is NOT satisfied, then set the next cursor's flag to CURSOR_EOS.
+		case SM_EQ:
+			if(cmp != EQUAL){
+				next->flag = CURSOR_EOS;
+			}
+			break;
+		case SM_LT:
+			if(cmp != LESS){
+				next->flag = CURSOR_EOS;
+			}
+			break;
+		case SM_LE:
+			if(cmp != LESS && cmp != EQUAL){
+				next->flag = CURSOR_EOS;
+			}
+			break;
+		case SM_GT:
+			if(cmp != GREATER){
+				next->flag = CURSOR_EOS;
+			}
+			break;
+		case SM_GE:
+			if(cmp != GREATER && cmp != EQUAL){
+				next->flag = CURSOR_EOS;
+			}
+			break;
+	}
+	if(next->flag != CURSOR_EOS){	//stop condition satisfied. return this object.
 		
-		i++;
 	}
 	/* ENDOFNEWCODE */
 
