@@ -92,7 +92,7 @@ Four edubtm_FreePages(
     Pool                *dlPool,        /* INOUT pool of dealloc list elements */
     DeallocListElem     *dlHead)        /* INOUT head of the dealloc list */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Four                e;              /* error number */
     Two                 i;              /* index */
     Two                 alignedKlen;    /* aligned length of the key length */
@@ -105,6 +105,29 @@ Four edubtm_FreePages(
     btm_InternalEntry   *iEntry;        /* an internal entry */
     btm_LeafEntry       *lEntry;        /* a leaf entry */
     DeallocListElem     *dlElem;        /* an element of dealloc list */
+	
+	/* NEWCODE */
+	//1. get the page.
+	e = BfM_GetNewTrain((TrainID*)curPid, (char**)&apage, PAGE_BUF);
+	if(e < 0) ERR(e);
+	//2. If the page is an INTERNAL page, then recursively free all child pages.
+	if((apage->hdr.type & INTERNAL) == INTERNAL){
+		
+	}
+	//3. Free the page.
+	apage->hdr.type = FREEPAGE;
+	e = Util_getElementFromPool(dlPool, &dlElem);
+	if (e < 0) ERR(e);
+	dlElem->type = DL_PAGE;
+	dlElem->elem.pid= *curPid; /* ID of the deallocated page */
+	dlElem->next = dlHead->next;
+	dlHead->next = dlElem;
+	//4. Set dirty & free buffer.
+	e = BfM_SetDirty((TrainID*)curPid, PAGE_BUF);
+	if(e < 0) ERRB1(e, curPid, PAGE_BUF);
+	e = BfM_FreeTrain((TrainID*)curPid, PAGE_BUF);
+	if(e < 0) ERR(e);
+	/* ENDOFNEWCODE */
 
 
     
