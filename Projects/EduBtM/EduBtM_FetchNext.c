@@ -203,7 +203,7 @@ Four edubtm_FetchNext(
 	if(current->slotNo == apage->hdr.nSlots - 1){
 		e = BfM_FreeTrain((TrainID*) &leaf, PAGE_BUF);
 		if(e < 0) ERR(e);
-		MAKE_PAGEID(leaf, leaf->volNo, apage->hdr.nextPage);
+		MAKE_PAGEID(leaf, leaf.volNo, apage->hdr.nextPage);
 		e = BfM_GetTrain((TrainID*) &leaf, (char**)&apage, PAGE_BUF);
 		if(e < 0) ERR(e);
 		idx = 0;
