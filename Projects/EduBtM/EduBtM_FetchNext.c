@@ -134,7 +134,7 @@ Four EduBtM_FetchNext(
 	
 	/* NEWCODE */
 	//1. Call edubtm_FetchNext() to retrieve the next object, given the stop condition.
-	e = btm_FetchNext(kdesc, kval, compOp, current, next);
+	e = edubtm_FetchNext(kdesc, kval, compOp, current, next);
 	if (e < 0) ERR(e);
 	/* ENDOFNEWCODE*/
 
@@ -239,8 +239,15 @@ Four edubtm_FetchNext(
 			break;
 	}
 	if(next->flag != CURSOR_EOS){	//stop condition satisfied. return this object.
-		
+		next->flag = CURSOR_ON;
+		next->leaf = leaf;
+		next->slotNo = idx;
+		alignedKlen = ALIGNED_LENGTH(entry->klen);
+		next->oid = (ObjectID) entry->kval[alignedKlen];
 	}
+	//4. free the buffer.
+	e = BfM_FreeTrain((TrainID*) &leaf, PAGE_BUF);
+	if(e < 0) ERR(e);
 	/* ENDOFNEWCODE */
 
     
