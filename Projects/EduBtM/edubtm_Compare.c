@@ -108,6 +108,8 @@ Four edubtm_KeyCompare(
     double                      d1, d2;		/* double values */
     PageID                      pid1, pid2;	/* PageID values */
     OID                         oid1, oid2;     /* OID values */
+	
+	Four			result;		//RESULT.
     
 
     /* Error check whether using not supported functionality by EduBtM */
@@ -121,6 +123,18 @@ Four edubtm_KeyCompare(
 	i = kdesc->nparts;	//#. of key parts.
 	for(j=0; j < i; j++){	//compare all key parts.
 		kpartSize = kdesc->kpart[j].length;
+		switch(kdesc->kpart[j].type){
+			case SM_INT :
+				//save key values to i1, i2.
+				memcpy(&i1, &key1->val[kdesc->kpart[j].offset], kpartSize);
+				memcpy(&i2, &key2->val[kdesc->kpart[j].offset], kpartSize);
+				break;
+			case SM_VARSTRING :
+				
+				break;
+			default :
+				break;
+		}
 	}
 	
 	
