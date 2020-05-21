@@ -97,7 +97,7 @@ Boolean edubtm_BinarySearchInternal(
     KeyValue      	*kval,		/* IN key value */
     Two          	*idx)		/* OUT index to be returned */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Two  		low;		/* low index */
     Two  		mid;		/* mid index */
     Two  		high;		/* high index */
@@ -112,6 +112,33 @@ Boolean edubtm_BinarySearchInternal(
         if(kdesc->kpart[i].type!=SM_INT && kdesc->kpart[i].type!=SM_VARSTRING)
             ERR(eNOTSUPPORTED_EDUBTM);
     }
+	
+	/* NEWCODE */
+	for(low = 0; low < ipage->hdr.nSlots; low++){
+		entry = &ipage->data[ipage->slot[-low]];	//get the internal entry.
+		cmp = edubtm_KeyCompare(kdesc, kval, (KeyValue*) &entry->klen);
+		switch(cmp){
+			case EQUAL :	//found equal key. return here.
+				*idx = low;
+				return TRUE;
+				break;
+			case GREATER :	//move to next.
+				break;
+			case LESS :	//if low==0, then all the keys are larger than KVAL, so return -1.
+				if(low == 0){
+					*idx = -1;
+					return FALSE;
+				}
+				else{
+					*idx = low - 1;
+					return FALSE;
+				}
+				break;
+			default :
+				break;
+		}
+	}
+	/* ENDOFNEWCODE */
 
     
 } /* edubtm_BinarySearchInternal() */
@@ -145,7 +172,7 @@ Boolean edubtm_BinarySearchLeaf(
     KeyValue  		*kval,		/* IN key value */
     Two       		*idx)		/* OUT index to be returned */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Two  		low;		/* low index */
     Two  		mid;		/* mid index */
     Two  		high;		/* high index */
@@ -160,6 +187,33 @@ Boolean edubtm_BinarySearchLeaf(
         if(kdesc->kpart[i].type!=SM_INT && kdesc->kpart[i].type!=SM_VARSTRING)
             ERR(eNOTSUPPORTED_EDUBTM);
     }
+	
+	/* NEWCODE */
+	for(low = 0; low < lpage->hdr.nSlots; low++){
+		entry = &lpage->data[lpage->slot[-low]];	//get the leaf entry.
+		cmp = edubtm_KeyCompare(kdesc, kval, (KeyValue*) &entry->klen);
+		switch(cmp){
+			case EQUAL :	//found equal key. return here.
+				*idx = low;
+				return TRUE;
+				break;
+			case GREATER :	//move to next.
+				break;
+			case LESS :	//if low==0, then all the keys are larger than KVAL, so return -1.
+				if(low == 0){
+					*idx = -1;
+					return FALSE;
+				}
+				else{
+					*idx = low - 1;
+					return FALSE;
+				}
+				break;
+			default :
+				break;
+		}
+	}
+	/* ENDOFNEWCODE */
 
     
 } /* edubtm_BinarySearchLeaf() */
