@@ -114,7 +114,7 @@ Four edubtm_FreePages(
 	if((apage->any.hdr.type & INTERNAL) == INTERNAL){
 		for(i=0; i < apage->bi.hdr.nSlots; i++){	//for slot[0] ~ slot[-(nSlots - 1)].
 			//access the internal entry.
-			iEntryOffset = apage->bi.slot[-i].offset;
+			iEntryOffset = apage->bi.slot[-i];
 			iEntry = &apage->bi.data[iEntryOffset];
 			MAKE_PAGEID(tPid, pFid->volNo, iEntry->spid);
 			//free the child page.
