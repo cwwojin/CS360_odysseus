@@ -89,8 +89,8 @@ Four EduBtM_DropIndex(
 
 
     /*@ Free all pages concerned with the root. */
-	e = btm_FreePages(pFid, rootPid, dlPool, dlHead);
-	//e = edubtm_FreePages(pFid, rootPid, dlPool, dlHead);
+	//e = btm_FreePages(pFid, rootPid, dlPool, dlHead);
+	e = edubtm_FreePages(pFid, rootPid, dlPool, dlHead);
 	if(e < 0) ERR(e);
 
 	
