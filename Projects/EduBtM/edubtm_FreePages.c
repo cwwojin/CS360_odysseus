@@ -111,11 +111,11 @@ Four edubtm_FreePages(
 	e = BfM_GetNewTrain((TrainID*)curPid, (char**)&apage, PAGE_BUF);
 	if(e < 0) ERR(e);
 	//2. If the page is an INTERNAL page, then recursively free all child pages.
-	if((apage->hdr.type & INTERNAL) == INTERNAL){
-		for(i=0; i < apage->hdr.nSlots; i++){	//for slot[0] ~ slot[-(nSlots - 1)].
+	if((apage->any.hdr.type & INTERNAL) == INTERNAL){
+		for(i=0; i < apage->bi.hdr.nSlots; i++){	//for slot[0] ~ slot[-(nSlots - 1)].
 			//access the internal entry.
-			iEntryOffset = apage->slot[-i].offset;
-			iEntry = &apage->data[iEntryOffset];
+			iEntryOffset = apage->bi.slot[-i].offset;
+			iEntry = &apage->bi.data[iEntryOffset];
 			MAKE_PAGEID(tPid, pFid->volNo, iEntry->spid);
 			//free the child page.
 			e = edubtm_FreePages(pFid, &tPid, dlPool, dlHead);
@@ -123,7 +123,7 @@ Four edubtm_FreePages(
 		}
 	}
 	//3. Free the page.
-	apage->hdr.type = FREEPAGE;
+	apage->any.hdr.type = FREEPAGE;
 	e = Util_getElementFromPool(dlPool, &dlElem);
 	if (e < 0) ERR(e);
 	dlElem->type = DL_PAGE;
