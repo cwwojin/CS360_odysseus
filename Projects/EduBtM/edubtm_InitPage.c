@@ -90,7 +90,28 @@ Four edubtm_InitInternal(
 	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Four e;			/* error number */
     BtreeInternal *page;	/* a page pointer */
-
+	
+	/* NEWCODE */
+	//1. get the target page into a buffer. use BfM_GetNewTrain().
+	e = BfM_GetNewTrain((TrainID*)internal, (char**)&page, PAGE_BUF);
+	if(e < 0) ERR(e);
+	//2. initialize page header.
+	page->hdr.pid = *internal;
+	page->hdr.flags = BTREE_PAGE_TYPE;	//set flags as BTREE_PAGE_TYPE
+	page->hdr.type = page->hdr.type | INTERNAL;	//set LEAF bit, set ROOT bit only if root is TRUE.
+	if(root){
+		page->hdr.type = page->hdr.type | ROOT;
+	}
+	page->hdr.nSlots = 0;
+	page->hdr.free = 0;
+	page->hdr.unused = 0;
+	page->hdr.p0 = NIL;
+	//3. set dirty & free buffer.
+	e = BfM_SetDirty((TrainID*)internal, PAGE_BUF);
+	if(e < 0) ERRB1(e, internal, PAGE_BUF);
+	e = BfM_FreeTrain((TrainID*)internal, PAGE_BUF);
+	if(e < 0) ERR(e);
+	/* ENDOFNEWCODE */
 
     
     return(eNOERROR);
@@ -130,6 +151,7 @@ Four edubtm_InitLeaf(
 	e = BfM_GetNewTrain((TrainID*)leaf, (char**)&page, PAGE_BUF);
 	if(e < 0) ERR(e);
 	//2. initialize page header.
+	page->hdr.pid = *leaf;
 	page->hdr.flags = BTREE_PAGE_TYPE;	//set flags as BTREE_PAGE_TYPE
 	page->hdr.type = page->hdr.type | LEAF;	//set LEAF bit, set ROOT bit only if root is TRUE.
 	if(root){
