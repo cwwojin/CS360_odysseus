@@ -242,6 +242,7 @@ Four edubtm_FetchNext(
 		next->flag = CURSOR_ON;
 		next->leaf = leaf;
 		next->slotNo = idx;
+		memcpy(&next->key, &entry->klen, entry->klen);
 		alignedKlen = ALIGNED_LENGTH(entry->klen);
 		//next->oid = (ObjectID) entry->kval[alignedKlen];
 		memcpy(&next->oid, &entry->kval[alignedKlen], sizeof(ObjectID));
