@@ -243,7 +243,8 @@ Four edubtm_FetchNext(
 		next->leaf = leaf;
 		next->slotNo = idx;
 		alignedKlen = ALIGNED_LENGTH(entry->klen);
-		next->oid = (ObjectID) entry->kval[alignedKlen];
+		//next->oid = (ObjectID) entry->kval[alignedKlen];
+		memcpy(&next->oid, &entry->kval[alignedKlen], sizeof(struct ObjectID));
 	}
 	//4. free the buffer.
 	e = BfM_FreeTrain((TrainID*) &leaf, PAGE_BUF);
