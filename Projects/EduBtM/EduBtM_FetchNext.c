@@ -190,6 +190,22 @@ Four edubtm_FetchNext(
         if(kdesc->kpart[i].type!=SM_INT && kdesc->kpart[i].type!=SM_VARSTRING)
             ERR(eNOTSUPPORTED_EDUBTM);
     }
+	
+	/* NEWCODE */
+	//1. get leaf page into buffer. set LEAF as the current leaf page.
+	leaf = current->leaf;
+	e = BfM_GetTrain((TrainID*) &leaf, (char**)&apage, PAGE_BUF);
+	if(e < 0) ERR(e);
+	//2. start the search from the next slot, which is (current->slotNo + 1).
+	i = current->slotNo;
+	while(i < apage->hdr.nSlots){
+		entry = &apage->data[apage->slot[-i]];
+		cmp = btm_KeyCompare(kdesc, (KeyValue*) &entry->klen, kval);
+		//cmp = edubtm_KeyCompare(kdesc, kval, (KeyValue*) &entry->klen);
+		
+		i++;
+	}
+	/* ENDOFNEWCODE */
 
     
     return(eNOERROR);
