@@ -146,10 +146,10 @@ Four edubtm_KeyCompare(
 				memcpy(&left, &key1->val[kdesc->kpart[j].offset + sizeof(Two)], len1);
 				memcpy(&right, &key2->val[kdesc->kpart[j].offset + sizeof(Two)], len2);
 				//compare.
-				if(*left == *right){
+				if(strcmp(left, right) == 0){
 					result = EQUAL;
 				}
-				else if(*left > *right){
+				else if(strcmp(left, right) < 0){
 					result = GREATER;
 				}
 				else{
