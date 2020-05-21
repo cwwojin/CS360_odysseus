@@ -242,6 +242,7 @@ Four edubtm_FetchNext(
 		next->flag = CURSOR_ON;
 		next->leaf = leaf;
 		next->slotNo = idx;
+		printf("Going to set cursor's key value : %d to new value : %d, key length is %d.\n", (Four) next->key.val[0], (Four) entry->kval[0], entry->klen);
 		memcpy(&next->key, &entry->klen, entry->klen);
 		alignedKlen = ALIGNED_LENGTH(entry->klen);
 		//next->oid = (ObjectID) entry->kval[alignedKlen];
