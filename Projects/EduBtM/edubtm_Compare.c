@@ -119,6 +119,9 @@ Four edubtm_KeyCompare(
 	
 	/* NEWCODE */
 	i = kdesc->nparts;	//#. of key parts.
+	for(j=0; j < i; j++){	//compare all key parts.
+		kpartSize = kdesc->kpart[j].length;
+	}
 	
 	
 	/* ENDOFNEWCODE */
