@@ -307,7 +307,7 @@ Four edubtm_Fetch(
 		}
 		if(cursor->flag != CURSOR_EOS){	//stop condition satisfied. return this object.
 			cursor->flag = CURSOR_ON;
-			cursor->leaf = root;
+			cursor->leaf = *root;
 			cursor->slotNo = idx;
 			memcpy(&cursor->key, &lEntry->klen, sizeof(Two) + lEntry->klen);
 			alignedKlen = ALIGNED_LENGTH(lEntry->klen);
