@@ -307,7 +307,7 @@ Four edubtm_Fetch(
 		}
 		if(cursor->flag != CURSOR_EOS){	//stop condition satisfied. return this object.
 			cursor->flag = CURSOR_ON;
-			cursor->leaf = leaf;
+			cursor->leaf = root;
 			cursor->slotNo = idx;
 			memcpy(&cursor->key, &lEntry->klen, sizeof(Two) + lEntry->klen);
 			alignedKlen = ALIGNED_LENGTH(lEntry->klen);
@@ -316,7 +316,6 @@ Four edubtm_Fetch(
 		//4. free the buffer.
 		e = BfM_FreeTrain((TrainID*) root, PAGE_BUF);
 		if(e < 0) ERR(e);
-		*/
 	}
 	/* ENDOFNEWCODE */
 
