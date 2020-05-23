@@ -211,20 +211,34 @@ Four edubtm_FetchNext(
 			idx = current->slotNo - 1;
 			break;
 	}
-	
-	
 	e = BfM_GetTrain((TrainID*) &leaf, (char**)&apage, PAGE_BUF);
 	if(e < 0) ERR(e);
-	//2. see if current slotNo is the last slot or not. If so, we should get the NEXT leaf page.
-	//printf("slot no is %d, Nslots : %d\n",current->slotNo, apage->hdr.nSlots);
+	//2. if last slot, get the NEXT leaf page. if first slot, get the PREV leaf page.
 	if(current->slotNo == apage->hdr.nSlots - 1){
 		e = BfM_FreeTrain((TrainID*) &leaf, PAGE_BUF);
 		if(e < 0) ERR(e);
+		if(apage->hdr.nextPage == -1){
+			next->flag = CURSOR_EOS;
+			return(eNOERROR);
+		}
 		MAKE_PAGEID(leaf, leaf.volNo, apage->hdr.nextPage);
 		e = BfM_GetTrain((TrainID*) &leaf, (char**)&apage, PAGE_BUF);
 		if(e < 0) ERR(e);
 		idx = 0;
 	}
+	else if(current->slotNo == 0){
+		e = BfM_FreeTrain((TrainID*) &leaf, PAGE_BUF);
+		if(e < 0) ERR(e);
+		if(apage->hdr.prevPage == -1){
+			next->flag = CURSOR_EOS;
+			return(eNOERROR);
+		}
+		MAKE_PAGEID(leaf, leaf.volNo, apage->hdr.prevPage);
+		e = BfM_GetTrain((TrainID*) &leaf, (char**)&apage, PAGE_BUF);
+		if(e < 0) ERR(e);
+		idx = apage->hdr.nSlots;
+	}
+	
 	//3. get the target leaf entry. it should be in current->slotNo + 1 or slot #0.
 	entry = &apage->data[apage->slot[-idx]];
 	cmp = edubtm_KeyCompare(kdesc, (KeyValue*) &entry->klen, kval);
