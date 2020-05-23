@@ -133,8 +133,8 @@ Four EduBtM_Fetch(
 			break;
 		default :
 			//call edubtm_Fetch().
-			//e = edubtm_Fetch(root, kdesc, startKval, startCompOp, stopKval, stopCompOp, cursor);
-			e = btm_Fetch(root, kdesc, startKval, startCompOp, stopKval, stopCompOp, cursor);
+			e = edubtm_Fetch(root, kdesc, startKval, startCompOp, stopKval, stopCompOp, cursor);
+			//e = btm_Fetch(root, kdesc, startKval, startCompOp, stopKval, stopCompOp, cursor);
 			if (e < 0) ERR(e);
 			break;
 	}
@@ -227,6 +227,7 @@ Four edubtm_Fetch(
 		if(e < 0) ERR(e);
 	}
 	else if((apage->any.hdr.type & LEAF) == LEAF){	//its a leaf.
+		//found = edubtm_BinarySearchLeaf(apage, kdesc, startKval, &idx);
 		found = btm_BinarySearchLeaf(apage, kdesc, startKval, &idx);	//found == TRUE : equal, FALSE : less.
 		if(idx == -1){
 			print("search fail @ leaf page.\n", root->pageNo);
