@@ -230,8 +230,14 @@ Four edubtm_Fetch(
 	}
 	else if((apage->any.hdr.type & LEAF) == LEAF){	//its a leaf.
 		found = edubtm_BinarySearchLeaf(apage, kdesc, startKval, &idx);		//found == TRUE : equal, FALSE : less.
-		if(idx == -1){
-			cursor->flag = CURSOR_EOS;
+		if(idx == -1){	//all the keys in the page are LARGER than startKval.
+			if(startCompOp == SM_GT || startCompOp == SM_GE){
+				//idx = 0;
+			}
+			else{
+				cursor->flag = CURSOR_EOS;
+			}
+			//cursor->flag = CURSOR_EOS;
 		}
 		switch(startCompOp){
 			case SM_EQ :
