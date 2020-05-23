@@ -120,7 +120,7 @@ Four EduBtM_Fetch(
 	
 	/* NEWCODE */
 	//Turn ON the cursor.
-	cursor->flag = CURSOR_ON;
+	cursor->flag = CURSOR_INVALID;
 	//1. cases depending on startCompOp value.
 	switch(startCompOp){
 		case SM_BOF :
@@ -234,7 +234,7 @@ Four edubtm_Fetch(
 		found = btm_BinarySearchLeaf(apage, kdesc, startKval, &idx);	//found == TRUE : equal, FALSE : less.
 		if(idx == -1){
 			printf("search fail @ leaf page.\n", root->pageNo);
-			return(eNOERROR);
+			cursor->flag = CURSOR_EOS;
 		}
 		switch(startCompOp){
 			case SM_EQ :
