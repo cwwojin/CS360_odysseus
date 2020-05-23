@@ -123,6 +123,7 @@ Boolean edubtm_BinarySearchInternal(
 				return TRUE;
 				break;
 			case GREATER :	//move to next.
+				*idx = low;
 				break;
 			case LESS :	//if low==0, then all the keys are larger than KVAL, so return -1.
 				if(low == 0){
@@ -134,10 +135,9 @@ Boolean edubtm_BinarySearchInternal(
 					return FALSE;
 				}
 				break;
-			default :
-				break;
 		}
 	}
+	return FALSE;
 	/* ENDOFNEWCODE */
 
     
