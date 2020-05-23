@@ -125,7 +125,7 @@ Four EduBtM_Fetch(
 	switch(startCompOp){
 		case SM_BOF :
 			//get the first object -> edubtm_FirstObject().
-			e = btm_FirstObject(root, kdesc, stopKval, stopCompOp, cursor);
+			e = edubtm_FirstObject(root, kdesc, stopKval, stopCompOp, cursor);
 			if (e < 0) ERR(e);
 			break;
 		case SM_EOF :
