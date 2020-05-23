@@ -120,7 +120,7 @@ Four edubtm_FirstObject(
 	e = BfM_GetTrain((TrainID*) root, (char**)&apage, PAGE_BUF);
 	if(e < 0) ERR(e);
 	//2. check if root is internal or leaf. apage->any.hdr.type
-	if((apage->any.hdr.type & INTERNAL) == INTERNAL){	//internal -> go to its first child : p0
+	if((apage->any.hdr.type & INTERNAL) == INTERNAL){	//internal -> go to its first child : apage->bi.hdr.p0
 		MAKE_PAGEID(child, root->volNo, apage->bi.hdr.p0);
 		e = BfM_FreeTrain((TrainID*) root, PAGE_BUF);		//CAN free buffer here.
 		if(e < 0) ERR(e);
@@ -128,9 +128,6 @@ Four edubtm_FirstObject(
 		if(e < 0) ERR(e);
 	}
 	else if((apage->any.hdr.type & LEAF) == LEAF){	//its a leaf.
-		if(apage->bl.hdr.prevPage != -1){
-			printf("Not the first page.\n");
-		}
 		lEntryOffset = apage->bl.slot[0];
 		lEntry = &apage->bl.data[lEntryOffset];
 		if(cursor->flag != CURSOR_EOS){	//stop condition satisfied. return this object.
