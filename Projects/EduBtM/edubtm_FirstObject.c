@@ -120,10 +120,8 @@ Four edubtm_FirstObject(
 	e = BfM_GetTrain((TrainID*) root, (char**)&apage, PAGE_BUF);
 	if(e < 0) ERR(e);
 	//2. check if root is internal or leaf. apage->any.hdr.type
-	if((apage->any.hdr.type & INTERNAL) == INTERNAL){	//internal -> go to its first child : 0
-		iEntryOffset = apage->bi.slot[0];
-		iEntry = &apage->bi.data[iEntryOffset];
-		MAKE_PAGEID(child, root->volNo, iEntry->spid);
+	if((apage->any.hdr.type & INTERNAL) == INTERNAL){	//internal -> go to its first child : p0
+		MAKE_PAGEID(child, root->volNo, apage->bi.hdr.p0);
 		e = BfM_FreeTrain((TrainID*) root, PAGE_BUF);		//CAN free buffer here.
 		if(e < 0) ERR(e);
 		e = edubtm_FirstObject(&child, kdesc, stopKval, stopCompOp, cursor);
