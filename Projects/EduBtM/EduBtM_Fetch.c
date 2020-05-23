@@ -215,7 +215,7 @@ Four edubtm_Fetch(
 		//edubtm_BinarySearchInternal(apage, kdesc, startKval, &idx);
 		found = btm_BinarySearchInternal(apage, kdesc, startKval, &idx);	//get the slot#. of the target entry.
 		if(idx == -1){
-			print("search fail @ internal page no.%d\n", root->pageNo);
+			printf("search fail @ internal page no.%d\n", root->pageNo);
 			return(eNOERROR);
 		}
 		iEntryOffset = apage->bi.slot[-idx];
@@ -230,7 +230,7 @@ Four edubtm_Fetch(
 		//found = edubtm_BinarySearchLeaf(apage, kdesc, startKval, &idx);
 		found = btm_BinarySearchLeaf(apage, kdesc, startKval, &idx);	//found == TRUE : equal, FALSE : less.
 		if(idx == -1){
-			print("search fail @ leaf page.\n", root->pageNo);
+			printf("search fail @ leaf page.\n", root->pageNo);
 			return(eNOERROR);
 		}
 		printf("binary search result is %d\n", found);
