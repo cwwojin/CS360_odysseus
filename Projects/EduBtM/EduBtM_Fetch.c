@@ -244,7 +244,14 @@ Four edubtm_Fetch(
 					idx--;
 					if(idx < 0){
 						printf("slotNo < 0..\n");
-						cursor->flag = CURSOR_EOS;
+						if(apage->bl.hdr.prevPage == -1){
+							cursor->flag = CURSOR_EOS;
+						}
+						else{
+							MAKE_PAGEID(prevPid, root->volNo, apage->bl.hdr.prevPage);
+							e = edubtm_Fetch(&prevPid, kdesc, startKval, startCompOp, stopKval, stopCompOp, cursor);
+							if(e < 0) ERR(e);
+						}
 					}
 				}
 				break;
@@ -253,8 +260,14 @@ Four edubtm_Fetch(
 			case SM_GT :
 				idx++;
 				if(idx >= apage->bl.hdr.nSlots){
-					printf("slotNo >= nSlots..\n");
-					cursor->flag = CURSOR_EOS;
+					if(apage->bl.hdr.nextPage == -1){
+						cursor->flag = CURSOR_EOS;
+					}
+					else{
+						MAKE_PAGEID(nextPid, root->volNo, apage->bl.hdr.nextPage);
+						e = edubtm_Fetch(&nextPid, kdesc, startKval, startCompOp, stopKval, stopCompOp, cursor);
+						if(e < 0) ERR(e);
+					}
 				}
 				break;
 			case SM_GE :
@@ -263,10 +276,15 @@ Four edubtm_Fetch(
 				}
 				if(idx >= apage->bl.hdr.nSlots){
 					printf("slotNo >= nSlots..\n");
-					cursor->flag = CURSOR_EOS;
+					if(apage->bl.hdr.nextPage == -1){
+						cursor->flag = CURSOR_EOS;
+					}
+					else{
+						MAKE_PAGEID(nextPid, root->volNo, apage->bl.hdr.nextPage);
+						e = edubtm_Fetch(&nextPid, kdesc, startKval, startCompOp, stopKval, stopCompOp, cursor);
+						if(e < 0) ERR(e);
+					}
 				}
-				break;
-			default :
 				break;
 		}
 		if(cursor->flag == CURSOR_EOS){
