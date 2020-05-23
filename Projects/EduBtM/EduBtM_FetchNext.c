@@ -211,28 +211,35 @@ Four edubtm_FetchNext(
 			idx = current->slotNo - 1;
 			break;
 	}
+	printf("slot# is %d, idx is %d\n", current->slotNo, idx);
 	e = BfM_GetTrain((TrainID*) &leaf, (char**)&apage, PAGE_BUF);
 	if(e < 0) ERR(e);
 	//2. if last slot, get the NEXT leaf page. if first slot, get the PREV leaf page.
 	if(idx >= apage->hdr.nSlots){
-		e = BfM_FreeTrain((TrainID*) &leaf, PAGE_BUF);
-		if(e < 0) ERR(e);
+		printf("idx >= nSlots\n");
 		if(apage->hdr.nextPage == -1){
 			next->flag = CURSOR_EOS;
+			e = BfM_FreeTrain((TrainID*) &leaf, PAGE_BUF);
+			if(e < 0) ERR(e);
 			return(eNOERROR);
 		}
+		e = BfM_FreeTrain((TrainID*) &leaf, PAGE_BUF);
+		if(e < 0) ERR(e);
 		MAKE_PAGEID(leaf, leaf.volNo, apage->hdr.nextPage);
 		e = BfM_GetTrain((TrainID*) &leaf, (char**)&apage, PAGE_BUF);
 		if(e < 0) ERR(e);
 		idx = 0;
 	}
 	else if(idx < 0){
-		e = BfM_FreeTrain((TrainID*) &leaf, PAGE_BUF);
-		if(e < 0) ERR(e);
+		printf("idx < 0\n");
 		if(apage->hdr.prevPage == -1){
 			next->flag = CURSOR_EOS;
+			e = BfM_FreeTrain((TrainID*) &leaf, PAGE_BUF);
+			if(e < 0) ERR(e);
 			return(eNOERROR);
 		}
+		e = BfM_FreeTrain((TrainID*) &leaf, PAGE_BUF);
+		if(e < 0) ERR(e);
 		MAKE_PAGEID(leaf, leaf.volNo, apage->hdr.prevPage);
 		e = BfM_GetTrain((TrainID*) &leaf, (char**)&apage, PAGE_BUF);
 		if(e < 0) ERR(e);
