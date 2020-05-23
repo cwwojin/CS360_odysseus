@@ -235,7 +235,6 @@ Four edubtm_Fetch(
 			printf("search fail @ leaf page.\n", root->pageNo);
 			return(eNOERROR);
 		}
-		printf("binary search result is %d\n", found);
 		switch(startCompOp){
 			case SM_EQ :
 				if(found == FALSE){
@@ -243,7 +242,6 @@ Four edubtm_Fetch(
 				}
 				break;
 			case SM_LT :
-				printf("less than.\n");
 				if(found){
 					idx--;
 					if(idx < 0){
@@ -274,7 +272,6 @@ Four edubtm_Fetch(
 				break;
 		}
 		if(cursor->flag == CURSOR_EOS){
-			printf("fetch failed.\n");
 			e = BfM_FreeTrain((TrainID*) root, PAGE_BUF);
 			if(e < 0) ERR(e);
 			return(eNOERROR);
@@ -320,7 +317,6 @@ Four edubtm_Fetch(
 		//4. free the buffer.
 		e = BfM_FreeTrain((TrainID*) root, PAGE_BUF);
 		if(e < 0) ERR(e);
-		printf("cursor flag is %d.\n", cursor->flag);
 	}
 	/* ENDOFNEWCODE */
 
