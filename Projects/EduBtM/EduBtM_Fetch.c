@@ -119,6 +119,8 @@ Four EduBtM_Fetch(
     }
 	
 	/* NEWCODE */
+	//Turn ON the cursor.
+	cursor->flag = CURSOR_ON;
 	//1. cases depending on startCompOp value.
 	switch(startCompOp){
 		case SM_BOF :
@@ -207,7 +209,6 @@ Four edubtm_Fetch(
     }
 	
 	/* NEWCODE */
-	cursor->flag = CURSOR_ON;
 	//1. get the root.
 	e = BfM_GetTrain((TrainID*) root, (char**)&apage, PAGE_BUF);
 	if(e < 0) ERR(e);
