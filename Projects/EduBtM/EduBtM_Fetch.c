@@ -214,8 +214,8 @@ Four edubtm_Fetch(
 	if(e < 0) ERR(e);
 	//2. check if root is internal or leaf. apage->any.hdr.type
 	if((apage->any.hdr.type & INTERNAL) == INTERNAL){
-		//edubtm_BinarySearchInternal(apage, kdesc, startKval, &idx);
-		found = btm_BinarySearchInternal(apage, kdesc, startKval, &idx);	//get the slot#. of the target entry.
+		found = edubtm_BinarySearchInternal(apage, kdesc, startKval, &idx);
+		//found = btm_BinarySearchInternal(apage, kdesc, startKval, &idx);	//get the slot#. of the target entry.
 		if(idx == -1){
 			MAKE_PAGEID(child, root->volNo, apage->bi.hdr.p0);		//NEXT child to visit.
 		}
@@ -230,8 +230,8 @@ Four edubtm_Fetch(
 		if(e < 0) ERR(e);
 	}
 	else if((apage->any.hdr.type & LEAF) == LEAF){	//its a leaf.
-		//found = edubtm_BinarySearchLeaf(apage, kdesc, startKval, &idx);
-		found = btm_BinarySearchLeaf(apage, kdesc, startKval, &idx);	//found == TRUE : equal, FALSE : less.
+		found = edubtm_BinarySearchLeaf(apage, kdesc, startKval, &idx);
+		//found = btm_BinarySearchLeaf(apage, kdesc, startKval, &idx);	//found == TRUE : equal, FALSE : less.
 		if(idx == -1){
 			printf("search fail @ leaf page.\n", root->pageNo);
 			cursor->flag = CURSOR_EOS;
