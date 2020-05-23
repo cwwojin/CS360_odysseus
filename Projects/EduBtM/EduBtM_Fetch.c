@@ -209,18 +209,17 @@ Four edubtm_Fetch(
     }
 	
 	/* NEWCODE */
-	//printf("current cursor -> flag : %d, slotNo : %d, leaf : %d\n", cursor->flag, cursor->slotNo, cursor->leaf.pageNo);
+	printf("current cursor -> flag : %d, slotNo : %d, leaf : %d\n", cursor->flag, cursor->slotNo, cursor->leaf.pageNo);
 	printf("current page -> %d\n", root->pageNo);
 	//1. get the root.
 	e = BfM_GetTrain((TrainID*) root, (char**)&apage, PAGE_BUF);
 	if(e < 0) ERR(e);
 	//2. check if root is internal or leaf. apage->any.hdr.type
 	if((apage->any.hdr.type & INTERNAL) == INTERNAL){
-		found = edubtm_BinarySearchInternal(apage, kdesc, startKval, &idx);	//get the slot#. of the target entry.
+		found = btm_BinarySearchInternal(apage, kdesc, startKval, &idx);	//get the slot#. of the target entry.
 		printf("idx : %d\n", idx);
 		if(idx == -1){
 			MAKE_PAGEID(child, root->volNo, apage->bi.hdr.p0);		//NEXT child to visit.
-			printf("child page is %d\n", apage->bi.hdr.p0);
 		}
 		else{
 			iEntryOffset = apage->bi.slot[-idx];
