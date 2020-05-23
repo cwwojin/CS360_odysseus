@@ -209,7 +209,7 @@ Four edubtm_Fetch(
     }
 	
 	/* NEWCODE */
-	printf("current cursor -> flag : %d, slotNo : %d, leaf : %d\n", cursor->flag, cursor->slotNo, cursor->leaf.pageNo);
+	//printf("current cursor -> flag : %d, slotNo : %d, leaf : %d\n", cursor->flag, cursor->slotNo, cursor->leaf.pageNo);
 	printf("current page -> %d\n", root->pageNo);
 	//1. get the root.
 	e = BfM_GetTrain((TrainID*) root, (char**)&apage, PAGE_BUF);
@@ -317,7 +317,6 @@ Four edubtm_Fetch(
 			alignedKlen = ALIGNED_LENGTH(lEntry->klen);
 			memcpy(&cursor->oid, &lEntry->kval[alignedKlen], sizeof(ObjectID));
 		}
-		printf("current cursor -> flag : %d, slotNo : %d\n", cursor->flag, cursor->slotNo);
 		//4. free the buffer.
 		e = BfM_FreeTrain((TrainID*) root, PAGE_BUF);
 		if(e < 0) ERR(e);
