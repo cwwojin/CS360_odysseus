@@ -231,6 +231,7 @@ Four edubtm_Fetch(
 	}
 	else if((apage->any.hdr.type & LEAF) == LEAF){	//its a leaf.
 		found = edubtm_BinarySearchLeaf(apage, kdesc, startKval, &idx);		//found == TRUE : equal, FALSE : less.
+		printf("idx : %d\n");
 		if(idx == -1){
 			printf("search fail @ leaf page.\n", root->pageNo);
 			cursor->flag = CURSOR_EOS;
@@ -314,6 +315,7 @@ Four edubtm_Fetch(
 			alignedKlen = ALIGNED_LENGTH(lEntry->klen);
 			memcpy(&cursor->oid, &lEntry->kval[alignedKlen], sizeof(ObjectID));
 		}
+		printf("current cursor -> flag : %d, slotNo : %d\n", cursor->flag, cursor->slotNo);
 		//4. free the buffer.
 		e = BfM_FreeTrain((TrainID*) root, PAGE_BUF);
 		if(e < 0) ERR(e);
