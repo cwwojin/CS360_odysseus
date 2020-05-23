@@ -213,7 +213,7 @@ Four edubtm_FetchNext(
 	//3. get the target leaf entry. it should be in current->slotNo + 1 or slot #0.
 	entry = &apage->data[apage->slot[-idx]];
 	cmp = edubtm_KeyCompare(kdesc, (KeyValue*) &entry->klen, kval);
-	//printf("key comparison result : %d\n", cmp);
+	printf("key comparison result : %d\n", cmp);
 	//cmp = btm_KeyCompare(kdesc, (KeyValue*) &entry->klen, kval);
 	switch(compOp){			//IF the stop condition is NOT satisfied, then set the next cursor's flag to CURSOR_EOS.
 		case SM_EQ:
