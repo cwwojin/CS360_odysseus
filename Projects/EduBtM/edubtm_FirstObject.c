@@ -94,7 +94,7 @@ Four edubtm_FirstObject(
     Four     		stopCompOp,	/* IN comparison operator of stop condition */
     BtreeCursor 	*cursor)	/* OUT The first ObjectID in the Btree */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     int			i;
     Four 		e;		/* error */
     Four 		cmp;		/* result of comparison */
@@ -114,6 +114,40 @@ Four edubtm_FirstObject(
         if(kdesc->kpart[i].type!=SM_INT && kdesc->kpart[i].type!=SM_VARSTRING)
             ERR(eNOTSUPPORTED_EDUBTM);
     }
+	
+	/* NEWCODE */
+	//1. get the root.
+	e = BfM_GetTrain((TrainID*) root, (char**)&apage, PAGE_BUF);
+	if(e < 0) ERR(e);
+	//2. check if root is internal or leaf. apage->any.hdr.type
+	if((apage->any.hdr.type & INTERNAL) == INTERNAL){	//internal -> go to its first child : 0
+		iEntryOffset = apage->bi.slot[0];
+		iEntry = &apage->bi.data[iEntryOffset];
+		MAKE_PAGEID(child, root->volNo, iEntry->spid);
+		e = BfM_FreeTrain((TrainID*) root, PAGE_BUF);		//CAN free buffer here.
+		if(e < 0) ERR(e);
+		e = edubtm_FirstObject(&child, kdesc, stopKval, stopCompOp, cursor);
+		if(e < 0) ERR(e);
+	}
+	else if((apage->any.hdr.type & LEAF) == LEAF){	//its a leaf.
+		if(apage->bl.hdr.prevPage != -1){
+			printf("Not the first page.\n");
+		}
+		lEntryOffset = apage->bl.slot[0];
+		lEntry = &apage->bl.data[lEntryOffset];
+		if(cursor->flag != CURSOR_EOS){	//stop condition satisfied. return this object.
+			cursor->flag = CURSOR_ON;
+			cursor->leaf = *root;
+			cursor->slotNo = 0;
+			memcpy(&cursor->key, &lEntry->klen, sizeof(Two) + lEntry->klen);
+			alignedKlen = ALIGNED_LENGTH(lEntry->klen);
+			memcpy(&cursor->oid, &lEntry->kval[alignedKlen], sizeof(ObjectID));
+		}
+		//4. free the buffer.
+		e = BfM_FreeTrain((TrainID*) root, PAGE_BUF);
+		if(e < 0) ERR(e);
+	}
+	/* ENDOFNEWCODE*/
     
 
     return(eNOERROR);
