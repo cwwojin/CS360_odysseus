@@ -207,6 +207,7 @@ Four edubtm_Fetch(
     }
 	
 	/* NEWCODE */
+	printf("current cursor flag is : %d.\n", cursor->flag);
 	//1. get the root.
 	e = BfM_GetTrain((TrainID*) root, (char**)&apage, PAGE_BUF);
 	if(e < 0) ERR(e);
@@ -242,6 +243,7 @@ Four edubtm_Fetch(
 				}
 				break;
 			case SM_LT :
+				printf("less than.\n");
 				if(found){
 					idx--;
 					if(idx < 0){
