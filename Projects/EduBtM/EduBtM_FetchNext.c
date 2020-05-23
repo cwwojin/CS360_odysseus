@@ -214,7 +214,7 @@ Four edubtm_FetchNext(
 	e = BfM_GetTrain((TrainID*) &leaf, (char**)&apage, PAGE_BUF);
 	if(e < 0) ERR(e);
 	//2. if last slot, get the NEXT leaf page. if first slot, get the PREV leaf page.
-	if(current->slotNo == apage->hdr.nSlots - 1){
+	if(idx >= apage->hdr.nSlots){
 		e = BfM_FreeTrain((TrainID*) &leaf, PAGE_BUF);
 		if(e < 0) ERR(e);
 		if(apage->hdr.nextPage == -1){
@@ -226,7 +226,7 @@ Four edubtm_FetchNext(
 		if(e < 0) ERR(e);
 		idx = 0;
 	}
-	else if(current->slotNo == 0){
+	else if(idx < 0){
 		e = BfM_FreeTrain((TrainID*) &leaf, PAGE_BUF);
 		if(e < 0) ERR(e);
 		if(apage->hdr.prevPage == -1){
