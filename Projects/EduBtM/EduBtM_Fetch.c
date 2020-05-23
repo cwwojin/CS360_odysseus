@@ -209,7 +209,7 @@ Four edubtm_Fetch(
     }
 	
 	/* NEWCODE */
-	printf("current cursor -> flag : %d, slotNo : %d\n", current->flag, current->slotNo);
+	printf("current cursor -> flag : %d, slotNo : %d\n", cursor->flag, cursor->slotNo);
 	//1. get the root.
 	e = BfM_GetTrain((TrainID*) root, (char**)&apage, PAGE_BUF);
 	if(e < 0) ERR(e);
