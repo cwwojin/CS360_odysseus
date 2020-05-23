@@ -263,10 +263,13 @@ Four edubtm_Fetch(
 			case SM_GT :
 				idx++;
 				if(idx >= apage->bl.hdr.nSlots){
+					printf("slotNo >= nSlots..\n");
 					if(apage->bl.hdr.nextPage == -1){
+						printf("Next page is NIL.\n");
 						cursor->flag = CURSOR_EOS;
 					}
 					else{
+						printf("Next page is %d.\n",apage->bl.hdr.nextPage);
 						MAKE_PAGEID(nextPid, root->volNo, apage->bl.hdr.nextPage);
 						e = edubtm_Fetch(&nextPid, kdesc, startKval, startCompOp, stopKval, stopCompOp, cursor);
 						if(e < 0) ERR(e);
@@ -281,7 +284,6 @@ Four edubtm_Fetch(
 					idx++;
 				}
 				if(idx >= apage->bl.hdr.nSlots){
-					printf("slotNo >= nSlots..\n");
 					if(apage->bl.hdr.nextPage == -1){
 						cursor->flag = CURSOR_EOS;
 					}
