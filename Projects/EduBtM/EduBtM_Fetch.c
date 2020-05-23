@@ -216,7 +216,7 @@ Four edubtm_Fetch(
 	if(e < 0) ERR(e);
 	//2. check if root is internal or leaf. apage->any.hdr.type
 	if((apage->any.hdr.type & INTERNAL) == INTERNAL){
-		found = btm_BinarySearchInternal(apage, kdesc, startKval, &idx);	//get the slot#. of the target entry.
+		found = edubtm_BinarySearchInternal(apage, kdesc, startKval, &idx);	//get the slot#. of the target entry.
 		printf("idx : %d\n", idx);
 		if(idx == -1){
 			MAKE_PAGEID(child, root->volNo, apage->bi.hdr.p0);		//NEXT child to visit.
