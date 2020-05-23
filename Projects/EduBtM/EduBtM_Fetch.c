@@ -130,7 +130,7 @@ Four EduBtM_Fetch(
 			break;
 		case SM_EOF :
 			//get the last object -> edubtm_LastObject().
-			e = btm_LastObject(root, kdesc, stopKval, stopCompOp, cursor);
+			e = edubtm_LastObject(root, kdesc, stopKval, stopCompOp, cursor);
 			if (e < 0) ERR(e);
 			break;
 		default :
