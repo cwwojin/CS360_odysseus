@@ -225,7 +225,9 @@ Four edubtm_FetchNext(
 		}
 		e = BfM_FreeTrain((TrainID*) &leaf, PAGE_BUF);
 		if(e < 0) ERR(e);
+		printf("leaf pageNO : %d ->", leaf.pageNo);
 		MAKE_PAGEID(leaf, leaf.volNo, apage->hdr.nextPage);
+		printf("leaf pageNO : %d\n", leaf.pageNo);
 		e = BfM_GetTrain((TrainID*) &leaf, (char**)&apage, PAGE_BUF);
 		if(e < 0) ERR(e);
 		idx = 0;
@@ -240,7 +242,9 @@ Four edubtm_FetchNext(
 		}
 		e = BfM_FreeTrain((TrainID*) &leaf, PAGE_BUF);
 		if(e < 0) ERR(e);
+		printf("leaf pageNO : %d ->", leaf.pageNo);
 		MAKE_PAGEID(leaf, leaf.volNo, apage->hdr.prevPage);
+		printf("leaf pageNO : %d\n", leaf.pageNo);
 		e = BfM_GetTrain((TrainID*) &leaf, (char**)&apage, PAGE_BUF);
 		if(e < 0) ERR(e);
 		idx = apage->hdr.nSlots - 1;
