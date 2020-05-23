@@ -242,16 +242,19 @@ Four edubtm_Fetch(
 			case SM_LT :
 				if(found){
 					idx--;
-					if(idx < 0){
-						printf("slotNo < 0..\n");
-						if(apage->bl.hdr.prevPage == -1){
-							cursor->flag = CURSOR_EOS;
-						}
-						else{
-							MAKE_PAGEID(prevPid, root->volNo, apage->bl.hdr.prevPage);
-							e = edubtm_Fetch(&prevPid, kdesc, startKval, startCompOp, stopKval, stopCompOp, cursor);
-							if(e < 0) ERR(e);
-						}
+				}
+				if(idx < 0){
+					printf("slotNo < 0..\n");
+					if(apage->bl.hdr.prevPage == -1){
+						cursor->flag = CURSOR_EOS;
+					}
+					else{
+						MAKE_PAGEID(prevPid, root->volNo, apage->bl.hdr.prevPage);
+						e = edubtm_Fetch(&prevPid, kdesc, startKval, startCompOp, stopKval, stopCompOp, cursor);
+						if(e < 0) ERR(e);
+						e = BfM_FreeTrain((TrainID*) root, PAGE_BUF);
+						if(e < 0) ERR(e);
+						return(eNOERROR);
 					}
 				}
 				break;
@@ -267,6 +270,9 @@ Four edubtm_Fetch(
 						MAKE_PAGEID(nextPid, root->volNo, apage->bl.hdr.nextPage);
 						e = edubtm_Fetch(&nextPid, kdesc, startKval, startCompOp, stopKval, stopCompOp, cursor);
 						if(e < 0) ERR(e);
+						e = BfM_FreeTrain((TrainID*) root, PAGE_BUF);
+						if(e < 0) ERR(e);
+						return(eNOERROR);
 					}
 				}
 				break;
@@ -283,6 +289,9 @@ Four edubtm_Fetch(
 						MAKE_PAGEID(nextPid, root->volNo, apage->bl.hdr.nextPage);
 						e = edubtm_Fetch(&nextPid, kdesc, startKval, startCompOp, stopKval, stopCompOp, cursor);
 						if(e < 0) ERR(e);
+						e = BfM_FreeTrain((TrainID*) root, PAGE_BUF);
+						if(e < 0) ERR(e);
+						return(eNOERROR);
 					}
 				}
 				break;
