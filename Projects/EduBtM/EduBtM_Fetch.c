@@ -265,11 +265,10 @@ Four edubtm_Fetch(
 				idx++;
 				if(idx >= apage->bl.hdr.nSlots){
 					if(apage->bl.hdr.nextPage == -1){
-						printf("Next page is NIL.\n");
+						//printf("Next page is NIL.\n");
 						cursor->flag = CURSOR_EOS;
 					}
 					else{
-						//printf("Next page is %d.\n",apage->bl.hdr.nextPage);
 						MAKE_PAGEID(nextPid, root->volNo, apage->bl.hdr.nextPage);
 						e = edubtm_Fetch(&nextPid, kdesc, startKval, startCompOp, stopKval, stopCompOp, cursor);
 						if(e < 0) ERR(e);
