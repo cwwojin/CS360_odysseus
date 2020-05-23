@@ -214,7 +214,6 @@ Four edubtm_FetchNext(
 	entry = &apage->data[apage->slot[-idx]];
 	cmp = edubtm_KeyCompare(kdesc, (KeyValue*) &entry->klen, kval);
 	//printf("key comparison result : %d\n", cmp);
-	//cmp = btm_KeyCompare(kdesc, (KeyValue*) &entry->klen, kval);
 	switch(compOp){			//IF the stop condition is NOT satisfied, then set the next cursor's flag to CURSOR_EOS.
 		case SM_EQ:
 			if(cmp != EQUAL){
