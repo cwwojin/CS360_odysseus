@@ -231,13 +231,9 @@ Four edubtm_Fetch(
 	else if((apage->any.hdr.type & LEAF) == LEAF){	//its a leaf.
 		found = edubtm_BinarySearchLeaf(apage, kdesc, startKval, &idx);		//found == TRUE : equal, FALSE : less.
 		if(idx == -1){	//all the keys in the page are LARGER than startKval.
-			if(startCompOp == SM_GT || startCompOp == SM_GE){
-				//idx = 0;
-			}
-			else{
+			if(startCompOp != SM_GT && startCompOp != SM_GE){
 				cursor->flag = CURSOR_EOS;
 			}
-			//cursor->flag = CURSOR_EOS;
 		}
 		switch(startCompOp){
 			case SM_EQ :
@@ -250,7 +246,6 @@ Four edubtm_Fetch(
 					idx--;
 				}
 				if(idx < 0){
-					printf("slotNo < 0..\n");
 					if(apage->bl.hdr.prevPage == -1){
 						cursor->flag = CURSOR_EOS;
 					}
@@ -269,13 +264,12 @@ Four edubtm_Fetch(
 			case SM_GT :
 				idx++;
 				if(idx >= apage->bl.hdr.nSlots){
-					printf("slotNo >= nSlots..\n");
 					if(apage->bl.hdr.nextPage == -1){
 						printf("Next page is NIL.\n");
 						cursor->flag = CURSOR_EOS;
 					}
 					else{
-						printf("Next page is %d.\n",apage->bl.hdr.nextPage);
+						//printf("Next page is %d.\n",apage->bl.hdr.nextPage);
 						MAKE_PAGEID(nextPid, root->volNo, apage->bl.hdr.nextPage);
 						e = edubtm_Fetch(&nextPid, kdesc, startKval, startCompOp, stopKval, stopCompOp, cursor);
 						if(e < 0) ERR(e);
