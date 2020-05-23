@@ -211,12 +211,10 @@ Four edubtm_FetchNext(
 			idx = current->slotNo - 1;
 			break;
 	}
-	printf("slot# is %d, idx is %d\n", current->slotNo, idx);
 	e = BfM_GetTrain((TrainID*) &leaf, (char**)&apage, PAGE_BUF);
 	if(e < 0) ERR(e);
 	//2. if last slot, get the NEXT leaf page. if first slot, get the PREV leaf page.
 	if(idx >= apage->hdr.nSlots){
-		printf("idx >= nSlots\n");
 		if(apage->hdr.nextPage == -1){
 			next->flag = CURSOR_EOS;
 			e = BfM_FreeTrain((TrainID*) &leaf, PAGE_BUF);
@@ -225,16 +223,14 @@ Four edubtm_FetchNext(
 		}
 		e = BfM_FreeTrain((TrainID*) &leaf, PAGE_BUF);
 		if(e < 0) ERR(e);
-		printf("leaf pageNO : %d ->", leaf.pageNo);
 		MAKE_PAGEID(leaf, leaf.volNo, apage->hdr.nextPage);
-		printf("leaf pageNO : %d\n", leaf.pageNo);
 		e = BfM_GetTrain((TrainID*) &leaf, (char**)&apage, PAGE_BUF);
 		if(e < 0) ERR(e);
 		idx = 0;
 	}
 	else if(idx < 0){
-		printf("idx < 0\n");
 		if(apage->hdr.prevPage == -1){
+			printf("reached BOF.\n");
 			next->flag = CURSOR_EOS;
 			e = BfM_FreeTrain((TrainID*) &leaf, PAGE_BUF);
 			if(e < 0) ERR(e);
@@ -242,9 +238,7 @@ Four edubtm_FetchNext(
 		}
 		e = BfM_FreeTrain((TrainID*) &leaf, PAGE_BUF);
 		if(e < 0) ERR(e);
-		printf("leaf pageNO : %d ->", leaf.pageNo);
 		MAKE_PAGEID(leaf, leaf.volNo, apage->hdr.prevPage);
-		printf("leaf pageNO : %d\n", leaf.pageNo);
 		e = BfM_GetTrain((TrainID*) &leaf, (char**)&apage, PAGE_BUF);
 		if(e < 0) ERR(e);
 		idx = apage->hdr.nSlots - 1;
@@ -253,7 +247,6 @@ Four edubtm_FetchNext(
 	//3. get the target leaf entry. it should be in current->slotNo + 1 or slot #0.
 	entry = &apage->data[apage->slot[-idx]];
 	cmp = edubtm_KeyCompare(kdesc, (KeyValue*) &entry->klen, kval);
-	//printf("key comparison result : %d\n", cmp);
 	switch(compOp){			//IF the stop condition is NOT satisfied, then set the next cursor's flag to CURSOR_EOS.
 		case SM_EQ:
 			if(cmp != EQUAL){
@@ -279,6 +272,8 @@ Four edubtm_FetchNext(
 			if(cmp != GREATER && cmp != EQUAL){
 				next->flag = CURSOR_EOS;
 			}
+			break;
+		default:
 			break;
 	}
 	if(next->flag != CURSOR_EOS){	//stop condition satisfied. return this object.
