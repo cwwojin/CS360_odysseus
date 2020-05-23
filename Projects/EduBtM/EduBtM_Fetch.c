@@ -133,6 +133,7 @@ Four EduBtM_Fetch(
 			break;
 		default :
 			//call edubtm_Fetch().
+			//e = edubtm_Fetch(root, kdesc, startKval, startCompOp, stopKval, stopCompOp, cursor);
 			e = btm_Fetch(root, kdesc, startKval, startCompOp, stopKval, stopCompOp, cursor);
 			if (e < 0) ERR(e);
 			break;
@@ -204,6 +205,120 @@ Four edubtm_Fetch(
         if(kdesc->kpart[i].type!=SM_INT && kdesc->kpart[i].type!=SM_VARSTRING)
             ERR(eNOTSUPPORTED_EDUBTM);
     }
+	
+	/* NEWCODE */
+	//1. get the root.
+	e = BfM_GetTrain((TrainID*) root, (char**)&apage, PAGE_BUF);
+	if(e < 0) ERR(e);
+	//2. check if root is internal or leaf. apage->any.hdr.type
+	if((apage->any.hdr.type & INTERNAL) == INTERNAL){
+		//edubtm_BinarySearchInternal(apage, kdesc, startKval, &idx);
+		found = btm_BinarySearchInternal(apage, kdesc, startKval, &idx);	//get the slot#. of the target entry.
+		if(idx == -1){
+			print("search fail @ internal page no.%d\n", root->pageNo);
+			return(eNOERROR);
+		}
+		iEntryOffset = apage->bi.slot[-idx];
+		iEntry = &apage->bi.data[iEntryOffset];
+		MAKE_PAGEID(child, root->volNo, iEntry->spid);		//NEXT child to visit.
+		e = BfM_FreeTrain((TrainID*) root, PAGE_BUF);		//CAN free buffer here.
+		if(e < 0) ERR(e);
+		e = edubtm_Fetch(&child, kdesc, startKval, startCompOp, stopKval, stopCompOp, cursor);	//recursively visit child.
+		if(e < 0) ERR(e);
+	}
+	else if((apage->any.hdr.type & LEAF) == LEAF){	//its a leaf.
+		found = btm_BinarySearchLeaf(apage, kdesc, startKval, &idx);	//found == TRUE : equal, FALSE : less.
+		if(idx == -1){
+			print("search fail @ leaf page.\n", root->pageNo);
+			return(eNOERROR);
+		}
+		printf("binary search result is %d\n", found);
+		switch(startCompOp){
+			case SM_EQ :
+				if(found == FALSE){
+					cursor->flag = CURSOR_EOS;
+				}
+				break;
+			case SM_LT :
+				if(found){
+					idx--;
+					if(idx < 0){
+						printf("slotNo < 0..\n");
+						cursor->flag = CURSOR_EOS;
+					}
+				}
+				break;
+			case SM_LE :
+				break;
+			case SM_GT :
+				idx++;
+				if(idx >= apage->bl.hdr.nSlots){
+					printf("slotNo >= nSlots..\n");
+					cursor->flag = CURSOR_EOS;
+				}
+				break;
+			case SM_GE :
+				if(!found){
+					idx++;
+				}
+				if(idx >= apage->bl.hdr.nSlots){
+					printf("slotNo >= nSlots..\n");
+					cursor->flag = CURSOR_EOS;
+				}
+				break;
+			default :
+				break;
+		}
+		if(cursor->flag == CURSOR_EOS){
+			printf("fetch failed.\n");
+			e = BfM_FreeTrain((TrainID*) root, PAGE_BUF);
+			if(e < 0) ERR(e);
+			return(eNOERROR);
+		}
+		lEntryOffset = apage->bl.slot[-idx];
+		lEntry = &apage->bl.data[lEntryOffset];
+		cmp = edubtm_KeyCompare(kdesc, (KeyValue*) &lEntry->klen, stopKval);
+		switch(stopCompOp){
+			case SM_EQ:
+				if(cmp != EQUAL){
+					cursor->flag = CURSOR_EOS;
+				}
+				break;
+			case SM_LT:
+				if(cmp != LESS){
+					cursor->flag = CURSOR_EOS;
+				}
+				break;
+			case SM_LE:
+				if(cmp != LESS && cmp != EQUAL){
+					cursor->flag = CURSOR_EOS;
+				}
+				break;
+			case SM_GT:
+				if(cmp != GREATER){
+					cursor->flag = CURSOR_EOS;
+				}
+				break;
+			case SM_GE:
+				if(cmp != GREATER && cmp != EQUAL){
+					cursor->flag = CURSOR_EOS;
+				}
+				break;
+		}
+		if(cursor->flag != CURSOR_EOS){	//stop condition satisfied. return this object.
+			cursor->flag = CURSOR_ON;
+			cursor->leaf = leaf;
+			cursor->slotNo = idx;
+			memcpy(&cursor->key, &lEntry->klen, sizeof(Two) + lEntry->klen);
+			alignedKlen = ALIGNED_LENGTH(lEntry->klen);
+			memcpy(&cursor->oid, &lEntry->kval[alignedKlen], sizeof(ObjectID));
+		}
+		//4. free the buffer.
+		e = BfM_FreeTrain((TrainID*) root, PAGE_BUF);
+		if(e < 0) ERR(e);
+		*/
+	}
+	/* ENDOFNEWCODE */
 
 
     return(eNOERROR);
