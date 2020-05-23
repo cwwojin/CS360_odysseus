@@ -197,7 +197,22 @@ Four edubtm_FetchNext(
 	/* NEWCODE */
 	//1. get leaf page into buffer. set LEAF as the current leaf page.
 	leaf = current->leaf;
-	idx = current->slotNo + 1;
+	//idx = current->slotNo + 1;
+	switch(compOp){
+		case SM_EQ:
+		case SM_LT:
+		case SM_LE:
+		case SM_EOF:
+			idx = current->slotNo + 1;
+			break;
+		case SM_GT:
+		case SM_GE:
+		case SM_BOF:
+			idx = current->slotNo - 1;
+			break;
+	}
+	
+	
 	e = BfM_GetTrain((TrainID*) &leaf, (char**)&apage, PAGE_BUF);
 	if(e < 0) ERR(e);
 	//2. see if current slotNo is the last slot or not. If so, we should get the NEXT leaf page.
