@@ -207,7 +207,7 @@ Four edubtm_Fetch(
     }
 	
 	/* NEWCODE */
-	printf("current cursor flag is : %d.\n", cursor->flag);
+	cursor->flag = CURSOR_ON;
 	//1. get the root.
 	e = BfM_GetTrain((TrainID*) root, (char**)&apage, PAGE_BUF);
 	if(e < 0) ERR(e);
