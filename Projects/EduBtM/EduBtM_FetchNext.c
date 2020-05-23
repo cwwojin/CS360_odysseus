@@ -195,6 +195,7 @@ Four edubtm_FetchNext(
 	
 	/* NEWCODE */
 	//1. get leaf page into buffer. set LEAF as the current leaf page.
+	printf("cursor flag is %d.\n", current->flag);
 	leaf = current->leaf;
 	idx = current->slotNo + 1;
 	e = BfM_GetTrain((TrainID*) &leaf, (char**)&apage, PAGE_BUF);
