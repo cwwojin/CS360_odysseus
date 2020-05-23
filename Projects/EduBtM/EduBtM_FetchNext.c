@@ -200,6 +200,7 @@ Four edubtm_FetchNext(
 	e = BfM_GetTrain((TrainID*) &leaf, (char**)&apage, PAGE_BUF);
 	if(e < 0) ERR(e);
 	//2. see if current slotNo is the last slot or not. If so, we should get the NEXT leaf page.
+	printf("slot no is %d, Nslots : %d\n",current->slotNo, apage->hdr.nSlots);
 	if(current->slotNo == apage->hdr.nSlots - 1){
 		e = BfM_FreeTrain((TrainID*) &leaf, PAGE_BUF);
 		if(e < 0) ERR(e);
