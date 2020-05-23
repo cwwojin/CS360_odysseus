@@ -215,12 +215,13 @@ Four edubtm_Fetch(
 		//edubtm_BinarySearchInternal(apage, kdesc, startKval, &idx);
 		found = btm_BinarySearchInternal(apage, kdesc, startKval, &idx);	//get the slot#. of the target entry.
 		if(idx == -1){
-			printf("search fail @ internal page no.%d\n", root->pageNo);
-			return(eNOERROR);
+			MAKE_PAGEID(child, root->volNo, apage->bi.hdr.p0);		//NEXT child to visit.
 		}
-		iEntryOffset = apage->bi.slot[-idx];
-		iEntry = &apage->bi.data[iEntryOffset];
-		MAKE_PAGEID(child, root->volNo, iEntry->spid);		//NEXT child to visit.
+		else{
+			iEntryOffset = apage->bi.slot[-idx];
+			iEntry = &apage->bi.data[iEntryOffset];
+			MAKE_PAGEID(child, root->volNo, iEntry->spid);		//NEXT child to visit.
+		}
 		e = BfM_FreeTrain((TrainID*) root, PAGE_BUF);		//CAN free buffer here.
 		if(e < 0) ERR(e);
 		e = edubtm_Fetch(&child, kdesc, startKval, startCompOp, stopKval, stopCompOp, cursor);	//recursively visit child.
