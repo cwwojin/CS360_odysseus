@@ -320,6 +320,7 @@ Four edubtm_Fetch(
 		//4. free the buffer.
 		e = BfM_FreeTrain((TrainID*) root, PAGE_BUF);
 		if(e < 0) ERR(e);
+		printf("cursor flag is %d.\n", cursor->flag);
 	}
 	/* ENDOFNEWCODE */
 
