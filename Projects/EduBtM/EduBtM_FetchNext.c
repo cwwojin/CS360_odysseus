@@ -197,7 +197,6 @@ Four edubtm_FetchNext(
 	/* NEWCODE */
 	//1. get leaf page into buffer. set LEAF as the current leaf page.
 	leaf = current->leaf;
-	//idx = current->slotNo + 1;
 	switch(compOp){
 		case SM_EQ:
 		case SM_LT:
@@ -230,7 +229,7 @@ Four edubtm_FetchNext(
 	}
 	else if(idx < 0){
 		if(apage->hdr.prevPage == -1){
-			printf("reached BOF.\n");
+			//printf("reached BOF.\n");
 			next->flag = CURSOR_EOS;
 			e = BfM_FreeTrain((TrainID*) &leaf, PAGE_BUF);
 			if(e < 0) ERR(e);
