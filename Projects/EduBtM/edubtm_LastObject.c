@@ -134,10 +134,6 @@ Four edubtm_LastObject(
 		if(e < 0) ERR(e);
 	}
 	else if((apage->any.hdr.type & LEAF) == LEAF){	//its a leaf.
-		if(apage->bl.hdr.nextPage != -1){
-			printf("Not the last page.\n");
-			//MAKE_PAGEID(child, root->volNo, iEntry->spid);
-		}
 		lEntryOffset = apage->bl.slot[-(apage->bl.hdr.nSlots - 1)];
 		lEntry = &apage->bl.data[lEntryOffset];
 		if(cursor->flag != CURSOR_EOS){	//stop condition satisfied. return this object.
