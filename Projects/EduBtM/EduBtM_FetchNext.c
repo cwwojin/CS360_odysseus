@@ -196,7 +196,6 @@ Four edubtm_FetchNext(
 	
 	/* NEWCODE */
 	//1. get leaf page into buffer. set LEAF as the current leaf page.
-	printf("cursor flag is %d.\n", current->flag);
 	leaf = current->leaf;
 	idx = current->slotNo + 1;
 	e = BfM_GetTrain((TrainID*) &leaf, (char**)&apage, PAGE_BUF);
@@ -214,7 +213,7 @@ Four edubtm_FetchNext(
 	//3. get the target leaf entry. it should be in current->slotNo + 1 or slot #0.
 	entry = &apage->data[apage->slot[-idx]];
 	cmp = edubtm_KeyCompare(kdesc, (KeyValue*) &entry->klen, kval);
-	printf("key comparison result : %d\n", cmp);
+	//printf("key comparison result : %d\n", cmp);
 	//cmp = btm_KeyCompare(kdesc, (KeyValue*) &entry->klen, kval);
 	switch(compOp){			//IF the stop condition is NOT satisfied, then set the next cursor's flag to CURSOR_EOS.
 		case SM_EQ:
