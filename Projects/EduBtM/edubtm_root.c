@@ -95,7 +95,7 @@ Four edubtm_root_insert(
     PageID       *root,		 /* IN root Page IDentifier */
     InternalItem *item)		 /* IN Internal item which will be the unique entry of the new root */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Four      e;		/* error number */
     PageID    newPid;		/* newly allocated page */
     PageID    nextPid;		/* PageID of the next page of root if root is leaf */
@@ -104,8 +104,28 @@ Four edubtm_root_insert(
     BtreeLeaf *nextPage;	/* pointer to a buffer holding next page of root */
     btm_InternalEntry *entry;	/* an internal entry */
     Boolean   isTmp;
-
-
+	
+	/* NEWCODE */
+	//1. Get the root page.
+	e = BfM_GetTrain((TrainID*)root, (char**)&rootPage, PAGE_BUF);
+	if(e < 0) ERR(e);
+	//2. Allocate new page & get buffer.
+	e = btm_AllocPage(catObjForFile, (PageID*)root, &newPid);
+	if(e < 0) ERR(e);
+	e = BfM_GetNewTrain((TrainID*)&newPid, (char**)&newPage, PAGE_BUF);
+	if(e < 0) ERR(e);
+	//3. Get the NEXT page if root is LEAF.
+	if(rootPage->any.hdr.type & LEAF == LEAF){
+		printf("root is leaf.\n");
+		MAKE_PAGEID(nextPid, root->volNo, item->spid);
+		e = BfM_GetTrain((TrainID*)&nextPid, (char**)&nextPage, PAGE_BUF);
+		if(e < 0) ERR(e);
+	}
+	//4. Copy original root to the new page.
+	
+	
+	
+	/* ENDOFNEWCODE */
     
     return(eNOERROR);
     
