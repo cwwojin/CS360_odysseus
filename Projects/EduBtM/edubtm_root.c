@@ -124,7 +124,11 @@ Four edubtm_root_insert(
 	//4. Copy original root to the new page.
 	memcpy(newPage, rootPage, PAGESIZE);
 	newPage->any.hdr.pid = newPid;
-	//5. 
+	newPage->any.hdr.type = newPage->any.hdr.type & ~(ROOT);
+	//5. Initialize original root as the new root.
+	e = btm_InitInternal(root, TRUE, isTmp);
+	//6. Insert ITEM into the root.
+	
 	
 	
 	
