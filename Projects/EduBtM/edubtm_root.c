@@ -122,6 +122,9 @@ Four edubtm_root_insert(
 		if(e < 0) ERR(e);
 	}
 	//4. Copy original root to the new page.
+	memcpy(newPage, rootPage, PAGESIZE);
+	newPage->any.hdr.pid = newPid;
+	//5. 
 	
 	
 	
