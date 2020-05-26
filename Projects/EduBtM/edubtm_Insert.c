@@ -176,6 +176,9 @@ Four edubtm_Insert(
 			e = BfM_SetDirty((TrainID*)root, PAGE_BUF);
 			if(e < 0) ERR(e);
 		}
+		else{
+			*h = lh;
+		}
 	}
 	else if((apage->any.hdr.type & LEAF) == LEAF){		//Leaf.
 		//call InsertLeaf() to insert to leaf.
