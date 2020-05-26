@@ -129,8 +129,8 @@ Four EduBtM_InsertObject(
 	GET_PTR_TO_CATENTRY_FOR_BTREE(catObjForFile, catPage, catEntry);
 	//MAKE_PHYSICALFILEID(pFid, catEntry->fid.volNo, catEntry->firstPage);
 	//2. call edubtm_insert() -> insert <object key, object id> pair into the B+ Tree.
-	e = edubtm_Insert(catObjForFile, root, kdesc, kval, oid, &lf, &lh, &item, dlPool, dlHead);
-	//e = btm_Insert(catObjForFile, root, kdesc, kval, oid, &lf, &lh, &item, dlPool, dlHead);
+	//e = edubtm_Insert(catObjForFile, root, kdesc, kval, oid, &lf, &lh, &item, dlPool, dlHead);
+	e = btm_Insert(catObjForFile, root, kdesc, kval, oid, &lf, &lh, &item, dlPool, dlHead);
 	if(e < 0) ERR(e);
 	//3. if root page splits (lh is true), then call edubtm_root_insert().
 	if(lh){
