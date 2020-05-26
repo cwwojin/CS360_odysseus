@@ -162,8 +162,8 @@ Four edubtm_Insert(
 		e = edubtm_Insert(catObjForFile, &newPid, kdesc, kval, oid, &lf, &lh, &litem, dlPool, dlHead);
 		if(e < 0) ERR(e);
 		if(lh){		//if SPLIT, insert item in the root.
-			//tKey = (KeyValue)
-			edubtm_BinarySearchInternal(apage, kdesc, kval, &idx);
+			//tKey = (KeyValue)litem->klen;
+			edubtm_BinarySearchInternal(apage, kdesc, tKey, &idx);
 		}
 	}
 	else if((apage->any.hdr.type & LEAF) == LEAF){		//Leaf.
