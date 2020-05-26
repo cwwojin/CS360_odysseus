@@ -161,10 +161,9 @@ Four edubtm_Insert(
 		//recursively call Insert() with newPid.
 		e = edubtm_Insert(catObjForFile, &newPid, kdesc, kval, oid, &lf, &lh, &litem, dlPool, dlHead);
 		if(e < 0) ERR(e);
-		//if SPLIT, return item.
-		if(lh){
-			*h = lh;
-			*item = litem;
+		if(lh){		//if SPLIT, insert item in the root.
+			//tKey = (KeyValue)
+			edubtm_BinarySearchInternal(apage, kdesc, kval, &idx);
 		}
 	}
 	else if((apage->any.hdr.type & LEAF) == LEAF){		//Leaf.
