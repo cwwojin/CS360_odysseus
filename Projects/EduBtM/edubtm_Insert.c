@@ -118,7 +118,7 @@ Four edubtm_Insert(
     Pool                        *dlPool,                /* INOUT pool of dealloc list */
     DeallocListElem             *dlHead)                /* INOUT head of the dealloc list */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Four                        e;                      /* error number */
     Boolean                     lh;                     /* local 'h' */
     Boolean                     lf;                     /* local 'f' */
@@ -141,6 +141,36 @@ Four edubtm_Insert(
         if(kdesc->kpart[i].type!=SM_INT && kdesc->kpart[i].type!=SM_VARSTRING)
             ERR(eNOTSUPPORTED_EDUBTM);
     }
+	
+	/* NEWCODE */
+	//1. Get the root.
+	e = BfM_GetTrain((TrainID*)root, (char**)&apage, PAGE_BUF);
+	if(e < 0) ERR(e);
+	//2. Check if root is Internal or Leaf.
+	if((apage->any.hdr.type & INTERNAL) == INTERNAL){	//Internal.
+		//Choose next page to visit.
+		edubtm_BinarySearchInternal(apage, kdesc, kval, &idx);	//get the slot#. of the target entry.
+		if(idx == -1){
+			MAKE_PAGEID(newPid, root->volNo, apage->bi.hdr.p0);
+		}
+		else{
+			iEntryOffset = apage->bi.slot[-idx];
+			iEntry = &apage->bi.data[iEntryOffset];
+			MAKE_PAGEID(newPid, root->volNo, iEntry->spid);
+		}
+		//recursively call Insert() with newPid.
+		e = edubtm_Insert(catObjForFile, &newPid, kdesc, kval, oid, &lf, &lh, &litem, dlPool, dlHead);
+		if(e < 0) ERR(e);
+		//if SPLIT, return item.
+		if(lh){
+			*h = lh;
+			*item = litem;
+		}
+	}
+	else if((apage->any.hdr.type & LEAF) == LEAF){		//Leaf.
+		
+	}
+	/* ENDOFNEWCODE */
 
     
     return(eNOERROR);
@@ -187,7 +217,7 @@ Four edubtm_InsertLeaf(
     InternalItem                *item)          /* OUT Internal Item which will be inserted */
                                                 /*     into its parent when 'h' is TRUE */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Four                        e;              /* error number */
     Two                         i;
     Two                         idx;            /* index for the given key value */
@@ -252,7 +282,7 @@ Four edubtm_InsertInternal(
     Boolean             *h,             /* OUT whether the given page is splitted */
     InternalItem        *ritem)         /* OUT if the given page is splitted, the internal item may be returned by 'ritem'. */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Four                e;              /* error number */
     Two                 i;              /* index */
     Two                 entryOffset;    /* starting offset of an internal entry */
