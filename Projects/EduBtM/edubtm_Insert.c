@@ -164,16 +164,25 @@ Four edubtm_Insert(
 		if(lh){		//if SPLIT, insert item in the root.
 			memcpy(&tKey, &litem.klen, sizeof(Two) + litem.klen);
 			edubtm_BinarySearchInternal(apage, kdesc, &tKey, &idx);
-			e = btm_InsertInternal(catObjForFile, root, &litem, idx, &lh, item);
+			//e = edubtm_InsertInternal(catObjForFile, apage, &litem, idx, h, item);
+			e = btm_InsertInternal(catObjForFile, apage, &litem, idx, h, item);	//set return values h & item.
 			if(e < 0) ERR(e);
-			if(lh){
-				*h = lh;
-			}
+			//Set dirty.
+			e = BfM_SetDirty((TrainID*)root, PAGE_BUF);
+			if(e < 0) ERR(e);
 		}
 	}
 	else if((apage->any.hdr.type & LEAF) == LEAF){		//Leaf.
-		
+		//call InsertLeaf() to insert to leaf.
+		e = btm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
+		if(e < 0) ERR(e);
+		//Set dirty.
+		e = BfM_SetDirty((TrainID*)root, PAGE_BUF);
+		if(e < 0) ERR(e);
 	}
+	//3. Free buffer.
+	e = BfM_FreeTrain((TrainID*)root, PAGE_BUF);
+	if(e < 0) ERR(e);
 	/* ENDOFNEWCODE */
 
     
