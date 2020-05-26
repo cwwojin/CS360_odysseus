@@ -148,25 +148,20 @@ Four edubtm_Insert(
 	if(e < 0) ERR(e);
 	//2. Check if root is Internal or Leaf.
 	if((apage->any.hdr.type & INTERNAL) == INTERNAL){	//Internal.
-		printf("Root is internal.\n");
 		//Choose next page to visit.
 		edubtm_BinarySearchInternal(apage, kdesc, kval, &idx);	//get the slot#. of the target entry.
-		printf("Binary search result IDX : %d\n", idx);
 		if(idx == -1){
 			MAKE_PAGEID(newPid, root->volNo, apage->bi.hdr.p0);
-			printf("newPid : (%d, %d)\n", newPid.volNo, newPid.pageNo);
 		}
 		else{
 			iEntryOffset = apage->bi.slot[-idx];
 			iEntry = &apage->bi.data[iEntryOffset];
 			MAKE_PAGEID(newPid, root->volNo, iEntry->spid);
-			printf("newPid : (%d, %d)\n", newPid.volNo, newPid.pageNo);
 		}
 		//recursively call Insert() with newPid.
 		e = edubtm_Insert(catObjForFile, &newPid, kdesc, kval, oid, &lf, &lh, &litem, dlPool, dlHead);
 		if(e < 0) ERR(e);
 		if(lh){		//if SPLIT, insert item in the root.
-			printf("Split -> inserting item in the root..\n");
 			memcpy(&tKey, &litem.klen, sizeof(Two) + litem.klen);
 			edubtm_BinarySearchInternal(apage, kdesc, &tKey, &idx);
 			//e = edubtm_InsertInternal(catObjForFile, apage, &litem, idx, h, item);
