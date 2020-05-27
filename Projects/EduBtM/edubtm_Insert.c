@@ -280,11 +280,17 @@ Four edubtm_InsertLeaf(
 		page->hdr.free = free + entryLen;
 		page->hdr.nSlots++;
 		page->hdr.unused = page->hdr.unused + (alignedKlen - kval->klen);
+		*h = FALSE;
 	}
 	else{	//NEED to SPLIT!!
-		
+		leaf->nObjects = 1;
+		memcpy(&leaf.klen, kval, sizeof(Two) + kval->klen);
+		memcpy(&leaf.kval[alignedKlen], oid, sizeof(ObjectID));
+		//e = edubtm_SplitLeaf(catObjForFile, pid, page, idx, &leaf, item);
+		e = btm_SplitLeaf(catObjForFile, pid, page, idx, &leaf, item);
+		if(e < 0) ERR(e);
+		*h = TRUE;
 	}
-	
 	/* ENDOFNEWCODE */
 
     
