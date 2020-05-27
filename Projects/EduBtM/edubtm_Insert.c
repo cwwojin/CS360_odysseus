@@ -276,6 +276,7 @@ Four edubtm_InsertLeaf(
 		entry->nObjects = 1;
 		memcpy(&entry->klen, kval, sizeof(Two) + kval->len);
 		memcpy(&entry->kval[alignedKlen], oid, sizeof(ObjectID));
+		printf("Klen = %d\n", entry->klen);
 		for(i = page->hdr.nSlots - 1; i > idx; i--){		//rearrange the other slots.
 			page->slot[-(i + 1)] = page->slot[-(i)];
 		}
