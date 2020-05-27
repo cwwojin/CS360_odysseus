@@ -291,6 +291,7 @@ Four edubtm_InsertLeaf(
 		leaf.nObjects = 1;
 		memcpy(&leaf.klen, kval, sizeof(Two) + kval->len);
 		memcpy(&leaf.kval[alignedKlen], oid, sizeof(ObjectID));
+		printf("IDX : %d, LEAF : nObjects = %d, klen = %d\n", idx, leaf.nObjects, leaf.klen);
 		//e = edubtm_SplitLeaf(catObjForFile, pid, page, idx, &leaf, item);
 		e = btm_SplitLeaf(catObjForFile, pid, page, idx, &leaf, item);
 		if(e < 0) ERR(e);
