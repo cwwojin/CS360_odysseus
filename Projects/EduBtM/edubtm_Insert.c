@@ -177,8 +177,8 @@ Four edubtm_Insert(
 	}
 	else if((apage->any.hdr.type & LEAF) == LEAF){		//Leaf.
 		//call InsertLeaf() to insert to leaf.
-		e = edubtm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
-		//e = btm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
+		//e = edubtm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
+		e = btm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
 		if(e < 0) ERR(e);
 		//Set dirty.
 		e = BfM_SetDirty((TrainID*)root, PAGE_BUF);
@@ -287,7 +287,6 @@ Four edubtm_InsertLeaf(
 		page->hdr.unused += (alignedKlen - kval->len);
 	}
 	else{	//NEED to SPLIT!!
-		printf("Leaf SPLIT!!\n");
 		memcpy(&leaf.oid, oid, sizeof(ObjectID));
 		leaf.nObjects = 1;
 		memcpy(&leaf.klen, kval, sizeof(Two) + kval->len);
