@@ -268,6 +268,7 @@ Four edubtm_InsertLeaf(
 	alignedKlen = ALIGNED_LENGTH(kval->len);
 	entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
 	//3. If (required space <= Free space)
+	e = btm_CompactLeafPage(page, NIL);
 	printf("Entrylen : %d, Free space : %d @ page : %d\n", entryLen, BL_CFREE(page), pid->pageNo);
 	if(entryLen + sizeof(Two) < BL_CFREE(page)){
 		//e = edubtm_CompactLeafPage(page, NIL);	//compact page.
@@ -281,7 +282,6 @@ Four edubtm_InsertLeaf(
 		}
 		page->slot[-(idx + 1)] = page->hdr.free;
 		//update header : free, nSlots, unused.
-		printf("entryLen : %d, unused : %d\n", entryLen, (alignedKlen - kval->len));
 		page->hdr.free += entryLen;
 		page->hdr.nSlots++;
 		page->hdr.unused += (alignedKlen - kval->len);
