@@ -266,7 +266,7 @@ Four edubtm_InsertLeaf(
 	}
 	//2. Calculate the required free-space needed : (entry size) + (slot size)
 	alignedKlen = ALIGNED_LENGTH(kval->len);
-	printf("aligned key length : %d\n", alignedKlen);
+	printf("key length -> aligned key length : %d\n", kval->len, alignedKlen);
 	entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
 	//3. If (required space <= Free space)
 	if(entryLen + sizeof(Two) <= BL_CFREE(page)){
