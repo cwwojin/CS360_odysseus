@@ -266,13 +266,12 @@ Four edubtm_InsertLeaf(
 	}
 	//2. Calculate the required free-space needed : (entry size) + (slot size)
 	alignedKlen = ALIGNED_LENGTH(kval->len);
+	printf("aligned key length : %d\n", alignedKlen);
 	entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
 	//3. If (required space <= Free space)
-	//e = edubtm_CompactLeafPage(page, NIL);	//compact page.
-	e = btm_CompactLeafPage(page, NIL);
 	if(entryLen + sizeof(Two) <= BL_CFREE(page)){
 		//e = edubtm_CompactLeafPage(page, NIL);	//compact page.
-		//e = btm_CompactLeafPage(page, NIL);
+		e = btm_CompactLeafPage(page, NIL);
 		entry = &page->data[page->hdr.free];	//insert new IEntry into the target SLOT -> idx + 1.
 		entry->nObjects = 1;
 		memcpy(&entry->klen, kval, sizeof(Two) + kval->len);
