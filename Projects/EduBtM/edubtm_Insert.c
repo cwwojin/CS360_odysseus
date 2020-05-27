@@ -280,9 +280,9 @@ Four edubtm_InsertLeaf(
 		}
 		page->slot[-(idx + 1)] = page->hdr.free;
 		//update header : free, nSlots, unused.
-		page->hdr.free = page->hdr.free + entryLen;
+		page->hdr.free += entryLen;
 		page->hdr.nSlots++;
-		page->hdr.unused = page->hdr.unused + (alignedKlen - kval->len);
+		//page->hdr.unused += (alignedKlen - kval->len);
 		//*h = FALSE;
 	}
 	else{	//NEED to SPLIT!!
