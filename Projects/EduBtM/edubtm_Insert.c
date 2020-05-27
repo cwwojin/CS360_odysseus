@@ -263,7 +263,7 @@ Four edubtm_InsertLeaf(
 		ERR(eDUPLICATEDKEY_BTM);	//error if key already exists in leaf.
 	}
 	//2. Calculate the required free-space needed : (entry size) + (slot size)
-	alignedKlen = ALIGNED_LENGTH(kval->klen);
+	alignedKlen = ALIGNED_LENGTH(kval->len);
 	entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
 	//3. If (required space <= Free space)
 	if(entryLen + sizeof(Two) <= BL_CFREE){
@@ -271,7 +271,7 @@ Four edubtm_InsertLeaf(
 		e = btm_CompactLeafPage(page, NIL);
 		entry = &page->data[page->hdr.free];	//insert new IEntry into the target SLOT -> idx + 1.
 		entry->nObjects = 1;
-		memcpy(&entry->klen, kval, sizeof(Two) + kval->klen);
+		memcpy(&entry->klen, kval, sizeof(Two) + kval->len);
 		memcpy(&entry->kval[alignedKlen], oid, sizeof(ObjectID));
 		for(i = page->hdr.nSlots - 1; i > idx; i--){		//rearrange the other slots.
 			page->slot[-(i + 1)] = page->slot[-(i)];
@@ -280,12 +280,12 @@ Four edubtm_InsertLeaf(
 		//update header : free, nSlots, unused.
 		page->hdr.free = free + entryLen;
 		page->hdr.nSlots++;
-		page->hdr.unused = page->hdr.unused + (alignedKlen - kval->klen);
+		page->hdr.unused = page->hdr.unused + (alignedKlen - kval->len);
 		*h = FALSE;
 	}
 	else{	//NEED to SPLIT!!
 		leaf->nObjects = 1;
-		memcpy(&leaf.klen, kval, sizeof(Two) + kval->klen);
+		memcpy(&leaf.klen, kval, sizeof(Two) + kval->len);
 		memcpy(&leaf.kval[alignedKlen], oid, sizeof(ObjectID));
 		//e = edubtm_SplitLeaf(catObjForFile, pid, page, idx, &leaf, item);
 		e = btm_SplitLeaf(catObjForFile, pid, page, idx, &leaf, item);
