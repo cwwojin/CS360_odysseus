@@ -267,6 +267,7 @@ Four edubtm_InsertLeaf(
 	//2. Calculate the required free-space needed : (entry size) + (slot size)
 	alignedKlen = ALIGNED_LENGTH(kval->len);
 	entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
+	printf("Free area : %d, required space : %d, Enough? : %d\n", BL_CFREE(page), entryLen + sizeof(Two), entryLen + sizeof(Two) <= BL_CFREE(page));
 	//3. If (required space <= Free space)
 	if(entryLen + sizeof(Two) <= BL_CFREE(page)){
 		//e = edubtm_CompactLeafPage(page, NIL);	//compact page.
