@@ -177,8 +177,8 @@ Four edubtm_Insert(
 	}
 	else if((apage->any.hdr.type & LEAF) == LEAF){		//Leaf.
 		//call InsertLeaf() to insert to leaf.
-		//e = edubtm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
-		e = btm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
+		e = edubtm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
+		//e = btm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
 		if(e < 0) ERR(e);
 		//Set dirty.
 		e = BfM_SetDirty((TrainID*)root, PAGE_BUF);
@@ -266,9 +266,9 @@ Four edubtm_InsertLeaf(
 	}
 	//2. Calculate the required free-space needed : (entry size) + (slot size)
 	alignedKlen = ALIGNED_LENGTH(kval->len);
-	printf("key length : %d -> aligned key length : %d\n", kval->len, alignedKlen);
 	entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
 	//3. If (required space <= Free space)
+	printf("Entrylen : %d, Free space : %d @ page : %d\n", entryLen, BL_CFREE(page), pid->pageNo);
 	if(entryLen + sizeof(Two) < BL_CFREE(page)){
 		//e = edubtm_CompactLeafPage(page, NIL);	//compact page.
 		e = btm_CompactLeafPage(page, NIL);
