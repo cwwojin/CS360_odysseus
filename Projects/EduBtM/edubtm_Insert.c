@@ -286,7 +286,7 @@ Four edubtm_InsertLeaf(
 		//*h = FALSE;
 	}
 	else{	//NEED to SPLIT!!
-		leaf->nObjects = 1;
+		leaf.nObjects = 1;
 		memcpy(&leaf.klen, kval, sizeof(Two) + kval->len);
 		memcpy(&leaf.kval[alignedKlen], oid, sizeof(ObjectID));
 		//e = edubtm_SplitLeaf(catObjForFile, pid, page, idx, &leaf, item);
