@@ -177,9 +177,12 @@ Four edubtm_Insert(
 	}
 	else if((apage->any.hdr.type & LEAF) == LEAF){		//Leaf.
 		//call InsertLeaf() to insert to leaf.
-		e = edubtm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
-		//e = btm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
+		//e = edubtm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
+		e = btm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
 		if(e < 0) ERR(e);
+		if(h){
+			printf("Leaf Split!!\n");
+		}
 		//Set dirty.
 		e = BfM_SetDirty((TrainID*)root, PAGE_BUF);
 		if(e < 0) ERR(e);
