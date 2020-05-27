@@ -180,9 +180,6 @@ Four edubtm_Insert(
 		//e = edubtm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
 		e = btm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
 		if(e < 0) ERR(e);
-		if(*h){
-			printf("Leaf Split!\n");
-		}
 		//Set dirty.
 		e = BfM_SetDirty((TrainID*)root, PAGE_BUF);
 		if(e < 0) ERR(e);
@@ -270,11 +267,12 @@ Four edubtm_InsertLeaf(
 	//2. Calculate the required free-space needed : (entry size) + (slot size)
 	alignedKlen = ALIGNED_LENGTH(kval->len);
 	entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
-	printf("Free area : %d, required space : %d, Enough? : %d\n", BL_CFREE(page), entryLen + sizeof(Two), entryLen + sizeof(Two) <= BL_CFREE(page));
 	//3. If (required space <= Free space)
+	//e = edubtm_CompactLeafPage(page, NIL);	//compact page.
+	e = btm_CompactLeafPage(page, NIL);
 	if(entryLen + sizeof(Two) <= BL_CFREE(page)){
 		//e = edubtm_CompactLeafPage(page, NIL);	//compact page.
-		e = btm_CompactLeafPage(page, NIL);
+		//e = btm_CompactLeafPage(page, NIL);
 		entry = &page->data[page->hdr.free];	//insert new IEntry into the target SLOT -> idx + 1.
 		entry->nObjects = 1;
 		memcpy(&entry->klen, kval, sizeof(Two) + kval->len);
