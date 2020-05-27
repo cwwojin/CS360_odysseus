@@ -282,12 +282,13 @@ Four edubtm_InsertLeaf(
 		}
 		page->slot[-(idx + 1)] = page->hdr.free;
 		//update header : free, nSlots, unused.
-		page->hdr.free += entryLen;
+		page->hdr.free = page->hdr.free + entryLen;
 		page->hdr.nSlots++;
 		page->hdr.unused += (alignedKlen - kval->len);
 	}
 	else{	//NEED to SPLIT!!
 		printf("Leaf SPLIT!!\n");
+		memcpy(&leaf.oid, oid, sizeof(ObjectID));
 		leaf.nObjects = 1;
 		memcpy(&leaf.klen, kval, sizeof(Two) + kval->len);
 		memcpy(&leaf.kval[alignedKlen], oid, sizeof(ObjectID));
