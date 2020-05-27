@@ -255,6 +255,8 @@ Four edubtm_InsertLeaf(
         if(kdesc->kpart[i].type!=SM_INT && kdesc->kpart[i].type!=SM_VARSTRING)
             ERR(eNOTSUPPORTED_EDUBTM);
     }
+    /*@ Initially the flags are FALSE */
+    *h = *f = FALSE;
 	
 	/* NEWCODE */
 	//1. Get the target slot #. with binary search.
@@ -266,7 +268,7 @@ Four edubtm_InsertLeaf(
 	alignedKlen = ALIGNED_LENGTH(kval->len);
 	entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
 	//3. If (required space <= Free space)
-	if(entryLen + sizeof(Two) <= BL_CFREE){
+	if(entryLen + sizeof(Two) <= BL_CFREE(page)){
 		//e = edubtm_CompactLeafPage(page, NIL);	//compact page.
 		e = btm_CompactLeafPage(page, NIL);
 		entry = &page->data[page->hdr.free];	//insert new IEntry into the target SLOT -> idx + 1.
@@ -278,10 +280,10 @@ Four edubtm_InsertLeaf(
 		}
 		page->slot[-(idx + 1)] = page->hdr.free;
 		//update header : free, nSlots, unused.
-		page->hdr.free = free + entryLen;
+		page->hdr.free = page->hdr.free + entryLen;
 		page->hdr.nSlots++;
 		page->hdr.unused = page->hdr.unused + (alignedKlen - kval->len);
-		*h = FALSE;
+		//*h = FALSE;
 	}
 	else{	//NEED to SPLIT!!
 		leaf->nObjects = 1;
@@ -293,10 +295,6 @@ Four edubtm_InsertLeaf(
 		*h = TRUE;
 	}
 	/* ENDOFNEWCODE */
-
-    
-    /*@ Initially the flags are FALSE */
-    *h = *f = FALSE;
     
 
 
