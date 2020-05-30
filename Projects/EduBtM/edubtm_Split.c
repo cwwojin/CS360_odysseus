@@ -195,10 +195,18 @@ Four edubtm_SplitLeaf(
 	if(e < 0) ERR(e);
 	//3. save the entries (+ new litem) in the original & new pages.
 	maxLoop = fpage->hdr.nSlots + 1;
+	flag = FALSE;
 	for(i=0; i<maxLoop; i++){
-		if(i > (maxLoop / 2)){
-			
+		if(i > idx + 1){	//Save fpage's slot# J. if J == idx + 1, save the NEW item.
+			j = i - 1;
 		}
+		else{
+			j = i;
+		}
+		if(i > (maxLoop + 1)/ 2){	//Save to fpage? or npage (TRUE)?
+			flag = TRUE;
+		}
+		
 	}
 	/* ENDOFNEWCODE */
  
