@@ -250,6 +250,11 @@ Four edubtm_SplitLeaf(
 	nEntry = &npage->data[npage->slot[0]];
 	ritem->spid = newPid.pageNo;
 	memcpy(&ritem->klen, &nEntry->klen, sizeof(Two) + nEntry->klen);
+	//6. Set dirty & free. (Only NPAGE!)
+	e = BfM_SetDirty((TrainID)&newPid, PAGE_BUF);
+	if(e < 0) ERR(e);
+	e = BfM_FreeTrain((TrainID)&newPid, PAGE_BUF);
+	if(e < 0) ERR(e);
 	/* ENDOFNEWCODE */
  
     
