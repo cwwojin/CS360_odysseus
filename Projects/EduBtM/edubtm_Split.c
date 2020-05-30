@@ -185,13 +185,13 @@ Four edubtm_SplitLeaf(
     Boolean                     isTmp;
 	
 	/* NEWCODE */
-	//1. allocate a new page & get buffer.
+	//1. allocate a new page.
 	e = btm_AllocPage(catObjForFile, root, &newPid);
 	if(e < 0) ERR(e);
-	e = BfM_GetNewTrain((TrainID*)&newPid, (char**)&npage, PAGE_BUF);
-	if(e < 0) ERR(e);
-	//2. initialize new page as LEAF.
+	//2. initialize new page as LEAF & get buffer.
 	e = edubtm_InitLeaf(&newPid, FALSE, isTmp);
+	if(e < 0) ERR(e);
+	e = BfM_GetTrain((TrainID*)&newPid, (char**)&npage, PAGE_BUF);
 	if(e < 0) ERR(e);
 	//3. save the entries (+ new litem) in the original & new pages.
 	maxLoop = fpage->hdr.nSlots + 1;
