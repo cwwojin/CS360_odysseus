@@ -195,19 +195,57 @@ Four edubtm_SplitLeaf(
 	if(e < 0) ERR(e);
 	//3. save the entries (+ new litem) in the original & new pages.
 	maxLoop = fpage->hdr.nSlots + 1;
-	flag = FALSE;
+	tpage = *fpage;		//save fpage to temporary page TPAGE.
 	for(i=0; i<maxLoop; i++){
-		if(i > idx + 1){	//Save fpage's slot# J. if I == idx + 1, save the NEW item.
-			j = i - 1;
+		if(i > (maxLoop + 1)/ 2){	//npage.
+			if(i == idx + 1){	//save ITEM.
+				nEntry = &npage->data[npage->hdr.free];
+				nEntry->nObjects = item->nObjects;
+				memcpy(&nEntry->klen, &item->klen, sizeof(Two) + item->klen);
+				alignedKlen = ALIGNED_LENGTH(item->klen);
+				memcpy(&nEntry->kval[alignedKlen], &item->oid, sizeof(ObjectID));
+				entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
+			}
+			else{			//save tpage's slot# (i) or (i-1)
+				nEntry = &npage->data[npage->hdr.free];
+				if(i > idx + 1){
+					fEntry = &tpage.data[tpage.slot[-(i-1)]];
+				}
+				else{
+					fEntry = &tpage.data[tpage.slot[-(i)]];
+				}
+				alignedKlen = ALIGNED_LENGTH(fEntry->klen);
+				entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
+				memcpy(nEntry, fEntry, entryLen);
+				fpage->hdr.unused += entryLen;
+			}
+			npage->slot[-(npage->hdr.nSlots)] = npage->hdr.free;
+			npage->hdr.free += entryLen;
+			npage->hdr.nSlots++;
 		}
-		else{
-			j = i;
+		else{	//original page : fpage
+			if(i == idx + 1){	//save ITEM.
+				fEntry = &fpage->data[fpage->hdr.free];
+				fEntry->nObjects = item->nObjects;
+				memcpy(&fEntry->klen, &item->klen, sizeof(Two) + item->klen);
+				alignedKlen = ALIGNED_LENGTH(item->klen);
+				memcpy(&fEntry->kval[alignedKlen], &item->oid, sizeof(ObjectID));
+				fpage->slot[-(idx + 1)] = fpage->hdr.free;
+				entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
+				fpage->hdr.free += entryLen;
+				fpage->hdr.nSlots++;
+			}
+			else if(i > idx + 1){	//adjust slot.
+				fpage->slot[-i] = tpage.slot[-(i-1)];
+			}
+			//else : do NOTHING.
 		}
-		if(i > (maxLoop + 1)/ 2){	//Save to fpage? or npage (TRUE)?
-			flag = TRUE;
-		}
-		
 	}
+	//4. Update headers & doubly linked list.
+	fpage->hdr.nextPage = newPid.pageNo;
+	npage->hdr.prevPage = root->pageNo;
+	fpage->hdr.nSlots -= npage->hdr.nSlots;
+	//5. Make the discriminator IEntry.
 	/* ENDOFNEWCODE */
  
     
