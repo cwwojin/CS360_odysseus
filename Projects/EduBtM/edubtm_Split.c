@@ -186,7 +186,7 @@ Four edubtm_SplitLeaf(
 	
 	/* NEWCODE */
 	//1. allocate a new page & get buffer.
-	e = btm_AllocPage(catObjForFile, root, newPid);
+	e = btm_AllocPage(catObjForFile, root, &newPid);
 	if(e < 0) ERR(e);
 	e = BfM_GetNewTrain((TrainID*)&newPid, (char**)&npage, PAGE_BUF);
 	if(e < 0) ERR(e);
@@ -198,7 +198,7 @@ Four edubtm_SplitLeaf(
 	tpage = *fpage;		//save fpage to temporary page TPAGE.
 	for(i=0; i<maxLoop; i++){
 		if(i > (maxLoop + 1)/ 2){	//npage.
-			if(i == idx + 1){	//save ITEM.
+			if(i == high + 1){	//save ITEM.
 				nEntry = &npage->data[npage->hdr.free];
 				nEntry->nObjects = item->nObjects;
 				memcpy(&nEntry->klen, &item->klen, sizeof(Two) + item->klen);
@@ -208,7 +208,7 @@ Four edubtm_SplitLeaf(
 			}
 			else{			//save tpage's slot# (i) or (i-1)
 				nEntry = &npage->data[npage->hdr.free];
-				if(i > idx + 1){
+				if(i > high + 1){
 					fEntry = &tpage.data[tpage.slot[-(i-1)]];
 				}
 				else{
@@ -226,13 +226,13 @@ Four edubtm_SplitLeaf(
 			npage->hdr.nSlots++;
 		}
 		else{	//original page : fpage
-			if(i == idx + 1){	//save ITEM.
+			if(i == high + 1){	//save ITEM.
 				fEntry = &fpage->data[fpage->hdr.free];
 				fEntry->nObjects = item->nObjects;
 				memcpy(&fEntry->klen, &item->klen, sizeof(Two) + item->klen);
 				alignedKlen = ALIGNED_LENGTH(item->klen);
 				memcpy(&fEntry->kval[alignedKlen], &item->oid, sizeof(ObjectID));
-				fpage->slot[-(idx + 1)] = fpage->hdr.free;
+				fpage->slot[-(high + 1)] = fpage->hdr.free;
 				entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
 				fpage->hdr.free += entryLen;
 				fpage->hdr.nSlots++;
