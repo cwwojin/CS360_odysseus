@@ -217,7 +217,9 @@ Four edubtm_SplitLeaf(
 				alignedKlen = ALIGNED_LENGTH(fEntry->klen);
 				entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
 				memcpy(nEntry, fEntry, entryLen);
+				//Remove this entry from FPAGE.
 				fpage->hdr.unused += entryLen;
+				fpage->hdr.nSlots--;
 			}
 			npage->slot[-(npage->hdr.nSlots)] = npage->hdr.free;
 			npage->hdr.free += entryLen;
@@ -244,8 +246,10 @@ Four edubtm_SplitLeaf(
 	//4. Update headers & doubly linked list.
 	fpage->hdr.nextPage = newPid.pageNo;
 	npage->hdr.prevPage = root->pageNo;
-	fpage->hdr.nSlots -= npage->hdr.nSlots;
-	//5. Make the discriminator IEntry.
+	//5. Make the discriminator IEntry -> slot# 0. of NPAGE.
+	nEntry = &npage->data[npage->slot[0]];
+	ritem->spid = newPid.pageNo;
+	memcpy(&ritem->klen, &nEntry->klen, sizeof(Two) + nEntry->klen);
 	/* ENDOFNEWCODE */
  
     
