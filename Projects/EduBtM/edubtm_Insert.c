@@ -293,8 +293,8 @@ Four edubtm_InsertLeaf(
 		leaf.nObjects = 1;
 		memcpy(&leaf.klen, kval, sizeof(Two) + kval->len);
 		printf("OID : (%d, %d, %d, %d), IDX : %d, LEAF : nObjects = %d, klen = %d\n", leaf.oid.volNo, leaf.oid.pageNo, leaf.oid.slotNo, leaf.oid.unique, idx, leaf.nObjects, leaf.klen);
-		//e = edubtm_SplitLeaf(catObjForFile, pid, page, idx, &leaf, item);
-		e = btm_SplitLeaf(catObjForFile, pid, page, idx, &leaf, item);
+		e = edubtm_SplitLeaf(catObjForFile, pid, page, idx, &leaf, item);
+		//e = btm_SplitLeaf(catObjForFile, pid, page, idx, &leaf, item);
 		if(e < 0) ERR(e);
 		*h = TRUE;
 	}
