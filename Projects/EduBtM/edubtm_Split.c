@@ -250,6 +250,10 @@ Four edubtm_SplitLeaf(
 		if(e < 0) ERR(e);
 	}
 	//4. Update headers & doubly linked list.
+	if(fpage->hdr.nextPage != NIL){
+		npage->hdr.nextPage = fpage->hdr.nextPage;
+		//set NEXTPAGE's prevPage to NPAGE.
+	}
 	fpage->hdr.nextPage = newPid.pageNo;
 	npage->hdr.prevPage = root->pageNo;
 	//5. Make the discriminator IEntry -> slot# 0. of NPAGE.
