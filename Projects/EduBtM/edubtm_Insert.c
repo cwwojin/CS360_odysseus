@@ -162,6 +162,7 @@ Four edubtm_Insert(
 		e = edubtm_Insert(catObjForFile, &newPid, kdesc, kval, oid, &lf, &lh, &litem, dlPool, dlHead);
 		if(e < 0) ERR(e);
 		if(lh){		//if SPLIT, insert item in the root.
+			printf("SPLIT!!\n");
 			memcpy(&tKey, &litem.klen, sizeof(Two) + litem.klen);
 			edubtm_BinarySearchInternal(apage, kdesc, &tKey, &idx);
 			//e = edubtm_InsertInternal(catObjForFile, apage, &litem, idx, h, item);
