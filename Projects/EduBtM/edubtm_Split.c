@@ -197,7 +197,7 @@ Four edubtm_SplitLeaf(
 	maxLoop = fpage->hdr.nSlots + 1;
 	tpage = *fpage;		//save fpage to temporary page TPAGE.
 	for(i=0; i<maxLoop; i++){
-		if(i > (maxLoop + 1)/ 2){	//npage.
+		if(i > (maxLoop)/ 2){	//npage.
 			if(i == high + 1){	//save ITEM.
 				nEntry = &npage->data[npage->hdr.free];
 				nEntry->nObjects = item->nObjects;
@@ -250,10 +250,10 @@ Four edubtm_SplitLeaf(
 	nEntry = &npage->data[npage->slot[0]];
 	ritem->spid = newPid.pageNo;
 	memcpy(&ritem->klen, &nEntry->klen, sizeof(Two) + nEntry->klen);
-	//6. Set dirty & free. (Only NPAGE!)
-	e = BfM_SetDirty((TrainID)&newPid, PAGE_BUF);
+	//6. Set dirty & free.
+	e = BfM_SetDirty((TrainID*)&newPid, PAGE_BUF);
 	if(e < 0) ERR(e);
-	e = BfM_FreeTrain((TrainID)&newPid, PAGE_BUF);
+	e = BfM_FreeTrain((TrainID*)&newPid, PAGE_BUF);
 	if(e < 0) ERR(e);
 	/* ENDOFNEWCODE */
  
