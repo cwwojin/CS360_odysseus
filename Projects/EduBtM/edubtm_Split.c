@@ -203,7 +203,7 @@ Four edubtm_SplitLeaf(
 				nEntry->nObjects = item->nObjects;
 				memcpy(&nEntry->klen, &item->klen, sizeof(Two) + item->klen);
 				alignedKlen = ALIGNED_LENGTH(item->klen);
-				memcpy(&nEntry->kval[alignedKlen], &item->oid, sizeof(ObjectID));
+				memcpy(&nEntry->kval[alignedKlen], item, sizeof(ObjectID));
 				entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
 			}
 			else{			//save tpage's slot# (i) or (i-1)
@@ -231,7 +231,7 @@ Four edubtm_SplitLeaf(
 				fEntry->nObjects = item->nObjects;
 				memcpy(&fEntry->klen, &item->klen, sizeof(Two) + item->klen);
 				alignedKlen = ALIGNED_LENGTH(item->klen);
-				memcpy(&fEntry->kval[alignedKlen], &item->oid, sizeof(ObjectID));
+				memcpy(&fEntry->kval[alignedKlen], item, sizeof(ObjectID));
 				fpage->slot[-(high + 1)] = fpage->hdr.free;
 				entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
 				fpage->hdr.free += entryLen;
