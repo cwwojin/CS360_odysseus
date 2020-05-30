@@ -237,7 +237,7 @@ Four edubtm_SplitLeaf(
 				fpage->hdr.free += entryLen;
 				fpage->hdr.nSlots++;
 			}
-			else if(i > idx + 1){	//adjust slot.
+			else if(i > high + 1){	//adjust slot.
 				fpage->slot[-i] = tpage.slot[-(i-1)];
 			}
 			//else : do NOTHING.
