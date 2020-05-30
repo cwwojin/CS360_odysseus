@@ -101,7 +101,7 @@ Four edubtm_SplitInternal(
     InternalItem                *item,                  /* IN the item which will be inserted */
     InternalItem                *ritem)                 /* OUT the item which will be returned by spliting */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Four                        e;                      /* error number */
     Two                         i;                      /* slot No. in the given page, fpage */
     Two                         j;                      /* slot No. in the splitted pages */
@@ -158,7 +158,7 @@ Four edubtm_SplitLeaf(
     LeafItem                    *item,          /* IN the item which will be inserted */
     InternalItem                *ritem)         /* OUT the item which will be returned by spliting */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Four                        e;              /* error number */
     Two                         i;              /* slot No. in the given page, fpage */
     Two                         j;              /* slot No. in the splitted pages */
@@ -183,6 +183,24 @@ Four edubtm_SplitLeaf(
     Two                         entryLen;       /* entry length */
     Boolean                     flag;
     Boolean                     isTmp;
+	
+	/* NEWCODE */
+	//1. allocate a new page & get buffer.
+	e = btm_AllocPage(catObjForFile, root, newPid);
+	if(e < 0) ERR(e);
+	e = BfM_GetNewTrain((TrainID*)&newPid, (char**)&npage, PAGE_BUF);
+	if(e < 0) ERR(e);
+	//2. initialize new page as LEAF.
+	e = edubtm_InitLeaf(&newPid, FALSE, isTmp);
+	if(e < 0) ERR(e);
+	//3. save the entries (+ new litem) in the original & new pages.
+	maxLoop = fpage->hdr.nSlots + 1;
+	for(i=0; i<maxLoop; i++){
+		if(i > (maxLoop / 2)){
+			
+		}
+	}
+	/* ENDOFNEWCODE */
  
     
 
