@@ -252,9 +252,14 @@ Four edubtm_SplitLeaf(
 	//4. Update headers & doubly linked list.
 	if(fpage->hdr.nextPage != NIL){
 		npage->hdr.nextPage = fpage->hdr.nextPage;
-		//set NEXTPAGE's prevPage to NPAGE.
-		MAKE_PAGEID(nextPid, root->volNo, fpage->hdr.nextPage);
-		
+		MAKE_PAGEID(nextPid, root->volNo, fpage->hdr.nextPage);	//set NEXTPAGE's prevPage to NPAGE.
+		e = BfM_GetTrain((TrainID*)&nextPid, (char**)&mpage, PAGE_BUF);
+		if(e < 0) ERR(e);
+		mpage->hdr.prevPage = newPid.pageNo;
+		e = BfM_SetDirty((TrainID*)&nextPid, PAGE_BUF);
+		if(e < 0) ERR(e);
+		e = BfM_FreeTrain((TrainID*)&nextPid, PAGE_BUF);
+		if(e < 0) ERR(e);	
 	}
 	fpage->hdr.nextPage = newPid.pageNo;
 	npage->hdr.prevPage = root->pageNo;
