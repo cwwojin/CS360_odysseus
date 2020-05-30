@@ -197,7 +197,7 @@ Four edubtm_SplitLeaf(
 	maxLoop = fpage->hdr.nSlots + 1;
 	flag = FALSE;
 	for(i=0; i<maxLoop; i++){
-		if(i > idx + 1){	//Save fpage's slot# J. if J == idx + 1, save the NEW item.
+		if(i > idx + 1){	//Save fpage's slot# J. if I == idx + 1, save the NEW item.
 			j = i - 1;
 		}
 		else{
