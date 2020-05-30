@@ -162,7 +162,6 @@ Four edubtm_Insert(
 		e = edubtm_Insert(catObjForFile, &newPid, kdesc, kval, oid, &lf, &lh, &litem, dlPool, dlHead);
 		if(e < 0) ERR(e);
 		if(lh){		//if SPLIT, insert item in the root.
-			printf("SPLIT!!\n");
 			memcpy(&tKey, &litem.klen, sizeof(Two) + litem.klen);
 			edubtm_BinarySearchInternal(apage, kdesc, &tKey, &idx);
 			//e = edubtm_InsertInternal(catObjForFile, apage, &litem, idx, h, item);
@@ -184,6 +183,9 @@ Four edubtm_Insert(
 		//Set dirty.
 		e = BfM_SetDirty((TrainID*)root, PAGE_BUF);
 		if(e < 0) ERR(e);
+		if(*h){
+			printf("SPLIT!!\n");
+		}
 	}
 	//3. Free buffer.
 	e = BfM_FreeTrain((TrainID*)root, PAGE_BUF);
