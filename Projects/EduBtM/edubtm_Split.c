@@ -243,10 +243,9 @@ Four edubtm_SplitLeaf(
 			//else : do NOTHING.
 		}
 	}
-	e = btm_CompactLeafPage(npage, NIL);
-	if(e < 0){ 
-		printf("Compact error : %d\n",e);
-		ERR(e);
+	if(npage->hdr.unused > 0){
+		e = btm_CompactLeafPage(npage, NIL);
+		if(e < 0) ERR(e);
 	}
 	//4. Update headers & doubly linked list.
 	fpage->hdr.nextPage = newPid.pageNo;
