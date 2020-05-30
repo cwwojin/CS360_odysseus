@@ -268,7 +268,7 @@ Four edubtm_InsertLeaf(
 	alignedKlen = ALIGNED_LENGTH(kval->len);
 	entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
 	//3. If (required space <= Free space)
-	//printf("Entrylen : %d, Free space : %d, FREE : %d, UNUSED : %d, nSlots : %d, @ page : %d\n", entryLen, BL_FREE(page), page->hdr.free, page->hdr.unused, page->hdr.nSlots, pid->pageNo);
+	printf("Entrylen : %d, Free space : %d, FREE : %d, UNUSED : %d, nSlots : %d, @ page : %d\n", entryLen, BL_FREE(page), page->hdr.free, page->hdr.unused, page->hdr.nSlots, pid->pageNo);
 	if(entryLen + sizeof(Two) <= BL_FREE(page)){
 		if(entryLen + sizeof(Two) > BL_CFREE(page)){	//compact page if needed.
 			//e = edubtm_CompactLeafPage(page, NIL);
