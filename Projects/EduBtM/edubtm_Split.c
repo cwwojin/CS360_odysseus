@@ -243,6 +243,8 @@ Four edubtm_SplitLeaf(
 			//else : do NOTHING.
 		}
 	}
+	e = btm_CompactLeafPage(npage, NIL);
+	if(e < 0) ERR(e);
 	//4. Update headers & doubly linked list.
 	fpage->hdr.nextPage = newPid.pageNo;
 	npage->hdr.prevPage = root->pageNo;
