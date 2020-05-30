@@ -268,11 +268,12 @@ Four edubtm_InsertLeaf(
 	alignedKlen = ALIGNED_LENGTH(kval->len);
 	entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
 	//3. If (required space <= Free space)
-	e = btm_CompactLeafPage(page, NIL);
-	printf("Entrylen : %d, Free space : %d, FREE : %d, UNUSED : %d, nSlots : %d, @ page : %d\n", entryLen, BL_CFREE(page), page->hdr.free, page->hdr.unused, page->hdr.nSlots, pid->pageNo);
-	if(entryLen + sizeof(Two) < BL_CFREE(page)){
-		//e = edubtm_CompactLeafPage(page, NIL);	//compact page.
-		//e = btm_CompactLeafPage(page, NIL);
+	//e = btm_CompactLeafPage(page, NIL);
+	printf("Entrylen : %d, Free space : %d, FREE : %d, UNUSED : %d, nSlots : %d, @ page : %d\n", entryLen, BL_FREE(page), page->hdr.free, page->hdr.unused, page->hdr.nSlots, pid->pageNo);
+	if(entryLen + sizeof(Two) < BL_FREE(page)){
+		if(entryLen + sizeof(Two) > BL_CFREE(page)){	//compact page if needed.
+			e = btm_CompactLeafPage(page, NIL);
+		}
 		entry = &page->data[page->hdr.free];	//insert new IEntry into the target SLOT -> idx + 1.
 		entry->nObjects = 1;
 		memcpy(&entry->klen, kval, sizeof(Two) + kval->len);
@@ -287,7 +288,6 @@ Four edubtm_InsertLeaf(
 		page->hdr.unused += (alignedKlen - kval->len);
 	}
 	else{	//NEED to SPLIT!!
-		//memcpy(&leaf.oid, oid, sizeof(ObjectID));
 		leaf.nObjects = 1;
 		memcpy(&leaf.klen, kval, sizeof(Two) + kval->len);
 		memcpy(&leaf.kval[alignedKlen], oid, sizeof(ObjectID));
