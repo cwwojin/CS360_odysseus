@@ -209,10 +209,12 @@ Four edubtm_SplitLeaf(
 			else{			//save tpage's slot# (i) or (i-1)
 				nEntry = &npage->data[npage->hdr.free];
 				if(i > high + 1){
-					fEntry = &tpage.data[tpage.slot[-(i-1)]];
+					fEntryOffset = tpage.slot[-(i-1)];
+					fEntry = &tpage.data[fEntryOffset];
 				}
 				else{
-					fEntry = &tpage.data[tpage.slot[-(i)]];
+					fEntryOffset = tpage.slot[-i];
+					fEntry = &tpage.data[fEntryOffset];
 				}
 				alignedKlen = ALIGNED_LENGTH(fEntry->klen);
 				entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
