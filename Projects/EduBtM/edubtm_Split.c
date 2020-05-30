@@ -253,6 +253,8 @@ Four edubtm_SplitLeaf(
 	if(fpage->hdr.nextPage != NIL){
 		npage->hdr.nextPage = fpage->hdr.nextPage;
 		//set NEXTPAGE's prevPage to NPAGE.
+		MAKE_PAGEID(nextPid, root->volNo, fpage->hdr.nextPage);
+		
 	}
 	fpage->hdr.nextPage = newPid.pageNo;
 	npage->hdr.prevPage = root->pageNo;
