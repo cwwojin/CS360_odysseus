@@ -257,7 +257,7 @@ Four edubtm_SplitLeaf(
 		if(e < 0) ERR(e);
 		mpage->hdr.prevPage = newPid.pageNo;
 		e = BfM_SetDirty((TrainID*)&nextPid, PAGE_BUF);
-		if(e < 0) ERR(e);
+		if(e < 0) ERRB1(e, &nextPid, PAGE_BUF);
 		e = BfM_FreeTrain((TrainID*)&nextPid, PAGE_BUF);
 		if(e < 0) ERR(e);	
 	}
@@ -269,7 +269,7 @@ Four edubtm_SplitLeaf(
 	memcpy(&ritem->klen, &nEntry->klen, sizeof(Two) + nEntry->klen);
 	//6. Set dirty & free.
 	e = BfM_SetDirty((TrainID*)&newPid, PAGE_BUF);
-	if(e < 0) ERR(e);
+	if(e < 0) ERRB1(e, &newPid, PAGE_BUF);
 	e = BfM_FreeTrain((TrainID*)&newPid, PAGE_BUF);
 	if(e < 0) ERR(e);
 	/* ENDOFNEWCODE */
