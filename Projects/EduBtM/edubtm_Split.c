@@ -197,8 +197,11 @@ Four edubtm_SplitLeaf(
 	maxLoop = fpage->hdr.nSlots + 1;
 	tpage = *fpage;		//save fpage to temporary page TPAGE.
 	for(i=0; i<maxLoop; i++){
+		printf("i = %d, ", i);
 		if(i > (maxLoop)/ 2){	//npage.
+			printf("Npage, ");
 			if(i == high + 1){	//save ITEM.
+				printf("saving ITEM, ");
 				nEntry = &npage->data[npage->hdr.free];
 				nEntry->nObjects = item->nObjects;
 				memcpy(&nEntry->klen, &item->klen, sizeof(Two) + item->klen);
@@ -209,10 +212,12 @@ Four edubtm_SplitLeaf(
 			else{			//save tpage's slot# (i) or (i-1)
 				nEntry = &npage->data[npage->hdr.free];
 				if(i > high + 1){
+					printf("saving slot #.%d, ",(i-1));
 					fEntryOffset = tpage.slot[-(i-1)];
 					fEntry = &tpage.data[fEntryOffset];
 				}
 				else{
+					printf("saving slot #.%d, ",i);
 					fEntryOffset = tpage.slot[-i];
 					fEntry = &tpage.data[fEntryOffset];
 				}
@@ -226,9 +231,13 @@ Four edubtm_SplitLeaf(
 			npage->slot[-(npage->hdr.nSlots)] = npage->hdr.free;
 			npage->hdr.free += entryLen;
 			npage->hdr.nSlots++;
+			printf("free : %d, unused : %d, nSlots : %d\n",npage->hdr.free,npage->hdr.unused,npage->hdr.nSlots);
+			printf("FPAGE -> free : %d, unused : %d, nSlots : %d\n",fpage->hdr.free,fpage->hdr.unused,fpage->hdr.nSlots);
 		}
 		else{	//original page : fpage
+			printf("Fpage, ");
 			if(i == high + 1){	//save ITEM.
+				printf("saving ITEM, ");
 				fEntry = &fpage->data[fpage->hdr.free];
 				fEntry->nObjects = item->nObjects;
 				memcpy(&fEntry->klen, &item->klen, sizeof(Two) + item->klen);
@@ -238,11 +247,13 @@ Four edubtm_SplitLeaf(
 				entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
 				fpage->hdr.free += entryLen;
 				fpage->hdr.nSlots++;
+				printf("FPAGE -> free : %d, unused : %d, nSlots : %d",fpage->hdr.free,fpage->hdr.unused,fpage->hdr.nSlots);
 			}
 			else if(i > high + 1){	//adjust slot.
 				fpage->slot[-i] = tpage.slot[-(i-1)];
 			}
 			//else : do NOTHING.
+			printf("\n");
 		}
 	}
 	if(npage->hdr.unused > 0){
