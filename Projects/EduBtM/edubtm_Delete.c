@@ -167,7 +167,7 @@ Four edubtm_Delete(
 	GET_PTR_TO_CATENTRY_FOR_BTREE(catObjForFile, catPage, catEntry);
 	MAKE_PHYSICALFILEID(pFid, catEntry->fid.volNo, catEntry->firstPage);
 	//1. Get the root.
-	e = BfM_GetTrain((TrainID*)root, (char**)&apage, PAGE_BUF);
+	e = BfM_GetTrain((TrainID*)root, (char**)&rpage, PAGE_BUF);
 	if(e < 0) ERR(e);
 	//2. Check if root is Internal or Leaf.
 	if((apage->any.hdr.type & INTERNAL) == INTERNAL){	//Internal.
@@ -177,9 +177,8 @@ Four edubtm_Delete(
 			MAKE_PAGEID(child, root->volNo, rpage->bi.hdr.p0);
 		}
 		else{
-			iEntryOffset = rpage->bi.slot[-idx];
-			iEntry = &rpage->bi.data[iEntryOffset];
-			MAKE_PAGEID(newPid, root->volNo, iEntry->spid);
+			iEntry = &rpage->bi.data[rpage->bi.slot[-idx]];
+			MAKE_PAGEID(child, root->volNo, iEntry->spid);
 		}
 		//recursively call Delete() with child.
 		e = edubtm_Delete(catObjForFile, &child, kdesc, kval, oid, &lf, &lh, &litem, dlPool, dlHead);
