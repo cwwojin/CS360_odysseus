@@ -303,7 +303,7 @@ Four edubtm_DeleteLeaf(
 	lEntry = &apage->data[apage->slot[-idx]];
 	alignedKlen = ALIGNED_LENGTH(lEntry->klen);
 	memcpy(&tOid, &lEntry->kval[alignedKlen], sizeof(ObjectID));
-	if(edubtm_ObjectIdComp(oid, &tOid) != EQUAL) ERR(eNOTFOUND_BTM);	//Check if Oid's are the same.
+	if(btm_ObjectIdComp(oid, &tOid) != EQUAL) ERR(eNOTFOUND_BTM);	//Check if Oid's are the same.
 	//2. Delete the entry & update header.
 	entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
 	last = (apage->slot[-idx] + entryLen == apage->hdr.free);
