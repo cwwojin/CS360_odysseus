@@ -204,8 +204,8 @@ Four edubtm_Delete(
 	}
 	else if((rpage->any.hdr.type & LEAF) == LEAF){		//Leaf.
 		//call DeleteLeaf() to insert to leaf.
-		e = edubtm_DeleteLeaf(pFid, root, rpage, kdesc, kval, oid, f, h, item, dlPool, dlHead);
-		//e = btm_DeleteLeaf(pFid, root, rpage, kdesc, kval, oid, f, h, item, dlPool, dlHead);
+		e = edubtm_DeleteLeaf(&pFid, root, rpage, kdesc, kval, oid, f, h, item, dlPool, dlHead);
+		//e = btm_DeleteLeaf(&pFid, root, rpage, kdesc, kval, oid, f, h, item, dlPool, dlHead);
 		if(e < 0) ERR(e);
 		//Set dirty.
 		e = BfM_SetDirty((TrainID*)root, PAGE_BUF);
