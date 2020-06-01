@@ -309,7 +309,7 @@ Four edubtm_DeleteLeaf(
 	entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
 	last = (apage->slot[-idx] + entryLen == apage->hdr.free);
 	for(i = idx+1; i < apage->hdr.nSlots; i++){
-		apage->slot[i-1] = apage->slot[i];
+		apage->slot[-(i-1)] = apage->slot[-i];
 	}
 	if(last){
 		apage->hdr.free -= entryLen;
