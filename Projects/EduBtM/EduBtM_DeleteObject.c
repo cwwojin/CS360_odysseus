@@ -143,7 +143,8 @@ Four EduBtM_DeleteObject(
 	GET_PTR_TO_CATENTRY_FOR_BTREE(catObjForFile, catPage, catEntry);
 	MAKE_PHYSICALFILEID(pFid, catEntry->fid.volNo, catEntry->firstPage);
 	//2. call edubtm_Delete() 
-	e = btm_Delete(catObjForFile, root, kdesc, kval, oid, &lf, &lh, &item, dlPool, dlHead);
+	e = edubtm_Delete(catObjForFile, root, kdesc, kval, oid, &lf, &lh, &item, dlPool, dlHead);
+	//e = btm_Delete(catObjForFile, root, kdesc, kval, oid, &lf, &lh, &item, dlPool, dlHead);
 	if(e < 0) ERR(e);
 	//3. if root underflow, call btm_root_delete().
 	if(lf){
