@@ -127,7 +127,7 @@ Four edubtm_Delete(
     Pool                        *dlPool,        /* INOUT pool of dealloc list elements */
     DeallocListElem             *dlHead)        /* INOUT head of the dealloc list */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Four                        e;              /* error number */
     Boolean                     lf;             /* TRUE if a page is not half full */
     Boolean                     lh;             /* TRUE if a page is splitted */
@@ -155,9 +155,70 @@ Four edubtm_Delete(
     
     
     /* Delete following 2 lines before implement this function */
+    /*
     printf("Implementation of delete operation is optional (not compulsory),\n");
     printf("and delete operation has not been implemented yet.\n");
-
+    */
+	
+	/* NEWCODE */
+	//get the catalog.
+	e = BfM_GetTrain((TrainID*)catObjForFile, (char**)&catPage, PAGE_BUF);
+	if(e < 0) ERR(e);
+	GET_PTR_TO_CATENTRY_FOR_BTREE(catObjForFile, catPage, catEntry);
+	MAKE_PHYSICALFILEID(pFid, catEntry->fid.volNo, catEntry->firstPage);
+	//1. Get the root.
+	e = BfM_GetTrain((TrainID*)root, (char**)&apage, PAGE_BUF);
+	if(e < 0) ERR(e);
+	//2. Check if root is Internal or Leaf.
+	if((apage->any.hdr.type & INTERNAL) == INTERNAL){	//Internal.
+		//Choose next page to visit.
+		edubtm_BinarySearchInternal(rpage, kdesc, kval, &idx);	//get the slot#. of the target entry.
+		if(idx == -1){
+			MAKE_PAGEID(child, root->volNo, rpage->bi.hdr.p0);
+		}
+		else{
+			iEntryOffset = rpage->bi.slot[-idx];
+			iEntry = &rpage->bi.data[iEntryOffset];
+			MAKE_PAGEID(newPid, root->volNo, iEntry->spid);
+		}
+		//recursively call Delete() with child.
+		e = edubtm_Delete(catObjForFile, &child, kdesc, kval, oid, &lf, &lh, &litem, dlPool, dlHead);
+		if(e < 0) ERR(e);
+		if(lf) { //if underflow occurs
+			e = btm_Underflow(&pFid, rpage, &child, idx, f, &lh, &litem, dlPool, dlHead);	//set return values f.
+			if(e < 0) ERRB1(e, root, PAGE_BUF);
+			if(lh){	//if SPLIT
+				memcpy(&tKey, &litem.klen, sizeof(Two) + litem.klen);
+				edubtm_BinarySearchInternal(apage, kdesc, &tKey, &idx);
+				//e = edubtm_InsertInternal(catObjForFile, apage, &litem, idx, h, item);
+				e = btm_InsertInternal(catObjForFile, rpage, &litem, idx, h, item);	//set return values h & item.
+				if(e < 0) ERR(e);
+			}
+			//Set dirty.
+			e = BfM_SetDirty((TrainID*)root, PAGE_BUF);
+			if(e < 0) ERRB1(e, root, PAGE_BUF);
+		}
+		else{
+			*f = lf;
+			*h = lh;
+		}
+	}
+	else if((apage->any.hdr.type & LEAF) == LEAF){		//Leaf.
+		//call DeleteLeaf() to insert to leaf.
+		//e = edubtm_DeleteLeaf(pFid, root, rpage, kdesc, kval, oid, f, h, item, dlPool, dlHead);
+		e = btm_DeleteLeaf(pFid, root, rpage, kdesc, kval, oid, f, h, item, dlPool, dlHead);
+		if(e < 0) ERR(e);
+		//Set dirty.
+		e = BfM_SetDirty((TrainID*)root, PAGE_BUF);
+		if(e < 0) ERRB1(e, root, PAGE_BUF);
+	}
+	//3. Free buffer.
+	e = BfM_FreeTrain((TrainID*)root, PAGE_BUF);
+	if(e < 0) ERR(e);
+	e = BfM_FreeTrain((TrainID*)catObjForFile, PAGE_BUF);
+	if(e < 0) ERR(e);
+	/* ENDOFNEWCODE */
+	
 
     return(eNOERROR);
     
@@ -201,7 +262,7 @@ Four edubtm_DeleteLeaf(
     Pool                        *dlPool,        /* INOUT pool of dealloc list elements */
     DeallocListElem             *dlHead)        /* INOUT head of a dealloc list */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     Four                        e;              /* error number */
     Two                         i;              /* index */
     Two                         of;             /* # of ObjectIDs of an overflow page when less than 1/4 */
