@@ -170,7 +170,7 @@ Four edubtm_Delete(
 	e = BfM_GetTrain((TrainID*)root, (char**)&rpage, PAGE_BUF);
 	if(e < 0) ERR(e);
 	//2. Check if root is Internal or Leaf.
-	if((apage->any.hdr.type & INTERNAL) == INTERNAL){	//Internal.
+	if((rpage->any.hdr.type & INTERNAL) == INTERNAL){	//Internal.
 		//Choose next page to visit.
 		edubtm_BinarySearchInternal(rpage, kdesc, kval, &idx);	//get the slot#. of the target entry.
 		if(idx == -1){
@@ -202,7 +202,7 @@ Four edubtm_Delete(
 			*h = lh;
 		}
 	}
-	else if((apage->any.hdr.type & LEAF) == LEAF){		//Leaf.
+	else if((rpage->any.hdr.type & LEAF) == LEAF){		//Leaf.
 		//call DeleteLeaf() to insert to leaf.
 		//e = edubtm_DeleteLeaf(pFid, root, rpage, kdesc, kval, oid, f, h, item, dlPool, dlHead);
 		e = btm_DeleteLeaf(pFid, root, rpage, kdesc, kval, oid, f, h, item, dlPool, dlHead);
