@@ -204,8 +204,8 @@ Four edubtm_Delete(
 	}
 	else if((rpage->any.hdr.type & LEAF) == LEAF){		//Leaf.
 		//call DeleteLeaf() to insert to leaf.
-		//e = edubtm_DeleteLeaf(pFid, root, rpage, kdesc, kval, oid, f, h, item, dlPool, dlHead);
-		e = btm_DeleteLeaf(pFid, root, rpage, kdesc, kval, oid, f, h, item, dlPool, dlHead);
+		e = edubtm_DeleteLeaf(pFid, root, rpage, kdesc, kval, oid, f, h, item, dlPool, dlHead);
+		//e = btm_DeleteLeaf(pFid, root, rpage, kdesc, kval, oid, f, h, item, dlPool, dlHead);
 		if(e < 0) ERR(e);
 		//Set dirty.
 		e = BfM_SetDirty((TrainID*)root, PAGE_BUF);
@@ -278,6 +278,8 @@ Four edubtm_DeleteLeaf(
     Two                         alignedKlen;    /* aligned length of the key length */
     PageID                      ovPid;          /* overflow page's PageID */
     DeallocListElem             *dlElem;        /* an element of the dealloc list */
+	
+	Boolean			last;	//is the element the LAST element in the data area?
 
 
     /* Error check whether using not supported functionality by EduBtM */
@@ -289,8 +291,35 @@ Four edubtm_DeleteLeaf(
 
 
     /* Delete following 2 lines before implement this function */
+    /*
     printf("Implementation of delete operation is optional (not compulsory),\n");
     printf("and delete operation has not been implemented yet.\n");
+    */
+	
+	/* NEWCODE */
+	//1. Get the target slot #. with binary search.
+	found = edubtm_BinarySearchLeaf(apage, kdesc, kval, &idx);
+	if(!found) ERR(eNOTFOUND_BTM);
+	lEntry = &apage->data[apage->slot[-idx]];
+	alignedKlen = ALIGNED_LENGTH(lEntry->klen);
+	memcpy(&tOid, &lEntry->kval[alignedKlen], sizeof(ObjectID));
+	if(edubtm_ObjectIdComp(oid, &tOid) != EQUAL) ERR(eNOTFOUND_BTM);	//Check if Oid's are the same.
+	//2. Delete the entry & update header.
+	entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
+	last = (apage->slot[-idx] + entryLen == apage->hdr.free);
+	for(i = idx+1; i < apage->hdr.nSlots; i++){
+		apage->slot[i-1] = apage->slot[i];
+	}
+	if(last){
+		apage->hdr.free -= entryLen;
+	}
+	else{
+		apage->hdr.unused += entryLen;
+	}
+	apage->hdr.nSlots--;
+	//3. Check underflow condition.
+	*f = (BL_FREE(apage)  > BL_HALF);
+	/* ENDOFNEWCODE */
 
 	      
     return(eNOERROR);
