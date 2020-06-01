@@ -188,7 +188,7 @@ Four edubtm_Delete(
 			if(e < 0) ERRB1(e, root, PAGE_BUF);
 			if(lh){	//if SPLIT
 				memcpy(&tKey, &litem.klen, sizeof(Two) + litem.klen);
-				edubtm_BinarySearchInternal(apage, kdesc, &tKey, &idx);
+				edubtm_BinarySearchInternal(rpage, kdesc, &tKey, &idx);
 				//e = edubtm_InsertInternal(catObjForFile, apage, &litem, idx, h, item);
 				e = btm_InsertInternal(catObjForFile, rpage, &litem, idx, h, item);	//set return values h & item.
 				if(e < 0) ERR(e);
