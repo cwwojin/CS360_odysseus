@@ -114,24 +114,45 @@ Four edubtm_root_insert(
 	if(e < 0) ERR(e);
 	e = BfM_GetNewTrain((TrainID*)&newPid, (char**)&newPage, PAGE_BUF);
 	if(e < 0) ERR(e);
-	//3. Get the NEXT page if root is LEAF.
-	if(rootPage->any.hdr.type & LEAF == LEAF){
-		printf("root is leaf.\n");
-		MAKE_PAGEID(nextPid, root->volNo, item->spid);
-		e = BfM_GetTrain((TrainID*)&nextPid, (char**)&nextPage, PAGE_BUF);
-		if(e < 0) ERR(e);
-	}
-	//4. Copy original root to the new page.
+	printf("newPid : (%d, %d)\n", newPid.volNo, newPid.pageNo);
+	//3. Copy original root to the new page.
 	memcpy(newPage, rootPage, PAGESIZE);
 	newPage->any.hdr.pid = newPid;
-	newPage->any.hdr.type = newPage->any.hdr.type & ~(ROOT);
-	//5. Initialize original root as the new root.
-	e = btm_InitInternal(root, TRUE, isTmp);
-	//6. Insert ITEM into the root.
-	
-	
-	
-	
+	newPage->any.hdr.type = newPage->any.hdr.type & ~(ROOT);	//turn OFF ROOT!!
+	//4. Initialize original root as the new root.
+	e = edubtm_InitInternal(root, TRUE, isTmp);
+	if(e < 0) ERR(e);
+	//5. Insert ITEM into the root.
+	Two alignedKlen = ALIGNED_LENGTH(sizeof(Two) + item->klen);
+	Two entryLen = sizeof(ShortPageID) + alignedKlen;
+	entry = &rootPage->bi.data[rootPage->bi.hdr.free];
+	memcpy(entry, item, sizeof(ShortPageID) + sizeof(Two) + item->klen);	//spid, klen, kval(unaligned)
+	rootPage->bi.slot[-(rootPage->bi.hdr.nSlots)] = rootPage->bi.hdr.free;
+	rootPage->bi.hdr.free += entryLen;
+	rootPage->bi.hdr.nSlots++;
+	rootPage->bi.hdr.p0 = newPid.pageNo;	//p0 links to the NEW page.
+	//7. IF both children are Leaves (newPage is Leaf) -> set doubly-linked list.
+	if(newPage->any.hdr.type & LEAF == LEAF){
+		printf("root was leaf.\n");
+		MAKE_PAGEID(nextPid, root->volNo, newPage->bl.hdr.nextPage);
+		e = BfM_GetTrain((TrainID*)&nextPid, (char**)&nextPage, PAGE_BUF);
+		if(e < 0) ERR(e);
+		nextPage->hdr.prevPage = newPid.pageNo;
+		printf("newPage points to : %d, nextPage points back to : %d\n", newPage->bl.hdr.nextPage, nextPage->hdr.prevPage);
+		e = BfM_SetDirty((TrainID*)&nextPid, PAGE_BUF);
+		if(e < 0) ERRB1(e, &nextPid, PAGE_BUF);
+		e = BfM_FreeTrain((TrainID*)&nextPid, PAGE_BUF);
+		if(e < 0) ERR(e);
+	}
+	//8. Set Dirty & Free -> root & newPage.
+	e = BfM_SetDirty((TrainID*)&newPid, PAGE_BUF);
+	if(e < 0) ERRB1(e, &newPid, PAGE_BUF);
+	e = BfM_FreeTrain((TrainID*)&newPid, PAGE_BUF);
+	if(e < 0) ERR(e);
+	e = BfM_SetDirty((TrainID*)root, PAGE_BUF);
+	if(e < 0) ERRB1(e, &newPid, PAGE_BUF);
+	e = BfM_FreeTrain((TrainID*)root, PAGE_BUF);
+	if(e < 0) ERR(e);
 	/* ENDOFNEWCODE */
     
     return(eNOERROR);
