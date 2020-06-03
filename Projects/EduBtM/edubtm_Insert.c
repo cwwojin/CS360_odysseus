@@ -291,7 +291,7 @@ Four edubtm_InsertLeaf(
 	else{	//NEED to SPLIT!!
 		memcpy(&leaf, oid, sizeof(ObjectID));
 		leaf.nObjects = 1;
-		memcpy(&leaf.klen, kval, sizeof(struct KeyValue));
+		memcpy(&leaf.klen, kval, sizeof(KeyValue));
 		for(i = page->hdr.nSlots - 1; i > idx; i--){		//rearrange the other slots.
 			page->slot[-(i + 1)] = page->slot[-(i)];
 		}
