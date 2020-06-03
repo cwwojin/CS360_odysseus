@@ -260,7 +260,6 @@ Four edubtm_InsertLeaf(
     *h = *f = FALSE;
 	
 	/* NEWCODE */
-	/*
 	//1. Get the target slot #. with binary search.
 	found = edubtm_BinarySearchLeaf(page, kdesc, kval, &idx);
 	if(found){
@@ -305,7 +304,6 @@ Four edubtm_InsertLeaf(
 		if(e < 0) ERR(e);
 		*h = TRUE;
 	}
-	*/
 	/* ENDOFNEWCODE */
 	
 found = edubtm_BinarySearchLeaf(page, kdesc, kval, &idx);
