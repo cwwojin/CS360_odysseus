@@ -167,7 +167,6 @@ Four edubtm_Insert(
 			e = edubtm_InsertInternal(catObjForFile, apage, &litem, idx, h, item);
 			//e = btm_InsertInternal(catObjForFile, apage, &litem, idx, h, item);	//set return values h & item.
 			if(e < 0) ERR(e);
-			printf("Free : %d\n", apage->hdr.free);
 			//Set dirty.
 			e = BfM_SetDirty((TrainID*)root, PAGE_BUF);
 			if(e < 0) ERR(e);
@@ -181,12 +180,10 @@ Four edubtm_Insert(
 		//e = edubtm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
 		e = btm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
 		if(e < 0) ERR(e);
+		printf("Free : %d\n", apage->hdr.free);
 		//Set dirty.
 		e = BfM_SetDirty((TrainID*)root, PAGE_BUF);
 		if(e < 0) ERR(e);
-		if(*h){
-			//printf("SPLIT!!\n");
-		}
 	}
 	//3. Free buffer.
 	e = BfM_FreeTrain((TrainID*)root, PAGE_BUF);
