@@ -356,8 +356,8 @@ Four edubtm_InsertInternal(
 	/* NEWCODE */
 	//1. Calculate the ENTRYLEN, and the free space required.
 	printf("ITEM : spid : %d, klen : %d, ", item->spid, item->klen);
-	Two alignedKlen = ALIGNED_LENGTH(item->klen);
-	entryLen = sizeof(ShortPageID) + sizeof(Two) + alignedKlen;
+	Two alignedKlen = ALIGNED_LENGTH(sizeof(Two) + item->klen);
+	entryLen = sizeof(ShortPageID) + alignedKlen;
 	printf("entryLen : %d\n", entryLen);
 	//2. Check if theres enough Free space.
 	if(entryLen + sizeof(Two) <= BI_FREE(page)){	//enough space.
