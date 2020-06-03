@@ -306,35 +306,6 @@ Four edubtm_InsertLeaf(
 		*h = TRUE;
 	}
 	/* ENDOFNEWCODE */
-	
-found = edubtm_BinarySearchLeaf(page, kdesc, kval, &idx);
-    if (found)
-        ERR(eDUPLICATEDKEY_BTM);
-
-    alignedKlen = (kval->len + 3) / 4 * 4;
-    entryLen = 2*sizeof(Two) + alignedKlen + OBJECTID_SIZE;
-    leaf.oid = *oid;
-    leaf.nObjects = 1;
-    leaf.klen = kval->len;
-    memcpy(leaf.kval, kval->val, leaf.klen);
-    if (BL_FREE(page) >= entryLen + sizeof(Two)) {
-        if (BL_CFREE(page) < entryLen + sizeof(Two))
-            btm_CompactLeafPage(page, NIL);
-        entry = (btm_LeafEntry*)&page->data[page->hdr.free];
-        memcpy(entry, &leaf.nObjects, entryLen - OBJECTID_SIZE);
-        memcpy(&entry->kval[alignedKlen], &leaf.oid, OBJECTID_SIZE);
-        for(i=page->hdr.nSlots; i>idx+1; i--)
-            page->slot[-i] = page->slot[-i+1];
-        page->slot[-idx-1] = page->hdr.free;
-        page->hdr.free += entryLen;
-        page->hdr.nSlots++;
-    }
-    else {
-        e = btm_SplitLeaf(catObjForFile, pid, page, idx, &leaf, item);
-        if (e<0) ERR(e);
-        *h = TRUE;
-    }
-    
 
 
     return(eNOERROR);
