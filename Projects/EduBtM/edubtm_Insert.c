@@ -177,8 +177,8 @@ Four edubtm_Insert(
 	}
 	else if((apage->any.hdr.type & LEAF) == LEAF){		//Leaf.
 		//call InsertLeaf() to insert to leaf.
-		//e = edubtm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
-		e = btm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
+		e = edubtm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
+		//e = btm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
 		if(e < 0) ERR(e);
 		//printf("Free : %d\n", apage->bl.hdr.free);
 		//Set dirty.
@@ -265,6 +265,10 @@ Four edubtm_InsertLeaf(
 	if(found){
 		ERR(eDUPLICATEDKEY_BTM);	//error if key already exists in leaf.
 	}
+	leaf.oid = *oid;
+	leaf.nObjects = 1;
+	leaf.klen = kval->len;
+	memcpy(leaf.kval, kval->val, leaf.klen);
 	//2. Calculate the required free-space needed : (entry size) + (slot size)
 	alignedKlen = ALIGNED_LENGTH(kval->len);
 	entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
@@ -289,6 +293,7 @@ Four edubtm_InsertLeaf(
 		page->hdr.nSlots++;
 	}
 	else{	//NEED to SPLIT!!
+		/*
 		memcpy(&leaf, oid, sizeof(ObjectID));
 		leaf.nObjects = 1;
 		memcpy(&leaf.klen, kval, sizeof(KeyValue));
@@ -296,7 +301,7 @@ Four edubtm_InsertLeaf(
 			page->slot[-(i + 1)] = page->slot[-(i)];
 		}
 		page->slot[-(idx + 1)] = page->hdr.free;
-		//page->hdr.nSlots++;
+		*/
 		printf("Entrylen : %d, Free space : %d, FREE : %d, UNUSED : %d, nSlots : %d, @ page : %d\n", entryLen, BL_FREE(page), page->hdr.free, page->hdr.unused, page->hdr.nSlots, pid->pageNo);
 		printf("OID : (%d, %d, %d, %d), IDX : %d, LEAF : nObjects = %d, klen = %d\n", leaf.oid.volNo, leaf.oid.pageNo, leaf.oid.slotNo, leaf.oid.unique, idx, leaf.nObjects, leaf.klen);
 		//e = edubtm_SplitLeaf(catObjForFile, pid, page, idx, &leaf, item);
