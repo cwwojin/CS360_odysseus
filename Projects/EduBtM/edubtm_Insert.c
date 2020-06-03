@@ -177,8 +177,8 @@ Four edubtm_Insert(
 	}
 	else if((apage->any.hdr.type & LEAF) == LEAF){		//Leaf.
 		//call InsertLeaf() to insert to leaf.
-		//e = edubtm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
-		e = btm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
+		e = edubtm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
+		//e = btm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
 		if(e < 0) ERR(e);
 		//printf("Free : %d\n", apage->bl.hdr.free);
 		//Set dirty.
@@ -292,6 +292,10 @@ Four edubtm_InsertLeaf(
 		memcpy(&leaf, oid, sizeof(ObjectID));
 		leaf.nObjects = 1;
 		memcpy(&leaf.klen, kval, sizeof(Two) + kval->len);
+		for(i = page->hdr.nSlots - 1; i > idx; i--){		//rearrange the other slots.
+			page->slot[-(i + 1)] = page->slot[-(i)];
+		}
+		page->slot[-(idx + 1)] = page->hdr.free;
 		printf("Entrylen : %d, Free space : %d, FREE : %d, UNUSED : %d, nSlots : %d, @ page : %d\n", entryLen, BL_FREE(page), page->hdr.free, page->hdr.unused, page->hdr.nSlots, pid->pageNo);
 		printf("OID : (%d, %d, %d, %d), IDX : %d, LEAF : nObjects = %d, klen = %d\n", leaf.oid.volNo, leaf.oid.pageNo, leaf.oid.slotNo, leaf.oid.unique, idx, leaf.nObjects, leaf.klen);
 		//e = edubtm_SplitLeaf(catObjForFile, pid, page, idx, &leaf, item);
