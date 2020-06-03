@@ -260,6 +260,7 @@ Four edubtm_InsertLeaf(
     *h = *f = FALSE;
 	
 	/* NEWCODE */
+	/*
 	//1. Get the target slot #. with binary search.
 	found = edubtm_BinarySearchLeaf(page, kdesc, kval, &idx);
 	if(found){
@@ -293,15 +294,10 @@ Four edubtm_InsertLeaf(
 		page->hdr.nSlots++;
 	}
 	else{	//NEED to SPLIT!!
-		/*
-		memcpy(&leaf, oid, sizeof(ObjectID));
-		leaf.nObjects = 1;
-		memcpy(&leaf.klen, kval, sizeof(KeyValue));
 		for(i = page->hdr.nSlots - 1; i > idx; i--){		//rearrange the other slots.
 			page->slot[-(i + 1)] = page->slot[-(i)];
 		}
 		page->slot[-(idx + 1)] = page->hdr.free;
-		*/
 		printf("Entrylen : %d, Free space : %d, FREE : %d, UNUSED : %d, nSlots : %d, @ page : %d\n", entryLen, BL_FREE(page), page->hdr.free, page->hdr.unused, page->hdr.nSlots, pid->pageNo);
 		printf("OID : (%d, %d, %d, %d), IDX : %d, LEAF : nObjects = %d, klen = %d\n", leaf.oid.volNo, leaf.oid.pageNo, leaf.oid.slotNo, leaf.oid.unique, idx, leaf.nObjects, leaf.klen);
 		//e = edubtm_SplitLeaf(catObjForFile, pid, page, idx, &leaf, item);
@@ -309,7 +305,36 @@ Four edubtm_InsertLeaf(
 		if(e < 0) ERR(e);
 		*h = TRUE;
 	}
+	*/
 	/* ENDOFNEWCODE */
+	
+found = edubtm_BinarySearchLeaf(page, kdesc, kval, &idx);
+    if (found)
+        ERR(eDUPLICATEDKEY_BTM);
+
+    alignedKlen = (kval->len + 3) / 4 * 4;
+    entryLen = 2*sizeof(Two) + alignedKlen + OBJECTID_SIZE;
+    leaf.oid = *oid;
+    leaf.nObjects = 1;
+    leaf.klen = kval->len;
+    memcpy(leaf.kval, kval->val, leaf.klen);
+    if (BL_FREE(page) >= entryLen + sizeof(Two)) {
+        if (BL_CFREE(page) < entryLen + sizeof(Two))
+            btm_CompactLeafPage(page, NIL);
+        entry = (btm_LeafEntry*)&page->data[page->hdr.free];
+        memcpy(entry, &leaf.nObjects, entryLen - OBJECTID_SIZE);
+        memcpy(&entry->kval[alignedKlen], &leaf.oid, OBJECTID_SIZE);
+        for(i=page->hdr.nSlots; i>idx+1; i--)
+            page->slot[-i] = page->slot[-i+1];
+        page->slot[-idx-1] = page->hdr.free;
+        page->hdr.free += entryLen;
+        page->hdr.nSlots++;
+    }
+    else {
+        e = btm_SplitLeaf(catObjForFile, pid, page, idx, &leaf, item);
+        if (e<0) ERR(e);
+        *h = TRUE;
+    }
     
 
 
