@@ -114,7 +114,7 @@ Four edubtm_root_insert(
 	if(e < 0) ERR(e);
 	e = BfM_GetNewTrain((TrainID*)&newPid, (char**)&newPage, PAGE_BUF);
 	if(e < 0) ERR(e);
-	printf("newPid : (%d, %d)\n", newPid.volNo, newPid.pageNo);
+	//printf("newPid : (%d, %d)\n", newPid.volNo, newPid.pageNo);
 	//3. Copy original root to the new page.
 	memcpy(newPage, rootPage, PAGESIZE);
 	newPage->any.hdr.pid = newPid;
@@ -132,19 +132,17 @@ Four edubtm_root_insert(
 	rootPage->bi.hdr.nSlots++;
 	rootPage->bi.hdr.p0 = newPid.pageNo;	//p0 links to the NEW page.
 	//7. IF both children are Leaves (newPage is Leaf) -> set doubly-linked list.
-	printf("newPage type : %d, LEAF : %d, type&LEAF : %d\n", newPage->any.hdr.type, LEAF, newPage->any.hdr.type & LEAF);
 	if(newPage->any.hdr.type == LEAF){
 		MAKE_PAGEID(nextPid, root->volNo, newPage->bl.hdr.nextPage);
 		e = BfM_GetTrain((TrainID*)&nextPid, (char**)&nextPage, PAGE_BUF);
 		if(e < 0) ERR(e);
 		nextPage->hdr.prevPage = newPid.pageNo;
-		printf("newPage points to : %d, nextPage points back to : %d\n", newPage->bl.hdr.nextPage, nextPage->hdr.prevPage);
+		//printf("newPage points to : %d, nextPage points back to : %d\n", newPage->bl.hdr.nextPage, nextPage->hdr.prevPage);
 		e = BfM_SetDirty((TrainID*)&nextPid, PAGE_BUF);
 		if(e < 0) ERRB1(e, &nextPid, PAGE_BUF);
 		e = BfM_FreeTrain((TrainID*)&nextPid, PAGE_BUF);
 		if(e < 0) ERR(e);
 	}
-	printf("newPage points to : %d\n", newPage->bl.hdr.nextPage);
 	//8. Set Dirty & Free -> root & newPage.
 	e = BfM_SetDirty((TrainID*)&newPid, PAGE_BUF);
 	if(e < 0) ERRB1(e, &newPid, PAGE_BUF);
