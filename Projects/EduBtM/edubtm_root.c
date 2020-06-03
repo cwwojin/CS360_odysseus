@@ -133,7 +133,7 @@ Four edubtm_root_insert(
 	rootPage->bi.hdr.p0 = newPid.pageNo;	//p0 links to the NEW page.
 	//7. IF both children are Leaves (newPage is Leaf) -> set doubly-linked list.
 	printf("newPage type : %d, LEAF : %d, type&LEAF : %d\n", newPage->any.hdr.type, LEAF, newPage->any.hdr.type & LEAF);
-	if(newPage->any.hdr.type & LEAF == LEAF){
+	if(newPage->any.hdr.type == LEAF){
 		MAKE_PAGEID(nextPid, root->volNo, newPage->bl.hdr.nextPage);
 		e = BfM_GetTrain((TrainID*)&nextPid, (char**)&nextPage, PAGE_BUF);
 		if(e < 0) ERR(e);
