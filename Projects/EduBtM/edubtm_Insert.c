@@ -296,6 +296,7 @@ Four edubtm_InsertLeaf(
 			page->slot[-(i + 1)] = page->slot[-(i)];
 		}
 		page->slot[-(idx + 1)] = page->hdr.free;
+		page->hdr.nSlots++;
 		printf("Entrylen : %d, Free space : %d, FREE : %d, UNUSED : %d, nSlots : %d, @ page : %d\n", entryLen, BL_FREE(page), page->hdr.free, page->hdr.unused, page->hdr.nSlots, pid->pageNo);
 		printf("OID : (%d, %d, %d, %d), IDX : %d, LEAF : nObjects = %d, klen = %d\n", leaf.oid.volNo, leaf.oid.pageNo, leaf.oid.slotNo, leaf.oid.unique, idx, leaf.nObjects, leaf.klen);
 		//e = edubtm_SplitLeaf(catObjForFile, pid, page, idx, &leaf, item);
