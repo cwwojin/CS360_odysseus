@@ -117,7 +117,11 @@ Four edubtm_SplitInternal(
     btm_InternalEntry           *fEntry;                /* internal entry in the given page, fpage */
     btm_InternalEntry           *nEntry;                /* internal entry in the new page, npage*/
     Boolean                     isTmp;
-
+	
+	/* NEWCODE */
+	//1. Allocate a new page, init as internal.
+	
+	/* ENDOFNEWCODE */
 
     
     return(eNOERROR);
