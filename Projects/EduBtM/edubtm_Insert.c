@@ -180,7 +180,7 @@ Four edubtm_Insert(
 		//e = edubtm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
 		e = btm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
 		if(e < 0) ERR(e);
-		printf("Free : %d\n", apage->bl.hdr.free);
+		//printf("Free : %d\n", apage->bl.hdr.free);
 		//Set dirty.
 		e = BfM_SetDirty((TrainID*)root, PAGE_BUF);
 		if(e < 0) ERR(e);
@@ -355,8 +355,10 @@ Four edubtm_InsertInternal(
 	
 	/* NEWCODE */
 	//1. Calculate the ENTRYLEN, and the free space required.
+	printf("ITEM : spid : %d, klen : %d, ", item->spid, item->klen);
 	Two alignedKlen = ALIGNED_LENGTH(item->klen);
 	entryLen = sizeof(ShortPageID) + sizeof(Two) + alignedKlen;
+	printf("entryLen : %d\n", entryLen);
 	//2. Check if theres enough Free space.
 	if(entryLen + sizeof(Two) <= BI_FREE(page)){	//enough space.
 		if(entryLen + sizeof(Two) > BI_CFREE(page)){	//needs compacting.
