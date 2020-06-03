@@ -167,6 +167,7 @@ Four edubtm_Insert(
 			e = edubtm_InsertInternal(catObjForFile, apage, &litem, idx, h, item);
 			//e = btm_InsertInternal(catObjForFile, apage, &litem, idx, h, item);	//set return values h & item.
 			if(e < 0) ERR(e);
+			printf("Free : %d\n", apage->hdr.free);
 			//Set dirty.
 			e = BfM_SetDirty((TrainID*)root, PAGE_BUF);
 			if(e < 0) ERR(e);
