@@ -265,10 +265,6 @@ Four edubtm_InsertLeaf(
 	if(found){
 		ERR(eDUPLICATEDKEY_BTM);	//error if key already exists in leaf.
 	}
-	leaf.oid = *oid;
-	leaf.nObjects = 1;
-	leaf.klen = kval->len;
-	memcpy(leaf.kval, kval->val, leaf.klen);
 	//2. Calculate the required free-space needed : (entry size) + (slot size)
 	alignedKlen = ALIGNED_LENGTH(kval->len);
 	entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
@@ -293,6 +289,10 @@ Four edubtm_InsertLeaf(
 		page->hdr.nSlots++;
 	}
 	else{	//NEED to SPLIT!!
+		leaf.oid = *oid;
+		leaf.nObjects = 1;
+		leaf.klen = kval->len;
+		memcpy(&leaf.kval, &kval->val, leaf.klen);
 		for(i = page->hdr.nSlots - 1; i > idx; i--){		//rearrange the other slots.
 			page->slot[-(i + 1)] = page->slot[-(i)];
 		}
