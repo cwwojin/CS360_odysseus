@@ -164,8 +164,8 @@ Four edubtm_Insert(
 		if(lh){		//if SPLIT, insert item in the root.
 			memcpy(&tKey, &litem.klen, sizeof(Two) + litem.klen);
 			edubtm_BinarySearchInternal(apage, kdesc, &tKey, &idx);
-			//e = edubtm_InsertInternal(catObjForFile, apage, &litem, idx, h, item);
-			e = btm_InsertInternal(catObjForFile, apage, &litem, idx, h, item);	//set return values h & item.
+			e = edubtm_InsertInternal(catObjForFile, apage, &litem, idx, h, item);
+			//e = btm_InsertInternal(catObjForFile, apage, &litem, idx, h, item);	//set return values h & item.
 			if(e < 0) ERR(e);
 			//Set dirty.
 			e = BfM_SetDirty((TrainID*)root, PAGE_BUF);
@@ -354,8 +354,37 @@ Four edubtm_InsertInternal(
     
     /*@ Initially the flag are FALSE */
     *h = FALSE;
-    
-    
+	
+	/* NEWCODE */
+	//1. Calculate the ENTRYLEN, and the free space required.
+	Two alignedKlen = ALIGNED_LENGTH(item->klen);
+	entryLen = sizeof(ShortPageID) + sizeof(Two) + alignedKlen;
+	//2. Check if theres enough Free space.
+	if(entryLen + sizeof(Two) <= BI_FREE(page)){	//enough space.
+		if(entryLen + sizeof(Two) > BI_CFREE(page)){	//needs compacting.
+			//e = edubtm_CompactInternalPage(page, NIL);
+			e = btm_CompactInternalPage(page, NIL);
+			if(e < 0) ERR(e);
+		}
+		//Insert the item @ slot# (high + 1), and at offset (hdr.free)
+		entryOffset = page->hdr.free;
+		entry = &page->data[entryOffset];
+		memcpy(entry, item, sizeof(ShortPageID) + sizeof(Two) + item->klen);	//spid, klen, kval(unaligned)
+		//Rearrange slots.
+		for(i = page->hdr.nSlots - 1; i > high; i--){
+			page->slot[-(i+1)] = page->slot[-i];	//shift 1 slot to the next.
+		}
+		page->slot[-(high + 1)] = entryOffset;
+		//Update header.
+		page->hdr.free += entryLen;
+		page->hdr.nSlots++;
+	}
+	else{	//Needs SPLIT.
+		e = btm_SplitInternal(catObjForFile, page, high, item, ritem);
+		if(e < 0) ERR(e);
+		*h = TRUE;
+	}
+	/* ENDOFNEWCODE */
 
     return(eNOERROR);
     
