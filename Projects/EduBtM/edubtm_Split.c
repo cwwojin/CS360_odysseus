@@ -117,10 +117,34 @@ Four edubtm_SplitInternal(
     btm_InternalEntry           *fEntry;                /* internal entry in the given page, fpage */
     btm_InternalEntry           *nEntry;                /* internal entry in the new page, npage*/
     Boolean                     isTmp;
+	BtreeInternal		tpage;			/*Temporary page.*/
 	
 	/* NEWCODE */
 	//1. Allocate a new page, init as internal.
-	
+	e = btm_AllocPage(catObjForFile, &fpage->pid, &newPid);
+	if(e < 0) ERR(e);
+	e = edubtm_InitInternal(&newPid, FALSE, isTmp);
+	if(e < 0) ERR(e);
+	e = BfM_GetTrain((TrainID*)&newPid, (char**)&npage, PAGE_BUF);
+	if(e < 0) ERR(e);
+	//2. Save the entries (+ New ITEM) to the 2 pages, "fpage" & "npage".
+	maxLoop = fpage->hdr.nSlots + 1;
+	tpage = *fpage;		//save fpage to temporary page TPAGE.
+	for(i=0; i<maxLoop; i++){
+		if(i > (maxLoop)/ 2){	//npage.
+			if(i == high + 1){	//save ITEM.
+			}
+			else{			//save tpage's slot# (i) or (i-1)
+			}
+		}
+		else{	//original page : fpage
+			if(i == high + 1){	//save ITEM.
+			}
+			else if(i > high + 1){	//adjust slot.
+			}
+			//else : do NOTHING.
+		}
+	}
 	/* ENDOFNEWCODE */
 
     
