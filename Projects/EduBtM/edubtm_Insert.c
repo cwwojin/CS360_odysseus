@@ -180,7 +180,7 @@ Four edubtm_Insert(
 		//e = edubtm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
 		e = btm_InsertLeaf(catObjForFile, root, apage, kdesc, kval, oid, f, h, item);
 		if(e < 0) ERR(e);
-		printf("Free : %d\n", apage->hdr.free);
+		printf("Free : %d\n", apage->bl.hdr.free);
 		//Set dirty.
 		e = BfM_SetDirty((TrainID*)root, PAGE_BUF);
 		if(e < 0) ERR(e);
