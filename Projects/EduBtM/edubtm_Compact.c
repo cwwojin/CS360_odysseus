@@ -96,6 +96,41 @@ void edubtm_CompactInternalPage(
     Two                 len;                    /* length of the leaf entry */
     Two                 i;                      /* index variable */
     btm_InternalEntry   *entry;                 /* an entry in leaf page */
+	
+	/* NEWCODE */
+	//1. save page to tpage.
+	tpage = *apage;
+	apageDataOffset = 0;
+	//2. do for each nonempty slot : slot[0] ~ slot[apage->nSlots-1].
+	for(i=0; i< apage->hdr.nSlots; i++){
+		if(i == slotNo){
+			//this slot should go at the end.
+			continue;
+		}
+		//copy to data area. & update slot offset.
+		entry = &tpage.data[tpage.slot[-i]];
+		//copy entire object to apage.
+		alignedKlen = ALIGNED_LENGTH(sizeof(Two) + entry->klen);
+		len = sizeof(ShortPageID) + alignedKlen;
+		memcpy(&apage->data[apageDataOffset], entry, len);
+		apage->slot[-i] = apageDataOffset;
+		//get the new apageDataOffset : += 
+		apageDataOffset += len;
+	}
+	//save the last slot(slotNo).
+	if(slotNo != NIL){
+		entry = &tpage.data[tpage.slot[-slotNo]];
+		alignedKlen = ALIGNED_LENGTH(sizeof(Two) + entry->klen);
+		len = sizeof(ShortPageID) + alignedKlen;
+		memcpy(&apage->data[apageDataOffset], entry, len);
+		apage->slot[-slotNo] = apageDataOffset;
+		//get the new apageDataOffset : += 
+		apageDataOffset += len;
+	}
+	//update free & unused.
+	apage->hdr.free = apageDataOffset;
+	apage->hdr.unused = 0;
+	/* ENDOFNEWCODE */
 
     
 
@@ -140,7 +175,7 @@ void edubtm_CompactLeafPage(
 	//1. save page to tpage.
 	tpage = *apage;
 	apageDataOffset = 0;
-	//2. do for each nonempty slot : slot[0] ~ slot[apage->nSlots-1], empty slots have "slot.offset == EMPTYSLOT".
+	//2. do for each nonempty slot : slot[0] ~ slot[apage->nSlots-1].
 	for(i=0; i< apage->hdr.nSlots; i++){
 		if(i == slotNo){
 			//this slot should go at the end.
