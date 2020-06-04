@@ -353,9 +353,7 @@ Four edubtm_InsertInternal(
 	//2. Check if theres enough Free space.
 	if(entryLen + sizeof(Two) <= BI_FREE(page)){	//enough space.
 		if(entryLen + sizeof(Two) > BI_CFREE(page)){	//needs compacting.
-			//e = edubtm_CompactInternalPage(page, NIL);
-			e = btm_CompactInternalPage(page, NIL);
-			if(e < 0) ERR(e);
+			edubtm_CompactInternalPage(page, NIL);
 		}
 		//Insert the item @ slot# (high + 1), and at offset (hdr.free)
 		entryOffset = page->hdr.free;
@@ -371,7 +369,7 @@ Four edubtm_InsertInternal(
 		page->hdr.nSlots++;
 	}
 	else{	//Needs SPLIT.
-		e = btm_SplitInternal(catObjForFile, page, high, item, ritem);
+		e = edubtm_SplitInternal(catObjForFile, page, high, item, ritem);
 		if(e < 0) ERR(e);
 		*h = TRUE;
 	}
