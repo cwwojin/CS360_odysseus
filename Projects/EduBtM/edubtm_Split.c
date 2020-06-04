@@ -277,6 +277,7 @@ Four edubtm_SplitLeaf(
 	//3. save the entries (+ new litem) in the original & new pages.
 	maxLoop = fpage->hdr.nSlots + 1;
 	tpage = *fpage;		//save fpage to temporary page TPAGE.
+	flag = (high + 1 > (maxLoop)/ 2);	//TRUE : saves ITEM to npage.
 	for(i=0; i<maxLoop; i++){
 		if(i > (maxLoop)/ 2){	//npage.
 			if(i == high + 1){	//save ITEM.
@@ -315,27 +316,28 @@ Four edubtm_SplitLeaf(
 			npage->hdr.nSlots++;
 		}
 		else{	//original page : fpage
-			if(i == high + 1){	//save ITEM.
-				alignedKlen = ALIGNED_LENGTH(item->klen);
-				entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
-				if(entryLen + sizeof(Two) > BL_CFREE(fpage)){
-					printf("compacting FPAGE..\n");
-					e = btm_CompactLeafPage(fpage, NIL);
-					if(e < 0) ERR(e);
-				}
-				fEntry = &fpage->data[fpage->hdr.free];
-				fEntry->nObjects = item->nObjects;
-				memcpy(&fEntry->klen, &item->klen, sizeof(Two) + item->klen);
-				memcpy(&fEntry->kval[alignedKlen], item, sizeof(ObjectID));
-				fpage->slot[-(high + 1)] = fpage->hdr.free;
-				fpage->hdr.free += entryLen;
-				fpage->hdr.nSlots++;
-			}
-			else if(i > high + 1){	//adjust slot.
+			if(i > high + 1){	//adjust slot.
 				fpage->slot[-i] = tpage.slot[-(i-1)];
 			}
 			//else : do NOTHING.
 		}
+	}
+	if(!flag){	//should save ITEM to fpage.
+		alignedKlen = ALIGNED_LENGTH(item->klen);
+		entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
+		if(entryLen + sizeof(Two) > BL_CFREE(fpage)){
+			printf("compacting FPAGE..\n");
+			e = btm_CompactLeafPage(fpage, NIL);
+			if(e < 0) ERR(e);
+		}
+		printf("pageNo : %d, entryLen : %d, FREE : %d, UNUSED : %d\n",root->pageNo, entryLen, fpage->hdr.free, fpage->hdr.unused);
+		fEntry = &fpage->data[fpage->hdr.free];
+		fEntry->nObjects = item->nObjects;
+		memcpy(&fEntry->klen, &item->klen, sizeof(Two) + item->klen);
+		memcpy(&fEntry->kval[alignedKlen], item, sizeof(ObjectID));
+		fpage->slot[-(high + 1)] = fpage->hdr.free;
+		fpage->hdr.free += entryLen;
+		fpage->hdr.nSlots++;
 	}
 	//4. Update headers & doubly linked list.
 	if(fpage->hdr.nextPage != NIL){
@@ -360,10 +362,7 @@ Four edubtm_SplitLeaf(
 	if(e < 0) ERRB1(e, &newPid, PAGE_BUF);
 	e = BfM_FreeTrain((TrainID*)&newPid, PAGE_BUF);
 	if(e < 0) ERR(e);
-	e = BfM_SetDirty((TrainID*)root, PAGE_BUF);
-	if(e < 0) ERRB1(e, root, PAGE_BUF);
 	/* ENDOFNEWCODE */
-	printf("i = %d, entryLen : %d, FREE : %d, UNUSED : %d\n",i, entryLen, fpage->hdr.free, fpage->hdr.unused);
  
     
 
