@@ -144,7 +144,6 @@ Four EduBtM_DeleteObject(
 	MAKE_PHYSICALFILEID(pFid, catEntry->fid.volNo, catEntry->firstPage);
 	//2. call edubtm_Delete() 
 	e = edubtm_Delete(catObjForFile, root, kdesc, kval, oid, &lf, &lh, &item, dlPool, dlHead);
-	//e = btm_Delete(catObjForFile, root, kdesc, kval, oid, &lf, &lh, &item, dlPool, dlHead);
 	if(e < 0) ERR(e);
 	//3. if root underflow, call btm_root_delete().
 	if(lf){
@@ -154,7 +153,6 @@ Four EduBtM_DeleteObject(
 	//4. if root page splits (lh is true), then call edubtm_root_insert().
 	if(lh){
 		e = edubtm_root_insert(catObjForFile, root, &item);
-		//e = btm_root_insert(catObjForFile, root, &item);
 		if(e < 0) ERR(e);
 	}
 	//5. free buffer page.
