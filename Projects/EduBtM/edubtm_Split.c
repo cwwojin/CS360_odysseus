@@ -121,7 +121,7 @@ Four edubtm_SplitInternal(
 	
 	/* NEWCODE */
 	//1. Allocate a new page, init as internal.
-	e = btm_AllocPage(catObjForFile, &fpage->pid, &newPid);
+	e = btm_AllocPage(catObjForFile, &fpage->hdr.pid, &newPid);
 	if(e < 0) ERR(e);
 	e = edubtm_InitInternal(&newPid, FALSE, isTmp);
 	if(e < 0) ERR(e);
@@ -133,7 +133,7 @@ Four edubtm_SplitInternal(
 	for(i=0; i<maxLoop; i++){
 		if(i == (maxLoop)/ 2){	//RETURN value : ritem
 			if(i == high + 1){	//save ITEM.
-				memcpy(ritem, item, sizeof(struct InternalItem));
+				memcpy(ritem, item, sizeof(InternalItem));
 			}
 			else{			//save tpage's slot# (i) or (i-1)
 				if(i > high + 1){
@@ -149,7 +149,7 @@ Four edubtm_SplitInternal(
 				memcpy(ritem, fEntry, entryLen);
 			}
 		}
-		else if((i > (maxLoop)/ 2){	//new page : npage
+		else if(i > (maxLoop)/ 2){	//new page : npage
 			nEntryOffset = npage->slot[npage->hdr.free];
 			nEntry = &npage->data[nEntryOffset];
 			if(i == high + 1){	//save ITEM.
