@@ -190,7 +190,6 @@ Four edubtm_Delete(
 				memcpy(&tKey, &litem.klen, sizeof(Two) + litem.klen);
 				edubtm_BinarySearchInternal(rpage, kdesc, &tKey, &idx);
 				e = edubtm_InsertInternal(catObjForFile, rpage, &litem, idx, h, item);
-				//e = btm_InsertInternal(catObjForFile, rpage, &litem, idx, h, item);	//set return values h & item.
 				if(e < 0) ERR(e);
 			}
 			//Set dirty.
@@ -203,9 +202,8 @@ Four edubtm_Delete(
 		}
 	}
 	else if((rpage->any.hdr.type & LEAF) == LEAF){		//Leaf.
-		//call DeleteLeaf() to insert to leaf.
+		//call DeleteLeaf() to delete from leaf.
 		e = edubtm_DeleteLeaf(&pFid, root, rpage, kdesc, kval, oid, f, h, item, dlPool, dlHead);
-		//e = btm_DeleteLeaf(&pFid, root, rpage, kdesc, kval, oid, f, h, item, dlPool, dlHead);
 		if(e < 0) ERR(e);
 		//Set dirty.
 		e = BfM_SetDirty((TrainID*)root, PAGE_BUF);
@@ -303,7 +301,6 @@ Four edubtm_DeleteLeaf(
 	lEntry = &apage->data[apage->slot[-idx]];
 	alignedKlen = ALIGNED_LENGTH(lEntry->klen);
 	memcpy(&tOid, &lEntry->kval[alignedKlen], sizeof(ObjectID));
-	//printf("@idx = %d, oid : (%d, %d, %d, %d), tOid : (%d, %d, %d, %d)\n", idx, oid->volNo, oid->pageNo, oid->slotNo, oid->unique, tOid.volNo, tOid.pageNo, tOid.slotNo, tOid.unique);
 	if(btm_ObjectIdComp(oid, &tOid) != EQUAL) ERR(eNOTFOUND_BTM);	//Check if Oid's are the same.
 	//2. Delete the entry & update header.
 	entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
