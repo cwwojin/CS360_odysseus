@@ -141,7 +141,7 @@ void edubtm_CompactLeafPage(
 	tpage = *apage;
 	apageDataOffset = 0;
 	//2. do for each nonempty slot : slot[0] ~ slot[apage->nSlots-1], empty slots have "slot.offset == EMPTYSLOT".
-	for(i=0; i< apage->header.nSlots; i++){
+	for(i=0; i< apage->hdr.nSlots; i++){
 		if(i == slotNo){
 			//this slot should go at the end.
 			continue;
@@ -167,8 +167,8 @@ void edubtm_CompactLeafPage(
 		apageDataOffset += len;
 	}
 	//update free & unused.
-	apage->header.free = apageDataOffset;
-	apage->header.unused = 0;
+	apage->hdr.free = apageDataOffset;
+	apage->hdr.unused = 0;
 	/* ENDOFNEWCODE */
 
     
