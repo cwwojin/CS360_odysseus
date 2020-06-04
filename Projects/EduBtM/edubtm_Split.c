@@ -321,6 +321,7 @@ Four edubtm_SplitLeaf(
 				alignedKlen = ALIGNED_LENGTH(item->klen);
 				entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
 				if(entryLen + sizeof(Two) > BL_CFREE(fpage)){
+					printf("compacting FPAGE..\n");
 					e = btm_CompactLeafPage(fpage, NIL);
 					if(e < 0) ERR(e);
 				}
@@ -361,7 +362,10 @@ Four edubtm_SplitLeaf(
 	if(e < 0) ERRB1(e, &newPid, PAGE_BUF);
 	e = BfM_FreeTrain((TrainID*)&newPid, PAGE_BUF);
 	if(e < 0) ERR(e);
+	e = BfM_SetDirty((TrainID*)root, PAGE_BUF);
+	if(e < 0) ERRB1(e, root, PAGE_BUF);
 	/* ENDOFNEWCODE */
+	printf("i = %d, entryLen : %d, FREE : %d, UNUSED : %d\n",i, entryLen, fpage->hdr.free, fpage->hdr.unused);
  
     
 
