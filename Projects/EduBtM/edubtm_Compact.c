@@ -90,7 +90,7 @@ void edubtm_CompactInternalPage(
     BtreeInternal       *apage,                 /* INOUT internal page to compact */
     Two                 slotNo)                 /* IN slot to go to the boundary of free space */
 {
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     BtreeInternal       tpage;                  /* temporay page used to save the given page */
     Two                 apageDataOffset;        /* where the next object is to be moved */
     Two                 len;                    /* length of the leaf entry */
@@ -128,13 +128,48 @@ void edubtm_CompactLeafPage(
     BtreeLeaf 		*apage,			/* INOUT leaf page to compact */
     Two       		slotNo)			/* IN slot to go to the boundary of free space */
 {	
-	/* These local variables are used in the solution code. However, you don¡¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
+	/* These local variables are used in the solution code. However, you donÂ¡Â¯t have to use all these variables in your code, and you may also declare and use additional local variables if needed. */
     BtreeLeaf 		tpage;			/* temporay page used to save the given page */
     Two                 apageDataOffset;        /* where the next object is to be moved */
     Two                 len;                    /* length of the leaf entry */
     Two                 i;                      /* index variable */
     btm_LeafEntry 	*entry;			/* an entry in leaf page */
     Two 		alignedKlen;		/* aligned length of the key length */
+	
+	/* NEWCODE */
+	//1. save page to tpage.
+	tpage = *apage;
+	apageDataOffset = 0;
+	//2. do for each nonempty slot : slot[0] ~ slot[apage->nSlots-1], empty slots have "slot.offset == EMPTYSLOT".
+	for(i=0; i< apage->header.nSlots; i++){
+		if(i == slotNo){
+			//this slot should go at the end.
+			continue;
+		}
+		//copy to data area. & update slot offset.
+		entry = &tpage.data[tpage.slot[-i]];
+		//copy entire object to apage.
+		alignedKlen = ALIGNED_LENGTH(entry->klen);
+		len = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
+		memcpy(&apage->data[apageDataOffset], entry, len);
+		apage->slot[-i] = apageDataOffset;
+		//get the new apageDataOffset : += 
+		apageDataOffset += len;
+	}
+	//save the last slot(slotNo).
+	if(slotNo != NIL){
+		entry = &tpage.data[tpage.slot[-slotNo]];
+		alignedKlen = ALIGNED_LENGTH(entry->klen);
+		len = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
+		memcpy(&apage->data[apageDataOffset], entry, len);
+		apage->slot[-slotNo].offset = apageDataOffset;
+		//get the new apageDataOffset : += 
+		apageDataOffset += len;
+	}
+	//update free & unused.
+	apage->header.free = apageDataOffset;
+	apage->header.unused = 0;
+	/* ENDOFNEWCODE */
 
     
 
