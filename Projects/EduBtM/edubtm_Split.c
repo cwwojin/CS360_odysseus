@@ -304,6 +304,7 @@ Four edubtm_SplitLeaf(
 				memcpy(nEntry, fEntry, entryLen);
 				//Remove this entry from FPAGE.
 				if(fEntryOffset + entryLen == fpage->hdr.free){
+					printf("i = %d, entryLen : %d, FREE : %d",i, entryLen, fpage->hdr.free);
 					fpage->hdr.free -= entryLen;
 				}
 				else{
