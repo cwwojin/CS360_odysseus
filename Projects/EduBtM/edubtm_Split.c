@@ -304,13 +304,13 @@ Four edubtm_SplitLeaf(
 				memcpy(nEntry, fEntry, entryLen);
 				//Remove this entry from FPAGE.
 				if(fEntryOffset + entryLen == fpage->hdr.free){
-					printf("i = %d, entryLen : %d, FREE : %d",i, entryLen, fpage->hdr.free);
 					fpage->hdr.free -= entryLen;
 				}
 				else{
 					fpage->hdr.unused += entryLen;
 				}
 				fpage->hdr.nSlots--;
+				printf("i = %d, entryLen : %d, FREE : %d, UNUSED : %d\n",i, entryLen, fpage->hdr.free, fpage->hdr.unused);
 			}
 			npage->slot[-(npage->hdr.nSlots)] = npage->hdr.free;
 			npage->hdr.free += entryLen;
