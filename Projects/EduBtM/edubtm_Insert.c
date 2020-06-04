@@ -273,8 +273,8 @@ Four edubtm_InsertLeaf(
 	if(entryLen + sizeof(Two) < BL_FREE(page)){
 		if(entryLen + sizeof(Two) > BL_CFREE(page)){	//compact page if needed.
 			printf("compacting leaf..\n");
-			//e = edubtm_CompactLeafPage(page, NIL);
-			e = btm_CompactLeafPage(page, NIL);
+			e = edubtm_CompactLeafPage(page, NIL);
+			//e = btm_CompactLeafPage(page, NIL);
 			if(e < 0) ERR(e);
 		}
 		entry = &page->data[page->hdr.free];	//insert new IEntry into the target SLOT -> idx + 1.
