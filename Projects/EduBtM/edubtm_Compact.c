@@ -162,7 +162,7 @@ void edubtm_CompactLeafPage(
 		alignedKlen = ALIGNED_LENGTH(entry->klen);
 		len = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
 		memcpy(&apage->data[apageDataOffset], entry, len);
-		apage->slot[-slotNo].offset = apageDataOffset;
+		apage->slot[-slotNo] = apageDataOffset;
 		//get the new apageDataOffset : += 
 		apageDataOffset += len;
 	}
