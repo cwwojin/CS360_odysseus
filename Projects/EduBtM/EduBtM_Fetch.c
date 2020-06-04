@@ -136,7 +136,6 @@ Four EduBtM_Fetch(
 		default :
 			//call edubtm_Fetch().
 			e = edubtm_Fetch(root, kdesc, startKval, startCompOp, stopKval, stopCompOp, cursor);
-			//e = btm_Fetch(root, kdesc, startKval, startCompOp, stopKval, stopCompOp, cursor);
 			if (e < 0) ERR(e);
 			break;
 	}
