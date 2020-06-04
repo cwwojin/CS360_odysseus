@@ -110,8 +110,7 @@ void edubtm_CompactInternalPage(
 		//copy to data area. & update slot offset.
 		entry = &tpage.data[tpage.slot[-i]];
 		//copy entire object to apage.
-		alignedKlen = ALIGNED_LENGTH(sizeof(Two) + entry->klen);
-		len = sizeof(ShortPageID) + alignedKlen;
+		len = sizeof(ShortPageID) + ALIGNED_LENGTH(sizeof(Two) + entry->klen);
 		memcpy(&apage->data[apageDataOffset], entry, len);
 		apage->slot[-i] = apageDataOffset;
 		//get the new apageDataOffset : += 
@@ -120,8 +119,7 @@ void edubtm_CompactInternalPage(
 	//save the last slot(slotNo).
 	if(slotNo != NIL){
 		entry = &tpage.data[tpage.slot[-slotNo]];
-		alignedKlen = ALIGNED_LENGTH(sizeof(Two) + entry->klen);
-		len = sizeof(ShortPageID) + alignedKlen;
+		len = sizeof(ShortPageID) + ALIGNED_LENGTH(sizeof(Two) + entry->klen);
 		memcpy(&apage->data[apageDataOffset], entry, len);
 		apage->slot[-slotNo] = apageDataOffset;
 		//get the new apageDataOffset : += 
