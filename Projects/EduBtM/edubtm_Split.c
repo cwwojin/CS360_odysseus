@@ -286,8 +286,6 @@ Four edubtm_SplitLeaf(
 				alignedKlen = ALIGNED_LENGTH(item->klen);
 				memcpy(&nEntry->kval[alignedKlen], item, sizeof(ObjectID));
 				entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
-				fpage->hdr.unused -= entryLen;
-				fpage->hdr.free -= entryLen;
 			}
 			else{			//save tpage's slot# (i) or (i-1)
 				nEntry = &npage->data[npage->hdr.free];
