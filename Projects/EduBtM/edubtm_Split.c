@@ -130,8 +130,9 @@ Four edubtm_SplitInternal(
 	//2. Save the entries (+ New ITEM) to the 2 pages, "fpage" & "npage".
 	maxLoop = fpage->hdr.nSlots + 1;
 	tpage = *fpage;		//save fpage to temporary page TPAGE.
+	flag = (high + 1) <= maxLoop / 2;
 	for(i=0; i<maxLoop; i++){
-		if(i == (maxLoop)/ 2){	//RETURN value : ritem
+		if(i == (maxLoop)/2 + 1){	//RETURN value : ritem
 			if(i == high + 1){	//save ITEM.
 				memcpy(ritem, item, sizeof(InternalItem));
 			}
@@ -149,7 +150,7 @@ Four edubtm_SplitInternal(
 				memcpy(ritem, fEntry, entryLen);
 			}
 		}
-		else if(i > (maxLoop)/ 2){	//new page : npage
+		else if(i > (maxLoop)/2 + 1){	//new page : npage
 			nEntryOffset = npage->slot[npage->hdr.free];
 			nEntry = &npage->data[nEntryOffset];
 			if(i == high + 1){	//save ITEM.
@@ -180,23 +181,23 @@ Four edubtm_SplitInternal(
 			npage->hdr.nSlots++;
 		}
 		else{	//original page : fpage
-			if(i == high + 1){	//save ITEM.
-				entryLen = sizeof(ShortPageID) + ALIGNED_LENGTH(sizeof(Two) + item->klen);
-				if(entryLen + sizeof(Two) > BI_CFREE(fpage)){
-					e = btm_CompactInternalPage(fpage, NIL);
-					if(e < 0) ERR(e);
-				}
-				fEntry = &fpage->data[fpage->hdr.free];
-				memcpy(fEntry, item, sizeof(ShortPageID) + sizeof(Two) + item->klen);
-				fpage->slot[-(high + 1)] = fpage->hdr.free;
-				fpage->hdr.free += entryLen;
-				fpage->hdr.nSlots++;
-			}
-			else if(i > high + 1){	//adjust slot.
+			if(i > high + 1){	//adjust slot.
 				fpage->slot[-i] = tpage.slot[-(i-1)];
 			}
 			//else : do NOTHING.
 		}
+	}
+	if(flag){
+		entryLen = sizeof(ShortPageID) + ALIGNED_LENGTH(sizeof(Two) + item->klen);
+		if(entryLen + sizeof(Two) > BI_CFREE(fpage)){
+			e = btm_CompactInternalPage(fpage, NIL);
+			if(e < 0) ERR(e);
+		}
+		fEntry = &fpage->data[fpage->hdr.free];
+		memcpy(fEntry, item, sizeof(ShortPageID) + sizeof(Two) + item->klen);
+		fpage->slot[-(high + 1)] = fpage->hdr.free;
+		fpage->hdr.free += entryLen;
+		fpage->hdr.nSlots++;
 	}
 	/* ENDOFNEWCODE */
 
@@ -309,7 +310,6 @@ Four edubtm_SplitLeaf(
 					fpage->hdr.unused += entryLen;
 				}
 				fpage->hdr.nSlots--;
-				printf("i = %d, entryLen : %d, FREE : %d, UNUSED : %d\n",i, entryLen, fpage->hdr.free, fpage->hdr.unused);
 			}
 			npage->slot[-(npage->hdr.nSlots)] = npage->hdr.free;
 			npage->hdr.free += entryLen;
@@ -326,11 +326,11 @@ Four edubtm_SplitLeaf(
 		alignedKlen = ALIGNED_LENGTH(item->klen);
 		entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
 		if(entryLen + sizeof(Two) > BL_CFREE(fpage)){
-			printf("compacting FPAGE..\n");
+			//printf("compacting FPAGE..\n");
 			e = btm_CompactLeafPage(fpage, NIL);
 			if(e < 0) ERR(e);
 		}
-		printf("pageNo : %d, entryLen : %d, FREE : %d, UNUSED : %d\n",root->pageNo, entryLen, fpage->hdr.free, fpage->hdr.unused);
+		//printf("pageNo : %d, entryLen : %d, FREE : %d, UNUSED : %d\n",root->pageNo, entryLen, fpage->hdr.free, fpage->hdr.unused);
 		fEntry = &fpage->data[fpage->hdr.free];
 		fEntry->nObjects = item->nObjects;
 		memcpy(&fEntry->klen, &item->klen, sizeof(Two) + item->klen);
