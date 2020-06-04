@@ -326,11 +326,10 @@ Four edubtm_SplitLeaf(
 		alignedKlen = ALIGNED_LENGTH(item->klen);
 		entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
 		if(entryLen + sizeof(Two) > BL_CFREE(fpage)){
-			//printf("compacting FPAGE..\n");
-			e = btm_CompactLeafPage(fpage, NIL);
-			if(e < 0) ERR(e);
+			printf("compacting page : %d\n", root->pageNo);
+			edubtm_CompactLeafPage(fpage, NIL);
 		}
-		//printf("pageNo : %d, entryLen : %d, FREE : %d, UNUSED : %d\n",root->pageNo, entryLen, fpage->hdr.free, fpage->hdr.unused);
+		printf("pageNo : %d, entryLen : %d, FREE : %d, UNUSED : %d\n",root->pageNo, entryLen, fpage->hdr.free, fpage->hdr.unused);
 		fEntry = &fpage->data[fpage->hdr.free];
 		fEntry->nObjects = item->nObjects;
 		memcpy(&fEntry->klen, &item->klen, sizeof(Two) + item->klen);
