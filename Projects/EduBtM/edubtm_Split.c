@@ -190,8 +190,7 @@ Four edubtm_SplitInternal(
 	if(flag){
 		entryLen = sizeof(ShortPageID) + ALIGNED_LENGTH(sizeof(Two) + item->klen);
 		if(entryLen + sizeof(Two) > BI_CFREE(fpage)){
-			e = btm_CompactInternalPage(fpage, NIL);
-			if(e < 0) ERR(e);
+			edubtm_CompactInternalPage(fpage, NIL);
 		}
 		fEntry = &fpage->data[fpage->hdr.free];
 		memcpy(fEntry, item, sizeof(ShortPageID) + sizeof(Two) + item->klen);
