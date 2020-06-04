@@ -266,7 +266,6 @@ Four edubtm_InsertLeaf(
 	alignedKlen = ALIGNED_LENGTH(kval->len);
 	entryLen = sizeof(Two) + sizeof(Two) + alignedKlen + sizeof(ObjectID);
 	//3. If (required space <= Free space)
-	//printf("Entrylen : %d, Free(Cont.) space : %d / %d, FREE : %d, UNUSED : %d, nSlots : %d, @ page : %d\n", entryLen, BL_FREE(page), BL_CFREE(page), page->hdr.free, page->hdr.unused, page->hdr.nSlots, pid->pageNo);
 	if(entryLen + sizeof(Two) < BL_FREE(page)){
 		if(entryLen + sizeof(Two) > BL_CFREE(page)){	//compact page if needed.
 			edubtm_CompactLeafPage(page, NIL);
@@ -279,7 +278,7 @@ Four edubtm_InsertLeaf(
 			page->slot[-(i + 1)] = page->slot[-(i)];
 		}
 		page->slot[-(idx + 1)] = page->hdr.free;
-		//update header : free, nSlots, unused.
+		//update header : free, nSlots.
 		page->hdr.free += entryLen;
 		page->hdr.nSlots++;
 	}
@@ -288,8 +287,6 @@ Four edubtm_InsertLeaf(
 		leaf.nObjects = 1;
 		leaf.klen = kval->len;
 		memcpy(&leaf.kval, &kval->val, leaf.klen);
-		//printf("Entrylen : %d, Free space : %d, FREE : %d, UNUSED : %d, nSlots : %d, @ page : %d\n", entryLen, BL_FREE(page), page->hdr.free, page->hdr.unused, page->hdr.nSlots, pid->pageNo);
-		//printf("OID : (%d, %d, %d, %d), IDX : %d, LEAF : nObjects = %d, klen = %d\n", leaf.oid.volNo, leaf.oid.pageNo, leaf.oid.slotNo, leaf.oid.unique, idx, leaf.nObjects, leaf.klen);
 		e = edubtm_SplitLeaf(catObjForFile, pid, page, idx, &leaf, item);
 		if(e < 0) ERR(e);
 		*h = TRUE;
